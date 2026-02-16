@@ -8,7 +8,7 @@ public class TestService : WebSocketBehavior
 	protected override void OnMessage(MessageEventArgs e)
 	{
 		Console.WriteLine($"Message received: {e.Data}");
-		
+
 		Sessions.Broadcast(e.Data);
 	}
 }
@@ -16,7 +16,7 @@ public class TestService : WebSocketBehavior
 public class Server
 {
 	public static readonly WebSocketServer Socket = new("ws://localhost:69");
-	
+
 	public static async void Run()
 	{
 		Socket.AddWebSocketService<TestService>("/");

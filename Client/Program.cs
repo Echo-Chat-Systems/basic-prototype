@@ -1,13 +1,12 @@
 ﻿namespace Client;
 
-class Program
+internal class Program
 {
 	public static Client Client;
-	
-	static void Main(string[] args)
+
+	private static void Main(string[] args)
 	{
-		Console.WriteLine("Starting client...");
-		Client = new Client("ws://localhost:69");
+		Client = new Client();
 		Client.Run();
 	}
 }

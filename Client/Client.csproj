@@ -8,7 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-preview.1.26104.118"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-preview.1.26104.118"/>
+        <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\EchoLib\EchoLib.csproj"/>
     </ItemGroup>
 
 </Project>

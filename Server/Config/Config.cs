@@ -19,6 +19,6 @@ public class Config(IConfiguration config)
 		Port = int.Parse(config["Database:Port"] ?? throw new MissingFieldException("Database:Port")),
 		Username = config["Database:Username"] ?? throw new MissingFieldException("Database:Username"),
 		Name = config["Database:Name"] ?? throw new MissingFieldException("Database:Name"),
-		Password = config["Database:Password"] ?? throw new MissingFieldException("Database:Password"),
+		Password = config["Database:Password"] ?? throw new MissingFieldException("Database:Password")
 	};
 }

@@ -26,5 +26,8 @@ public sealed class RepositoryRegistry
 		return (TInterface)factory();
 	}
 
-	public IReadOnlyDictionary<Type, Func<object>> Snapshot() => _factories;
+	public IReadOnlyDictionary<Type, Func<object>> Snapshot()
+	{
+		return _factories;
+	}
 }

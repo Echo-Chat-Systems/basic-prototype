@@ -1,6 +1,9 @@
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace Models.Crypto.Encryption;
+namespace EchoLib.Core.Crypto.Encryption;
+
 
 public class PrivateEncryptionKey
 {
@@ -35,5 +38,25 @@ public class PrivateEncryptionKey
 	public override string ToString()
 	{
 		return Convert.ToBase64String(Key.ExportRSAPrivateKey());
+	}
+}
+
+public sealed class PrivateEncryptionKeyJsonConverter
+	: JsonConverter<PrivateEncryptionKey>
+{
+	public override PrivateEncryptionKey Read(
+		ref Utf8JsonReader reader,
+		Type typeToConvert,
+		JsonSerializerOptions options)
+	{
+		return reader.TokenType != JsonTokenType.String ? throw new JsonException() : new PrivateEncryptionKey(reader.GetString()!);
+	}
+
+	public override void Write(
+		Utf8JsonWriter writer,
+		PrivateEncryptionKey value,
+		JsonSerializerOptions options)
+	{
+		writer.WriteStringValue(value.ToString());
 	}
 }

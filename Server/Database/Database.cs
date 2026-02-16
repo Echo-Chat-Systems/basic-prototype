@@ -14,18 +14,15 @@ public class Database
 	{
 		if (module.Provider != provider) throw new InvalidOperationException("Provider mismatch");
 
-		RepositoryRegistry registry = new RepositoryRegistry();
+		RepositoryRegistry registry = new();
 		module.Register(ctx, registry);
 
 		CurrentProvider = provider;
 		Implementations = registry.Snapshot();
 
-		ServiceCollection repositories = new ServiceCollection();
+		ServiceCollection repositories = new();
 
-		foreach (KeyValuePair<Type, Func<object>> implementation in Implementations)
-		{
-			repositories.AddSingleton(implementation.Key, _ => implementation.Value());
-		}
+		foreach (KeyValuePair<Type, Func<object>> implementation in Implementations) repositories.AddSingleton(implementation.Key, _ => implementation.Value());
 
 		Repositories = repositories.BuildServiceProvider();
 	}

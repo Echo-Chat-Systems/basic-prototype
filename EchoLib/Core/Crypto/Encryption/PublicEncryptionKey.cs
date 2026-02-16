@@ -1,4 +1,6 @@
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Models.Crypto.Encryption;
 
@@ -26,5 +28,26 @@ public class PublicEncryptionKey
 	public override string ToString()
 	{
 		return Convert.ToBase64String(Key.ExportRSAPublicKey());
+	}
+}
+
+
+public sealed class PublicEncryptionKeyJsonConverter
+	: JsonConverter<PublicEncryptionKey>
+{
+	public override PublicEncryptionKey Read(
+		ref Utf8JsonReader reader,
+		Type typeToConvert,
+		JsonSerializerOptions options)
+	{
+		return reader.TokenType != JsonTokenType.String ? throw new JsonException() : new PublicEncryptionKey(reader.GetString()!);
+	}
+
+	public override void Write(
+		Utf8JsonWriter writer,
+		PublicEncryptionKey value,
+		JsonSerializerOptions options)
+	{
+		writer.WriteStringValue(value.ToString());
 	}
 }

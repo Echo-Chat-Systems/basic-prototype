@@ -2,9 +2,9 @@
 
 namespace Server;
 
-class Program
+internal class Program
 {
-	static void Main(string[] args)
+	private static void Main(string[] args)
 	{
 		Console.WriteLine("Starting server...");
 		Server.Run();

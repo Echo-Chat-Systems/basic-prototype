@@ -8,7 +8,7 @@ public class Snowflake
 	/// which could lead to duplicate values or other inconsistencies.
 	/// </summary>
 	private static readonly object Lock = new();
-	
+
 	/// <summary>
 	/// Sequence value used to ensure unique snowflakes within the same millisecond.
 	/// </summary>
@@ -39,21 +39,21 @@ public class Snowflake
 	private readonly ISnowflakeData _snowflakeData;
 	public int? SnowflakeVersion { get; private init; }
 
-	public T GetSnowflakeData<T>() 
+	public T GetSnowflakeData<T>()
 		where T : class, ISnowflakeData
 	{
 		if (typeof(T) != SnowflakeDataType) throw new ArgumentException($"");
 
 		return (T)_snowflakeData;
 	}
-	
+
 	public Snowflake(ulong snowflake)
 	{
 		// Set the value
 		Value = snowflake;
-		
+
 		/* Calculate the Snowflake version using bit-shift magic
-		 * 
+		 *
 		 * We start with a ulong that looks something like this in binary
 		 *  0100 0100 0110 0011 1011 0011 0011 1000 0111 0100 1110 0000 0100 1010 0001 1000
 		 *  │◀──────────────────────────────────────────────────────────────────────▶│ │◀▶│
@@ -69,23 +69,23 @@ public class Snowflake
 		 *
 		 * This then gets converted into an integer, for this example, Snowflake version 8
 		 */
-		SnowflakeVersion = (int)((snowflake << 60) >> 60) + 1;  // +1 is here as the snowflake in binary starts at 0 which is not useful. 
+		SnowflakeVersion = (int)((snowflake << 60) >> 60) + 1; // +1 is here as the snowflake in binary starts at 0 which is not useful. 
 
 		if (SnowflakeVersion > 16) throw new ArgumentException("Invalid snowflake. Snowflake Version Exceeds 16");
 
 		switch (SnowflakeVersion)
 		{
-			case 1: 
+			case 1:
 				/* Snowflake V1 works like this:
 				 * 0100 0100 0110 0011 1011 0011 0011 1000 0111 0100 1110 0000 0100 1010 0001 0001
-				 * │◀───────────────────Timestamp────────────────────▶││◀─┬─▶│ │◀─Sequence─▶│ │◀▶│                                      
+				 * │◀───────────────────Timestamp────────────────────▶││◀─┬─▶│ │◀─Sequence─▶│ │◀▶│
 				 *                                         Instance Number┘  Snowflake Version┘
 				 */
 				SnowflakeDataType = typeof(SnowflakeV1);
-				
+
 				// Start by parsing the Timestamp by right shifting 22 bits
 				Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)(snowflake >> 22) + Epoch).UtcDateTime;
-				
+
 				/* Calculate Instance
 				 * We start with a ulong that looks something like this in binary
 				 *  0100 0100 0110 0011 1011 0011 0011 1000 0111 0100 1110 1010 0100 1010 0001 1000
@@ -104,17 +104,17 @@ public class Snowflake
 				 */
 				int instance = (int)((snowflake << 42) >> 58);
 				if (instance > 63) throw new ArgumentException($"Instance Number {instance} exceeded theoretical maximum of 63 for Snowflake Version {SnowflakeVersion}");
-				
+
 				/* Calculate Sequence
 				 * We start with a ulong that looks something like this in binary
 				 *  0100 0100 0110 0011 1011 0011 0011 1000 0111 0100 1110 0000 0100 1010 0001 0001
-				 *  │◀──────────────Timestamp & Instance Number──────────────▶│ │◀─Sequence─▶│ │◀▶│                                      
+				 *  │◀──────────────Timestamp & Instance Number──────────────▶│ │◀─Sequence─▶│ │◀▶│
 				 *                                                            Snowflake Version┘
 				 *
 				 * We left shift by 48 bits to remove the timestamp and instance number
 				 *  0100 1010 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
 				 *  │◀─Sequence─▶│ │◀▶│ │◀──────────────────────New Junk 0's─────────────────────▶│
-				 *                 └Snowflake Version 
+				 *                 └Snowflake Version
 				 *
 				 * We right shift 52 bits
 				 *  0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0100 1010 0001
@@ -122,14 +122,14 @@ public class Snowflake
 				 */
 				int sequence = (int)((snowflake << 48) >> 52);
 				if (sequence > 4095) throw new ArgumentException($"Sequence Number {sequence} exceeded theoretical maximum of 4095 for Snowflake Version {SnowflakeVersion}");
-				
+
 				_snowflakeData = new SnowflakeV1(instance, sequence);
 				break;
 			default:
 				throw new NotImplementedException($"Snowflake Version {SnowflakeVersion} not supported");
 		}
 	}
-	
+
 	public Snowflake(long snowflake) : this((ulong)snowflake)
 	{
 	}
@@ -150,10 +150,7 @@ public class Snowflake
 			// Grab ms
 			long ms = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - Epoch;
 
-			if (ms < _lastMs)
-			{
-				throw new InvalidOperationException("Clock moved backwards. Unable to generate snowflake.");
-			}
+			if (ms < _lastMs) throw new InvalidOperationException("Clock moved backwards. Unable to generate snowflake.");
 
 			switch (snowflakeVersion)
 			{
@@ -163,15 +160,16 @@ public class Snowflake
 						_sequence++;
 
 						if (_sequence > 4095) // 12 bits for increment
-						{
 							throw new InvalidOperationException("Sequence overflow. Unable to generate snowflake.");
-						}
 					}
-					else _sequence = 0;
+					else
+					{
+						_sequence = 0;
+					}
 
 					_lastMs = ms;
 
-					return new Snowflake((ulong)(ms << 42) | (ulong)(InstanceNumber << 22) | (ulong)(_sequence << 16) | (ulong)snowflakeVersion - 1);
+					return new Snowflake((ulong)(ms << 42) | (ulong)(InstanceNumber << 22) | (ulong)(_sequence << 16) | ((ulong)snowflakeVersion - 1));
 
 				default:
 					throw new NotImplementedException($"Snowflake version {snowflakeVersion} not implemented");
