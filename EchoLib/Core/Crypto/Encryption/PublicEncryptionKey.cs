@@ -31,7 +31,6 @@ public class PublicEncryptionKey
 	}
 }
 
-
 public sealed class PublicEncryptionKeyJsonConverter
 	: JsonConverter<PublicEncryptionKey>
 {

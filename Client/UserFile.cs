@@ -36,7 +36,7 @@ public class UserFile
 	{
 		// Serialise data
 		byte[] plaintext = JsonSerializer.SerializeToUtf8Bytes(data);
-		
+
 		// Generate required cryptographic values
 		byte[] salt = RandomBytes(SaltSize);
 		byte[] nonce = RandomBytes(NonceSize);
@@ -55,7 +55,7 @@ public class UserFile
 		fs.Write(nonce);
 		fs.Write(tag);
 		fs.Write(ciphertext); // Ciphertext is written last as it is an unknown size
-		
+
 		Logger?.LogDebug("Wrote user file to {FileLocation}", outputFile.Name);
 	}
 

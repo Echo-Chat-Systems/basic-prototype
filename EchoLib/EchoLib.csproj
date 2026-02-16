@@ -9,6 +9,11 @@
     <ItemGroup>
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0-beta.98"/>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-preview.1.26104.118"/>
+        <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Data\" />
     </ItemGroup>
 
 </Project>

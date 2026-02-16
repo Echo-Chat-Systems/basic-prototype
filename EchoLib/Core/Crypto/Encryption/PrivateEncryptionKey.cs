@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace EchoLib.Core.Crypto.Encryption;
 
-
 public class PrivateEncryptionKey
 {
 	private RSA Key { get; }

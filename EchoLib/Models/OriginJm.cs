@@ -1,4 +1,4 @@
-﻿namespace Models.JsonModels;
+﻿namespace EchoLib.Models;
 
 public class OriginJm
 {

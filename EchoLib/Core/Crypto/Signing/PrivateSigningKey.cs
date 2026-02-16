@@ -27,7 +27,6 @@ public class PrivateSigningKey
 	}
 }
 
-
 public sealed class PrivateSigningKeyJsonConverter
 	: JsonConverter<PrivateSigningKey>
 {
