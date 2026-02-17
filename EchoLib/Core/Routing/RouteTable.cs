@@ -19,3 +19,5 @@ public sealed class RouteTable
 		return _routes.TryGetValue((target, action), out descriptor);
 	}
 }
+
+public record RouteDescriptor(Type HandlerType);
