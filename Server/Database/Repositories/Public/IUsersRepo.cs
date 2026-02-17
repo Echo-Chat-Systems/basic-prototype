@@ -1,5 +1,5 @@
 ﻿using EchoLib.Core;
-using Models.Functional.Crypto.Signing;
+using EchoLib.Core.Crypto.Signing;
 using Server.Database.Models.Public;
 
 namespace Server.Database.Repositories.Public;

@@ -15,8 +15,8 @@ public class Client
 	public static readonly DirectoryInfo EchoDirectory = new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
 	public WebSocket Socket { get; private set; }
 	public static IServiceProvider Services { get; set; }
-	private static KeySetJm Keys { get; set; }
-	private static ServerInfoJm ServerInfo { get; set; }
+	public static KeySetJm Keys { get; set; }
+	public static ServerInfoJm ServerInfo { get; set; }
 
 	private static Router _router; 
 
@@ -108,7 +108,8 @@ public class Client
 		// Connect
 		Socket.Connect();
 		
-		// Begin connect procedure
+		// Begin signin procedure
+		
 		
 
 		string? input;

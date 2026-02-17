@@ -1,7 +1,7 @@
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 
-namespace Models.Crypto.Signing;
+namespace EchoLib.Core.Crypto.Signing;
 
 public class Signature
 {

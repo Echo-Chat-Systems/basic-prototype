@@ -1,9 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Models.Functional.Crypto.Signing;
 using Org.BouncyCastle.Crypto.Parameters;
 
-namespace Models.Crypto.Signing;
+namespace EchoLib.Core.Crypto.Signing;
 
 public class PrivateSigningKey
 {

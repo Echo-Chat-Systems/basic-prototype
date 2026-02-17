@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Org.BouncyCastle.Crypto.Parameters;
 
-namespace Models.Functional.Crypto.Signing;
+namespace EchoLib.Core.Crypto.Signing;
 
 public class PublicSigningKey
 {

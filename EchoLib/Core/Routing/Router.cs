@@ -1,4 +1,6 @@
-﻿namespace EchoLib.Core.Routing;
+﻿using EchoLib.Core.Routing.Exceptions;
+
+namespace EchoLib.Core.Routing;
 
 public sealed class Router : IMessageRouter
 {
@@ -21,12 +23,20 @@ public sealed class Router : IMessageRouter
 		return (TTarget)target;
 	}
 
-	public Task RouteAsync(MessageEnvelope<object> envelope)
+	public async Task RouteAsync(MessageEnvelope<object> envelope)
 	{
 		// Lookup by target string
 		ITarget target = _targets.Values.FirstOrDefault(t => t.Name == envelope.Target)
 		                 ?? throw new InvalidOperationException($"Unknown target: {envelope.Target}");
 
-		return target.HandleAsync(envelope, _ctx);
+		try
+		{
+			await target.HandleAsync(envelope, _ctx);
+		}
+		catch (ProtocolException ex)
+		{
+			await _ctx.SendError(envelope.FromError(ex));
+		}
+		
 	}
 }

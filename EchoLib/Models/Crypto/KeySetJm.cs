@@ -1,8 +1,7 @@
 using System.Text.Json.Serialization;
 using EchoLib.Core.Crypto.Encryption;
+using EchoLib.Core.Crypto.Signing;
 using Models.Crypto.Encryption;
-using Models.Crypto.Signing;
-using Models.Functional.Crypto.Signing;
 
 namespace EchoLib.Models.Crypto;
 
