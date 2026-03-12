@@ -1,6 +1,9 @@
+using System.Buffers.Text;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math.EC.Rfc8032;
 
 namespace EchoLib.Core.Crypto.Signing;
 
@@ -18,6 +21,22 @@ public class PrivateSigningKey
 	public PrivateSigningKey(string key)
 	{
 		Key = Convert.FromBase64String(key);
+	}
+
+	/// <summary>
+	/// Sign any arbitrary byte array.
+	/// </summary>
+	/// <param name="sign">String to sign.</param>
+	/// <returns>B64 encoded signature.</returns>
+	public byte[] Sign(byte[] sign)
+	{
+		// Convert input string into a readonly span
+		Span<byte> output = new();
+		
+		// Perform actual signature
+		KeyParams.Sign(Ed25519.Algorithm.Ed25519, null, sign, output);
+
+		return output.ToArray();
 	}
 
 	public override string ToString()

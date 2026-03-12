@@ -1,24 +1,41 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EchoLib.Configuration.Attributes;
+using Microsoft.Extensions.Configuration;
 
 namespace Server.Config;
 
-public class Config(IConfiguration config)
+public class Config
 {
+	[ConfigProperty] public required SocketModel Socket { get; init; }
+	[ConfigProperty] public required AppearanceModel Appearance { get; init; }
+	[ConfigProperty] public required DatabaseModel Database { get; init; }
+
+	[ConfigModel]
+	public class SocketModel
+	{
+		public required string Host { get; init; }
+		public required int Port { get; init; }
+		public required bool UsingWss { get; init; }
+	}
+
+	[ConfigModel]
+	public class AppearanceModel
+	{
+		public required string Name { get; init; }
+	}
+
+	[ConfigModel]
 	public class DatabaseModel
 	{
 		public required string Host { get; init; }
 		public required string Name { get; init; }
-		public required string Password { get; init; }
 		public required int Port { get; init; }
-		public required string Username { get; init; }
+		public required IReadOnlyDictionary<string, CredentialsSet> Credentials { get; init; }
 	}
 
-	public DatabaseModel Database { get; } = new()
+	[ConfigModel]
+	public class CredentialsSet
 	{
-		Host = config["Database:Host"] ?? throw new MissingFieldException("Database:Host"),
-		Port = int.Parse(config["Database:Port"] ?? throw new MissingFieldException("Database:Port")),
-		Username = config["Database:Username"] ?? throw new MissingFieldException("Database:Username"),
-		Name = config["Database:Name"] ?? throw new MissingFieldException("Database:Name"),
-		Password = config["Database:Password"] ?? throw new MissingFieldException("Database:Password")
-	};
+		public required string Username { get; init; }
+		[ConfigSecret] public required string Password { get; init; }
+	}
 }

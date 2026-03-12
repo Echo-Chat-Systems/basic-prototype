@@ -1,6 +1,7 @@
 ﻿using EchoLib.Core.Routing;
 using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Models.Params.Auth;
+using Org.BouncyCastle.Utilities.Encoders;
 
 namespace Client.Routing;
 
@@ -51,12 +52,27 @@ public class AuthTarget : TargetBase
 		State.SignChallenge = parameters.SignChallenge;
 		State.EncryptChallenge = parameters.EncryptChallenge;
 		
+		// Decode challenges from strings into bytes using base64
+		byte[] sigChallengeBytes = Base64.Decode(parameters.SignChallenge);
+		byte[] encChallengeBytes = Base64.Decode(parameters.EncryptChallenge);
+		
 		// Complete challenges
+		byte[] sigBytes = Client.Keys.PrvSk.Sign(sigChallengeBytes);
+		byte[] dcrBytes;
+
+		if (!Client.Keys.PrvEk.Decrypt(sigChallengeBytes, out dcrBytes)) throw new SigninChallengeFailedException();
+		
+		// Encode response
+		string signature = Base64.ToBase64String(sigBytes);
+		string decrypted = Base64.ToBase64String(dcrBytes);
+		
 		SigninResponseParameters response = new SigninResponseParameters
 		{
-			Signature = Client.Keys.PrvSk
+			Signature = signature,
+			Decrypted = decrypted
 		};
-	} 
-
-	
+		
+		// Send response
+		return _ctx.SendAsync(this, response);
+	}
 }
