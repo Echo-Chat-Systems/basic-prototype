@@ -1,5 +1,4 @@
-﻿using System.Security.AccessControl;
-using EchoLib.Core;
+﻿using EchoLib.Core;
 using EchoLib.Core.Routing;
 using EchoLib.Models.Crypto;
 using EchoLib.Models.Misc;
@@ -87,6 +86,10 @@ public class Client
 
 			logger.LogInformation("User file saved to {UserFileLocation}", userFileHandle.FullName);
 		}
+		
+		// We no longer need the password as plaintext in memory, overwrite
+		// ReSharper disable once RedundantAssignment
+		passwd = "";
 
 		Keys = file.Keys;
 		ServerInfo = file.Server;
