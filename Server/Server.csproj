@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="EchoLib.Configuration" Version="1.0.1-fix-001" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="11.0.0-preview.1.26104.118"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="11.0.0-preview.1.26104.118" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.1.26104.118"/>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-preview.1.26104.118"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-preview.1.26104.118"/>
@@ -18,6 +19,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\EchoLib\EchoLib.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

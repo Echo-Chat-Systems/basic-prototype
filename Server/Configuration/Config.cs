@@ -1,13 +1,12 @@
 ﻿using EchoLib.Configuration.Attributes;
-using Microsoft.Extensions.Configuration;
 
-namespace Server.Config;
+namespace Server.Configuration;
 
 public class Config
 {
-	[ConfigProperty] public required SocketModel Socket { get; init; }
-	[ConfigProperty] public required AppearanceModel Appearance { get; init; }
-	[ConfigProperty] public required DatabaseModel Database { get; init; }
+	[ConfigProperty] public SocketModel Socket { get; init; }
+	[ConfigProperty] public AppearanceModel Appearance { get; init; }
+	[ConfigProperty] public DatabaseModel Database { get; init; }
 
 	[ConfigModel]
 	public class SocketModel
@@ -20,7 +19,7 @@ public class Config
 	[ConfigModel]
 	public class AppearanceModel
 	{
-		public required string Name { get; init; }
+		public required string BroadcastName { get; init; }
 	}
 
 	[ConfigModel]
