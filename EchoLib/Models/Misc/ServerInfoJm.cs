@@ -4,7 +4,7 @@ namespace EchoLib.Models.Misc;
 
 public class ServerInfoJm
 {
-	[JsonPropertyName("address")] public required string Address;
-	[JsonPropertyName("port")] public required int Port;
-	[JsonPropertyName("version")] public required string Version;
+	[JsonPropertyName("address")] public required string Address { get; set; }
+	[JsonPropertyName("port")] public required int Port { get; set; }
+	[JsonPropertyName("version")] public required string Version { get; set; }
 }
