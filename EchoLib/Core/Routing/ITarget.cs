@@ -9,5 +9,5 @@ public interface ITarget
 	/// </summary>
 	/// <param name="envelope">Message</param>
 	/// <param name="ctx">Routing context.</param>
-	Task HandleAsync(MessageEnvelope<object> envelope, RoutingContext ctx);
+	Task HandleAsync(RoutingContext ctx, MessageEnvelope<object> envelope);
 }

@@ -1,7 +1,6 @@
-using System.Text.Json.Serialization;
 using EchoLib.Core.Crypto.Encryption;
 using EchoLib.Core.Crypto.Signing;
-using Models.Crypto.Encryption;
+using Newtonsoft.Json;
 
 namespace EchoLib.Models.Crypto;
 
@@ -10,19 +9,11 @@ namespace EchoLib.Models.Crypto;
 /// </summary>
 public class KeySetJm
 {
-	[JsonPropertyName("pub_sk")]
-	[JsonConverter(typeof(PublicSigningKeyJsonConverter))]
-	public PublicSigningKey PubSk { get; set; }
+	[JsonProperty("pub_sk")] public PublicSigningKey PubSk { get; set; }
 
-	[JsonPropertyName("prv_sk")]
-	[JsonConverter(typeof(PrivateSigningKeyJsonConverter))]
-	public PrivateSigningKey PrvSk { get; set; }
+	[JsonProperty("prv_sk")] public PrivateSigningKey PrvSk { get; set; }
 
-	[JsonPropertyName("pub_ek")]
-	[JsonConverter(typeof(PublicEncryptionKeyJsonConverter))]
-	public PublicEncryptionKey PubEk { get; set; }
+	[JsonProperty("pub_ek")] public PublicEncryptionKey PubEk { get; set; }
 
-	[JsonPropertyName("prv_ek")]
-	[JsonConverter(typeof(PrivateEncryptionKeyJsonConverter))]
-	public PrivateEncryptionKey PrvEk { get; set; }
+	[JsonProperty("prv_ek")] public PrivateEncryptionKey PrvEk { get; set; }
 }

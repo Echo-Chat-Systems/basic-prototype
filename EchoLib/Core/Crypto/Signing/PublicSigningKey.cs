@@ -1,5 +1,4 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto.Parameters;
 
 namespace EchoLib.Core.Crypto.Signing;
@@ -37,22 +36,20 @@ public class UserId : PublicSigningKey
 	}
 }
 
-public sealed class PublicSigningKeyJsonConverter
-	: JsonConverter<PublicSigningKey>
+public class PublicSigningKeyConverter : JsonConverter<PublicSigningKey>
 {
-	public override PublicSigningKey Read(
-		ref Utf8JsonReader reader,
-		Type typeToConvert,
-		JsonSerializerOptions options)
+	public override void WriteJson(JsonWriter writer, PublicSigningKey? value, JsonSerializer serializer)
 	{
-		return reader.TokenType != JsonTokenType.String ? throw new JsonException() : new PublicSigningKey(reader.GetString()!);
+		writer.WriteValue(value?.ToString());
 	}
 
-	public override void Write(
-		Utf8JsonWriter writer,
-		PublicSigningKey value,
-		JsonSerializerOptions options)
+	public override PublicSigningKey ReadJson(
+		JsonReader reader,
+		Type objectType,
+		PublicSigningKey? existingValue,
+		bool hasExistingValue,
+		JsonSerializer serializer)
 	{
-		writer.WriteStringValue(value.ToString());
+		return reader.TokenType != JsonToken.String ? throw new JsonSerializationException("Expected string") : new PublicSigningKey((string)reader.Value!);
 	}
 }

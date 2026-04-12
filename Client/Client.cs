@@ -1,10 +1,13 @@
-﻿using EchoLib.Core;
+﻿using Client.Routing;
+using EchoLib.Core;
 using EchoLib.Core.Routing;
 using EchoLib.Models.Crypto;
 using EchoLib.Models.Misc;
+using EchoLib.Models.Params.Auth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebSocketSharp;
+using Newtonsoft.Json;
+using WebSocketSharper;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Client;
@@ -13,11 +16,13 @@ public class Client
 {
 	public static readonly DirectoryInfo EchoDirectory = new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
 	public WebSocket Socket { get; private set; }
+
 	public static IServiceProvider Services { get; set; }
+
 	public static KeySetJm Keys { get; set; }
 	public static ServerInfoJm ServerInfo { get; set; }
 
-	private static Router _router; 
+	private readonly ILogger<Client> _logger;
 
 	public Client()
 	{
@@ -31,11 +36,16 @@ public class Client
 			builder.AddConsole();
 			builder.SetMinimumLevel(LogLevel.Debug);
 		});
+		services.AddSingleton<SessionInfo>();
+		services.AddSingleton<Router>();
 
 		Services = services.BuildServiceProvider();
 
 		// Get the logger 
-		ILogger<Client> logger = Services.GetService<ILogger<Client>>()!;
+		_logger = Services.GetService<ILogger<Client>>()!;
+
+		// Configure newtonsoft
+		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
 
 		// Give UserFile a logger
 		UserFile.Logger = Services.GetService<ILogger<UserFile>>();
@@ -43,7 +53,7 @@ public class Client
 		// Ensure .echo directory exists 
 		if (!EchoDirectory.Exists)
 		{
-			logger.LogWarning("Echo Directory {EchoDirectory} did not exist, creating", EchoDirectory);
+			_logger.LogWarning("Echo Directory {EchoDirectory} did not exist, creating", EchoDirectory);
 			EchoDirectory.Create();
 
 			// Set directory to hidden
@@ -59,7 +69,7 @@ public class Client
 		// Check if file exists
 		if (userFileHandle.Exists)
 		{
-			logger.LogDebug("User file found at {UserFileHandle}", userFileHandle.Name);
+			_logger.LogDebug("User file found at {UserFileHandle}", userFileHandle.Name);
 			// Attempt to read the user file
 			if (!UserFile.Decrypt(userFileHandle, passwd, out file) || file == null)
 			{
@@ -84,9 +94,9 @@ public class Client
 			// Save file
 			UserFile.Encrypt(file, userFileHandle, passwd);
 
-			logger.LogInformation("User file saved to {UserFileLocation}", userFileHandle.FullName);
+			_logger.LogInformation("User file saved to {UserFileLocation}", userFileHandle.FullName);
 		}
-		
+
 		// We no longer need the password as plaintext in memory, overwrite
 		// ReSharper disable once RedundantAssignment
 		passwd = "";
@@ -94,27 +104,21 @@ public class Client
 		Keys = file.Keys;
 		ServerInfo = file.Server;
 
-		Socket = new WebSocket($"ws://{ServerInfo.Address}:{ServerInfo.Port}");
+		Socket = new WebSocket(Services.GetRequiredService<ILogger<WebSocket>>(),
+			$"ws://{ServerInfo.Address}:{ServerInfo.Port}",
+			false
+		);
 
-		// Build the router
-		_router = new Router(new RoutingContext
-		{
-			Services = Services,
-			Socket = Socket
-		});
-		
 		Socket.OnMessage += OnMessage;
+		Socket.OnOpen += OnOpen;
 	}
 
 	public void Run()
 	{
 		// Connect
 		Socket.Connect();
-		
-		// Begin signin procedure
-		
-		
 
+		//
 		string? input;
 		while (true)
 		{
@@ -128,9 +132,27 @@ public class Client
 	}
 
 
+	private void OnOpen(object? sender, EventArgs e)
+	{
+		// Create new ctx
+		RoutingContext ctx = new(Socket) { Services = Services };
+
+		// Get router
+		Router router = Services.GetRequiredService<Router>();
+
+
+		// Send hello message
+		_logger.LogDebug("Sending client-hello");
+		router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters { Id = Keys.PubSk });
+	}
+
 	private void OnMessage(object? sender, MessageEventArgs e)
 	{
 		// Parse the message as JSON
-		
+	}
+
+	public class SessionInfo
+	{
+		public string ServerName { get; set; } = null!;
 	}
 }

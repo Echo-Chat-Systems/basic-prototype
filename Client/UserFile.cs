@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text;
 using EchoLib.Models.Crypto;
 using EchoLib.Models.Misc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Client;
 
@@ -14,9 +14,9 @@ namespace Client;
 /// </summary>
 public class UserFile
 {
-	[JsonPropertyName("keys")] public required KeySetJm Keys { get; set; }
+	[JsonProperty("keys")] public required KeySetJm Keys { get; set; }
 
-	[JsonPropertyName("server")] public required ServerInfoJm Server { get; set; }
+	[JsonProperty("server")] public required ServerInfoJm Server { get; set; }
 
 	private const int KeySize = 32; // 256 Bit
 	private const int SaltSize = 16;
@@ -35,7 +35,11 @@ public class UserFile
 	public static void Encrypt(UserFile data, FileInfo outputFile, string passphrase)
 	{
 		// Serialise data
-		byte[] plaintext = JsonSerializer.SerializeToUtf8Bytes(data);
+		Span<byte> pSpan = [];
+		Encoding.UTF8.GetEncoder().GetBytes(JsonConvert.SerializeObject(data).AsSpan(), pSpan, true);
+
+		// Convert span into byte array
+		byte[] plaintext = pSpan.ToArray();
 
 		// Generate required cryptographic values
 		byte[] salt = RandomBytes(SaltSize);
@@ -81,12 +85,12 @@ public class UserFile
 		byte[] ciphertext = data[(SaltSize + NonceSize + TagSize)..];
 
 		// Plaintext byte array
-		byte[] plaintext = new byte[ciphertext.Length];
+		byte[] pBytes = new byte[ciphertext.Length];
 
 		using AesGcm aes = new(DeriveKey(password, salt), TagSize);
 		try
 		{
-			aes.Decrypt(nonce, ciphertext, tag, plaintext);
+			aes.Decrypt(nonce, ciphertext, tag, pBytes);
 		}
 		catch (CryptographicException)
 		{
@@ -94,7 +98,9 @@ public class UserFile
 		}
 
 		// Deserialize plaintext into content
-		userFile = JsonSerializer.Deserialize<UserFile>(plaintext);
+		string plaintext = Encoding.UTF8.GetString(pBytes);
+
+		userFile = JsonConvert.DeserializeObject<UserFile>(plaintext);
 		return true;
 	}
 

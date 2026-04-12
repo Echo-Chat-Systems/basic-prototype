@@ -1,42 +1,39 @@
 ﻿using EchoLib.Core.Routing.Exceptions;
+using WebSocketSharper;
+using WebSocketSharper.Server;
 
 namespace EchoLib.Core.Routing;
 
+public interface IMessageRouter
+{
+	Task RouteAsync(RoutingContext ctx, MessageEnvelope<object> envelope);
+}
+
 public sealed class Router : IMessageRouter
 {
-	private readonly Dictionary<Type, ITarget> _targets = new();
-	private readonly RoutingContext _ctx;
-
-	public Router(RoutingContext ctx)
-	{
-		_ctx = ctx;
-
-		// Automatically discover and register all targets
-		foreach (ITarget target in TargetDiscovery.DiscoverTargets(ctx)) _targets[target.GetType()] = target;
-	}
-
-	public TTarget Get<TTarget>() where TTarget : ITarget
-	{
-		if (!_targets.TryGetValue(typeof(TTarget), out ITarget? target))
-			throw new InvalidOperationException($"Target {typeof(TTarget).Name} not registered");
-
-		return (TTarget)target;
-	}
-
-	public async Task RouteAsync(MessageEnvelope<object> envelope)
+	public async Task RouteAsync(RoutingContext ctx, MessageEnvelope<object> envelope)
 	{
 		// Lookup by target string
-		ITarget target = _targets.Values.FirstOrDefault(t => t.Name == envelope.Target)
-		                 ?? throw new InvalidOperationException($"Unknown target: {envelope.Target}");
+		TargetRegistry.Targets.TryGetValue(envelope.Target, out ITarget? target);
+
+		// Ensure target exists
+		if (target is null) throw new InvalidOperationException($"Unknown target: {envelope.Target}");
+
+		// Cast targetType to target
 
 		try
 		{
-			await target.HandleAsync(envelope, _ctx);
+			await target.HandleAsync(ctx, envelope);
 		}
 		catch (ProtocolException ex)
 		{
-			await _ctx.SendError(envelope.FromError(ex));
+			await ctx.SendError(envelope.FromError(ex));
 		}
-		
+	}
+
+	public T? GetTarget<T>() where T : ITarget
+	{
+		// Get target instance 
+		return TargetRegistry.GetTarget<T>();
 	}
 }

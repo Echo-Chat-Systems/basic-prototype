@@ -1,8 +1,7 @@
 using System.Security.Cryptography;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
-namespace Models.Crypto.Encryption;
+namespace EchoLib.Core.Crypto.Encryption;
 
 public class PublicEncryptionKey
 {
@@ -34,19 +33,18 @@ public class PublicEncryptionKey
 public sealed class PublicEncryptionKeyJsonConverter
 	: JsonConverter<PublicEncryptionKey>
 {
-	public override PublicEncryptionKey Read(
-		ref Utf8JsonReader reader,
-		Type typeToConvert,
-		JsonSerializerOptions options)
+	public override void WriteJson(JsonWriter writer, PublicEncryptionKey? value, JsonSerializer serializer)
 	{
-		return reader.TokenType != JsonTokenType.String ? throw new JsonException() : new PublicEncryptionKey(reader.GetString()!);
+		writer.WriteValue(value?.ToString());
 	}
 
-	public override void Write(
-		Utf8JsonWriter writer,
-		PublicEncryptionKey value,
-		JsonSerializerOptions options)
+	public override PublicEncryptionKey ReadJson(
+		JsonReader reader,
+		Type objectType,
+		PublicEncryptionKey? existingValue,
+		bool hasExistingValue,
+		JsonSerializer serializer)
 	{
-		writer.WriteStringValue(value.ToString());
+		return reader.TokenType != JsonToken.String ? throw new JsonSerializationException("Expected string") : new PublicEncryptionKey((string)reader.Value!);
 	}
 }

@@ -1,7 +1,4 @@
-using System.Buffers.Text;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math.EC.Rfc8032;
 
@@ -32,7 +29,7 @@ public class PrivateSigningKey
 	{
 		// Convert input string into a readonly span
 		Span<byte> output = new();
-		
+
 		// Perform actual signature
 		KeyParams.Sign(Ed25519.Algorithm.Ed25519, null, sign, output);
 
@@ -45,22 +42,15 @@ public class PrivateSigningKey
 	}
 }
 
-public sealed class PrivateSigningKeyJsonConverter
-	: JsonConverter<PrivateSigningKey>
+public class PrivateSigningKeyConverter : JsonConverter<PrivateSigningKey>
 {
-	public override PrivateSigningKey Read(
-		ref Utf8JsonReader reader,
-		Type typeToConvert,
-		JsonSerializerOptions options)
+	public override void WriteJson(JsonWriter writer, PrivateSigningKey? value, JsonSerializer serializer)
 	{
-		return reader.TokenType != JsonTokenType.String ? throw new JsonException() : new PrivateSigningKey(reader.GetString()!);
+		writer.WriteValue(value?.ToString());
 	}
 
-	public override void Write(
-		Utf8JsonWriter writer,
-		PrivateSigningKey value,
-		JsonSerializerOptions options)
+	public override PrivateSigningKey? ReadJson(JsonReader reader, Type objectType, PrivateSigningKey? existingValue, bool hasExistingValue, JsonSerializer serializer)
 	{
-		writer.WriteStringValue(value.ToString());
+		return reader.TokenType != JsonToken.String ? throw new JsonSerializationException("Expected string") : new PrivateSigningKey((string)reader.Value!);
 	}
 }

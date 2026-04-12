@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace EchoLib.Core.Crypto.Encryption;
 
@@ -40,22 +39,21 @@ public class PrivateEncryptionKey
 	}
 }
 
-public sealed class PrivateEncryptionKeyJsonConverter
+public sealed class PrivateEncryptionKeyConverter
 	: JsonConverter<PrivateEncryptionKey>
 {
-	public override PrivateEncryptionKey Read(
-		ref Utf8JsonReader reader,
-		Type typeToConvert,
-		JsonSerializerOptions options)
+	public override void WriteJson(JsonWriter writer, PrivateEncryptionKey? value, JsonSerializer serializer)
 	{
-		return reader.TokenType != JsonTokenType.String ? throw new JsonException() : new PrivateEncryptionKey(reader.GetString()!);
+		writer.WriteValue(value?.ToString());
 	}
 
-	public override void Write(
-		Utf8JsonWriter writer,
-		PrivateEncryptionKey value,
-		JsonSerializerOptions options)
+	public override PrivateEncryptionKey ReadJson(
+		JsonReader reader,
+		Type objectType,
+		PrivateEncryptionKey? existingValue,
+		bool hasExistingValue,
+		JsonSerializer serializer)
 	{
-		writer.WriteStringValue(value.ToString());
+		return reader.TokenType != JsonToken.String ? throw new JsonSerializationException("Expected string") : new PrivateEncryptionKey((string)reader.Value!);
 	}
 }
