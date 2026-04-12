@@ -1,4 +1,5 @@
 ﻿using EchoLib.Core.Crypto.Signing;
+using WebSocketSharper;
 using WebSocketSharper.Server;
 
 namespace Server;
@@ -10,7 +11,7 @@ public class ClientManager
 	public class ServerClient
 	{
 		public required LiveClient Instance;
-		public bool LoggedIn = false;
+		public bool Authenticated = false;
 		public PublicSigningKey? Id;
 	}
 
@@ -32,5 +33,10 @@ public class ClientManager
 	public ServerClient? Get(LiveClient client)
 	{
 		return _clients.Find(c => c.Instance == client);
+	}
+
+	public ServerClient? Get(WebSocket sock)
+	{
+		return _clients.Find(c => c.Instance.Context.WebSocket == sock);
 	}
 }

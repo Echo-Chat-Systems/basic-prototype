@@ -149,6 +149,7 @@ public class Client
 	private void OnMessage(object? sender, MessageEventArgs e)
 	{
 		// Parse the message as JSON
+		_logger.LogDebug("Received message {EData}", e.Data);
 	}
 
 	public class SessionInfo

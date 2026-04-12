@@ -4,4 +4,3 @@ public abstract class ProtocolException : Exception
 {
 	public abstract string Action { get; }
 }
-

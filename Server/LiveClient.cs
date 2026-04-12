@@ -21,6 +21,15 @@ public class LiveClient : WebSocketBehavior
 		_logger = services.GetRequiredService<ILogger<LiveClient>>();
 	}
 
+	protected override void OnOpen()
+	{
+		_logger.LogDebug("New client connected. Registering now");
+
+		ClientManager manager = _services.GetRequiredService<ClientManager>();
+
+		_ = manager.Register(this);
+	}
+
 	protected override void OnMessage(MessageEventArgs e)
 	{
 		// Build a new context
