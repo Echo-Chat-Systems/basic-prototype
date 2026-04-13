@@ -13,8 +13,4 @@
         <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Models\States\"/>
-    </ItemGroup>
-
 </Project>

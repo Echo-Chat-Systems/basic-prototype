@@ -152,8 +152,7 @@ public partial class ClientWindow : Window
 		_logger.LogDebug("Sending client-hello");
 		router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters { Id = State.UserFile!.Keys.PubSk });
 	}
-
-
+	
 	protected override void OnClosed(EventArgs e)
 	{
 		// Re-show the parent window

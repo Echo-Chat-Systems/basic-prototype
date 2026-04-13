@@ -3,6 +3,7 @@ using EchoLib.Core.Routing.Events;
 using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Models.Crypto;
 using EchoLib.Models.Params.Auth;
+using EchoLib.Models.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Encoders;
@@ -40,14 +41,6 @@ public class AuthTarget : TargetBase
 		public string? EncryptChallenge;
 		public string? SignResponse;
 		public string? EncryptResponse;
-	}
-
-	private enum SigninStage
-	{
-		Started,
-		Challenged,
-		ChallengeResponded,
-		Completed
 	}
 
 	public async Task SendHello(RoutingContext ctx, ClientHelloParameters parameters)
