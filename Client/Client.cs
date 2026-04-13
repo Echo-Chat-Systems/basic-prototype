@@ -17,10 +17,10 @@ public class Client
 	public static readonly DirectoryInfo EchoDirectory = new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
 	public WebSocket Socket { get; private set; }
 
-	public static IServiceProvider Services { get; set; }
+	public static IServiceProvider Services { get; set; } = null!;
 
-	public static KeySetJm Keys { get; set; }
-	public static ServerInfoJm ServerInfo { get; set; }
+	public static KeySetJm Keys { get; set; } = null!;
+	public static ServerInfoJm ServerInfo { get; set; } = null!;
 
 	private readonly ILogger<Client> _logger;
 
@@ -139,8 +139,7 @@ public class Client
 
 		// Get router
 		Router router = Services.GetRequiredService<Router>();
-
-
+		
 		// Send hello message
 		_logger.LogDebug("Sending client-hello");
 		router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters { Id = Keys.PubSk });
@@ -148,8 +147,31 @@ public class Client
 
 	private void OnMessage(object? sender, MessageEventArgs e)
 	{
-		// Parse the message as JSON
-		_logger.LogDebug("Received message {EData}", e.Data);
+		// Build a new context
+		RoutingContext ctx = new(Socket) { Services = Services };
+
+		// Unpack message event 
+		_logger.LogDebug("Message received, attempting to unpack");
+		MessageEnvelope<object>? envelope = null;
+		try
+		{
+			envelope = JsonConvert.DeserializeObject<MessageEnvelope<object>>(e.Data);
+		}
+		catch (JsonReaderException)
+		{
+			goto Fail;
+		}
+
+		if (envelope is null) goto Fail;
+
+		_logger.LogDebug("Unpacked message {Target}", envelope.Target);
+
+		// Route message
+		_ = Services.GetRequiredService<Router>().RouteAsync(ctx, envelope);
+		return;
+
+		Fail:
+		_logger.LogError("Invalid envelope received!");
 	}
 
 	public class SessionInfo

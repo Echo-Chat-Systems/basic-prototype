@@ -1,16 +1,21 @@
 ﻿namespace EchoLib.Core.Routing.Exceptions;
 
+public class InvalidKeyException : ProtocolException
+{
+	public override string Message => "invalid-key";
+}
+
 public class SigninAlreadyStartedException : ProtocolException
 {
-	public override string Action => "already-started";
+	public override string Message => "already-started";
 }
 
 public class SigninNotStartedException : ProtocolException
 {
-	public override string Action => "not-started";
+	public override string Message => "not-started";
 }
 
 public class SigninChallengeFailedException : ProtocolException
 {
-	public override string Action => "challenge-failed";
+	public override string Message => "challenge-failed";
 }

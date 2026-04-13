@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using EchoLib.Core.Routing;
+using EchoLib.Models.Data;
+using Newtonsoft.Json;
 
 namespace EchoLib.Models.Params.Generic;
 
@@ -6,5 +8,6 @@ public class ErrorParameters : IParam
 {
 	public string Action => "error";
 
-	[JsonProperty("source")] public required object Source { get; init; }
+	[JsonProperty("message")] public required string Message { get; init; }
+	[JsonProperty("source")] public required JErrorSourceData Source { get; init; }
 }

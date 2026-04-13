@@ -1,4 +1,5 @@
 using EchoLib.Core.Routing.Exceptions;
+using EchoLib.Models.Data;
 using EchoLib.Models.Params.Generic;
 using Newtonsoft.Json;
 
@@ -16,10 +17,11 @@ public class MessageEnvelope<TParams>
 			Target = "error",
 			Data = new ActionWrapper<ErrorParameters>
 			{
-				Action = ex.Action,
+				Action = "error",
 				Params = new ErrorParameters
 				{
-					Source = this
+					Message = ex.Message,
+					Source = new JErrorSourceData {Target = Target, Action = Data.Action}
 				}
 			}
 		};

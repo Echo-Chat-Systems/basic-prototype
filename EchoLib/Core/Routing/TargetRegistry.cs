@@ -1,17 +1,18 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EchoLib.Core.Routing;
 
-public static class TargetRegistry
+public class TargetRegistry (IServiceProvider services)
 {
-	public static readonly Dictionary<string, ITarget> Targets = Discover();
+	public readonly Dictionary<string, ITarget> Targets = Discover(services);
 
-	public static T? GetTarget<T>()
+	public T? GetTarget<T>()
 	{
 		return (T?)Targets.Values.FirstOrDefault(t => t is T);
 	}
 
-	private static Dictionary<string, ITarget> Discover()
+	private static Dictionary<string, ITarget> Discover(IServiceProvider services)
 	{
 		// This is complicated, so requires an explanation
 		return Assembly.GetEntryAssembly()
@@ -23,7 +24,7 @@ public static class TargetRegistry
 			)
 			.ToList()
 			.Select( // Create a new instance of every target and register it under it's name. 
-				targetType => (ITarget)Activator.CreateInstance(targetType)!).ToDictionary(target => target.Name
+				targetType => (ITarget)ActivatorUtilities.CreateInstance(services, targetType)).ToDictionary(target => target.Name
 			);
 	}
 }

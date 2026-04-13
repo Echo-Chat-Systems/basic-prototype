@@ -2,5 +2,5 @@
 
 public abstract class ProtocolException : Exception
 {
-	public abstract string Action { get; }
+	public abstract override string Message { get; }
 }

@@ -1,4 +1,5 @@
 ﻿using EchoLib.Core.Routing.Exceptions;
+using Microsoft.Extensions.Logging;
 using WebSocketSharper;
 using WebSocketSharper.Server;
 
@@ -9,12 +10,16 @@ public interface IMessageRouter
 	Task RouteAsync(RoutingContext ctx, MessageEnvelope<object> envelope);
 }
 
-public sealed class Router : IMessageRouter
+public sealed class Router(IServiceProvider services, ILogger<Router> logger) : IMessageRouter
 {
+	
+	private IServiceProvider _services = services;
+	private TargetRegistry _targets { get; init; } = new(services);
+	
 	public async Task RouteAsync(RoutingContext ctx, MessageEnvelope<object> envelope)
 	{
 		// Lookup by target string
-		TargetRegistry.Targets.TryGetValue(envelope.Target, out ITarget? target);
+		_targets.Targets.TryGetValue(envelope.Target, out ITarget? target);
 
 		// Ensure target exists
 		if (target is null) throw new InvalidOperationException($"Unknown target: {envelope.Target}");
@@ -34,6 +39,6 @@ public sealed class Router : IMessageRouter
 	public T? GetTarget<T>() where T : ITarget
 	{
 		// Get target instance 
-		return TargetRegistry.GetTarget<T>();
+		return _targets.GetTarget<T>();
 	}
 }

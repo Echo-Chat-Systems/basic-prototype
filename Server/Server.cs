@@ -15,8 +15,8 @@ public class Server
 {
 	private WebSocketServer Socket { get; set; } = null!;
 
-	private ServiceProvider Services { get; init; }
-	private ILogger<Server> _logger { get; init; }
+	private IServiceProvider Services { get; init; }
+	private ILogger<Server> Logger { get; init; }
 
 	public Server()
 	{
@@ -43,7 +43,7 @@ public class Server
 		Services = services.BuildServiceProvider();
 
 		// Get a logger for the main server
-		_logger = Services.GetService<ILogger<Server>>()!;
+		Logger = Services.GetRequiredService<ILogger<Server>>()!;
 
 		// Configure newtonsoft
 		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
@@ -52,12 +52,12 @@ public class Server
 
 	public async Task Run()
 	{
-		_logger.LogInformation("Bootstrapping server...");
+		Logger.LogInformation("Bootstrapping server...");
 		// Get config from services
 		Config config = Services.GetService<Config>() ?? throw new Exception("Missing config!");
 
 		// Initialise websocket
-		_logger.LogDebug("Creating websocket at address ws{Secure}://{SocketHost}:{SocketPort}", config.Socket.UsingWss ? 's' : "", config.Socket.Host, config.Socket.Port);
+		Logger.LogDebug("Creating websocket at address ws{Secure}://{SocketHost}:{SocketPort}", config.Socket.UsingWss ? 's' : "", config.Socket.Host, config.Socket.Port);
 
 		Socket = new WebSocketServer(Services.GetRequiredService<ILogger<WebSocketServer>>(),
 			$"ws{(config.Socket.UsingWss ? 's' : "")}://{config.Socket.Host}:{config.Socket.Port}"
@@ -66,7 +66,7 @@ public class Server
 		try
 		{
 			// Register server as websocket service
-			_logger.LogDebug("Registering root service.");
+			Logger.LogDebug("Registering root service.");
 			await Socket.AddWebSocketServiceTaskAsync("/", () => new LiveClient(Services));
 		}
 		catch (Exception e)
@@ -76,7 +76,7 @@ public class Server
 		}
 
 		// Start the socket
-		_logger.LogInformation("Opening WebSocket.");
+		Logger.LogInformation("Opening WebSocket.");
 		Socket.Start();
 		Console.WriteLine("Server is running. Press any key to stop...");
 		Console.ReadKey();
