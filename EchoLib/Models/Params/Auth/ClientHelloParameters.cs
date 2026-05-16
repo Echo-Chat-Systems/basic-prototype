@@ -1,4 +1,5 @@
 ﻿using EchoLib.Core.Crypto.Signing;
+using EchoLib.Models.Crypto;
 using Newtonsoft.Json;
 
 namespace EchoLib.Models.Params.Auth;
@@ -7,5 +8,5 @@ public class ClientHelloParameters : IParam
 {
 	public string Action => "client-hello";
 
-	[JsonProperty("id")] public required PublicSigningKey Id { get; init; }
+	[JsonProperty("key-pair")] public required PublicKeyPairJm KeyPair { get; init; }
 }

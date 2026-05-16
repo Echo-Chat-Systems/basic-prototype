@@ -1,5 +1,10 @@
 ﻿namespace EchoLib.Core.Routing.Exceptions;
 
+public class SocketRegistryException : ProtocolException
+{
+	public override string Message => "socket-registry";
+}
+
 public class InvalidKeyException : ProtocolException
 {
 	public override string Message => "invalid-key";
