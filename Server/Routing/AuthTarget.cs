@@ -2,11 +2,13 @@
 using EchoLib.Core.Crypto.Signing;
 using EchoLib.Core.Routing;
 using EchoLib.Core.Routing.Exceptions;
+using EchoLib.Models.Data;
 using EchoLib.Models.Params.Auth;
 using EchoLib.Models.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Server.Configuration;
+using Server.Database.Repositories;
 
 namespace Server.Routing;
 
@@ -88,6 +90,7 @@ public class AuthTarget : TargetBase
 	{
 		// Get required services
 		ClientManager manager = ctx.Services.GetRequiredService<ClientManager>();
+		IUsersRepo usersRepo = ctx.Services.GetRequiredService<IUsersRepo>();
 		
 		// Get this client from the manager
 		ServerClient? client = manager.Get(ctx.Socket);
@@ -116,8 +119,15 @@ public class AuthTarget : TargetBase
 		if (sigValid && encryptVald)
 		{
 			// Authentication successful, update client state and respond with success
-			client.SigninState.Stage = SigninStage.Authenticated;
-			await ctx.SendAsync(this, new SigninSuccessParameters());
+			client.SigninState.Stage = SigninStage.Completed;
+			
+			// Get the user 
+			var userDbm = await usersRepo.GetAsync((UserId)client.Id!);
+			
+			await ctx.SendAsync(this, new SigninCompleteParameters()
+			{
+				User = new JUserModel()
+			});
 		}
 		else
 		{
