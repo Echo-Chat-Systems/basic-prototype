@@ -150,7 +150,7 @@ public partial class ClientWindow : Window
 		
 		// Send hello message
 		_logger.LogDebug("Sending client-hello");
-		router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters { Id = State.UserFile!.Keys.PubSk });
+		router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters { KeyPair = State.UserFile!.Keys.ToPublicKeyPair()});
 	}
 	
 	protected override void OnClosed(EventArgs e)

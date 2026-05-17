@@ -16,4 +16,13 @@ public class KeySetJm
 	[JsonProperty("pub_ek")] public PublicEncryptionKey PubEk { get; set; }
 
 	[JsonProperty("prv_ek")] public PrivateEncryptionKey PrvEk { get; set; }
+
+	public PublicKeyPairJm ToPublicKeyPair()
+	{
+		return new PublicKeyPairJm()
+		{
+			SigningKey = PubSk,
+			EncryptionKey = PubEk
+		};
+	}
 }
