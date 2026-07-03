@@ -120,7 +120,7 @@ public class Client
         // Connect
         Socket.Connect();
 
-        //
+        // Wait until the server
         string? input;
         while (true)
         {

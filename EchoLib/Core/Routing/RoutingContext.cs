@@ -28,11 +28,11 @@ public class RoutingContext
 		Socket = socket;
 	}
 
-	private ILogger<RoutingContext> _logger => Services.GetRequiredService<ILogger<RoutingContext>>();
+	private ILogger<RoutingContext> Logger => Services.GetRequiredService<ILogger<RoutingContext>>();
 
 	public async Task SendAsync<TParams>(ITarget invoker, TParams parameters) where TParams : IParam
 	{
-		_logger.LogDebug("Attempting to send {Target} {Action}", invoker.Name, parameters.Action);
+		Logger.LogDebug("Attempting to send {Target} {Action}", invoker.Name, parameters.Action);
 
 		// Serialise message
 		MessageEnvelope<TParams> envelope = new()
@@ -46,7 +46,7 @@ public class RoutingContext
 
 	public async Task SendError(MessageEnvelope<ErrorParameters> envelope)
 	{
-		_logger.LogDebug("Attempting to send error {Action}", envelope.Data.Action);
+		Logger.LogDebug("Attempting to send error {Action}", envelope.Data.Action);
 
 		Socket.SendAsync(JsonConvert.SerializeObject(envelope), null);
 	}

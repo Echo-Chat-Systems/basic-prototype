@@ -8,13 +8,25 @@ using EchoLib.Models.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Server.Configuration;
+using Server.Database.Models.Public;
 using Server.Database.Repositories;
 
 namespace Server.Routing;
 
-public class AuthTarget : TargetBase
+public class AuthTarget: TargetBase<AuthTarget>
 {
+	private readonly Config _config;
+	private readonly ClientManager _clientManager;
+	private readonly IUsersRepo _usersRepo;
+
 	public override string Name => "auth";
+
+	public AuthTarget(ILogger<AuthTarget> logger, ClientManager clientManager, Config config, IUsersRepo usersRepo) : base(logger)
+	{
+		_config = config;
+		_usersRepo = usersRepo;
+		_clientManager = clientManager;
+	}
 
 	public class SigninState
 	{
@@ -27,13 +39,10 @@ public class AuthTarget : TargetBase
 	[ActionHandler("client-hello")]
 	private async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
-		// Get logger
-		ILogger<AuthTarget> logger = ctx.Services.GetRequiredService<ILogger<AuthTarget>>();
-
-		logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
+		Logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
 		
 		// Associate this client with their claimed ID (THIS DOES NOT MEAN THEY ARE AUTHENTICATED!!!!!!!!!)
-		ServerClient? client = ctx.Services.GetRequiredService<ClientManager>().Get(ctx.Socket);
+		ServerClient? client = _clientManager.Get(ctx.Socket);
 		
 		// Check if client is null, if so somethings fucked 
 		if (client is null) throw new SocketRegistryException();
@@ -43,17 +52,14 @@ public class AuthTarget : TargetBase
 		client.KeyPair = parameters.KeyPair;
 		
 		// Respond with the server-hello
-		await ctx.SendAsync(this, new ServerHelloParameters { ServerName = ctx.Services.GetRequiredService<Config>().Appearance.BroadcastName });
+		await ctx.SendAsync(this, new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
 	}
 
 	[ActionHandler("signin-start")]
 	private async Task HandleSigninStart(RoutingContext ctx, SigninStartParameters parameters)
 	{
-		// Get required services
-		ClientManager manager = ctx.Services.GetRequiredService<ClientManager>();
-		
 		// Get this client from the manager
-		ServerClient? client = manager.Get(ctx.Socket);
+		ServerClient? client = _clientManager.Get(ctx.Socket);
 
 		if (client is null)
 		{
@@ -61,14 +67,13 @@ public class AuthTarget : TargetBase
 			ctx.Socket.CloseAsync();
 			return;
 		}
-		
+
+		Logger.LogDebug("Client {Id} signin-start", client.Id);
+
 		// Check to ensure that this socket does not have an existing signin session 
 		if (client.SigninState.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 		
 		// Generate a set of challenges for the client
-		
-		
-		// Convert challenges to base64 strings for transport
 		byte[] signChallenge = RandomNumberGenerator.GetBytes(64);
 		byte[] encryptChallenge = RandomNumberGenerator.GetBytes(64);
 		
@@ -88,12 +93,8 @@ public class AuthTarget : TargetBase
 	[ActionHandler("signin-response")]
 	private async Task HandleSigninResponse(RoutingContext ctx, SigninResponseParameters parameters)
 	{
-		// Get required services
-		ClientManager manager = ctx.Services.GetRequiredService<ClientManager>();
-		IUsersRepo usersRepo = ctx.Services.GetRequiredService<IUsersRepo>();
-		
 		// Get this client from the manager
-		ServerClient? client = manager.Get(ctx.Socket);
+		ServerClient? client = _clientManager.Get(ctx.Socket);
 		
 		if (client is null)
 		{
@@ -101,6 +102,8 @@ public class AuthTarget : TargetBase
 			ctx.Socket.CloseAsync();
 			return;
 		}
+
+		Logger.LogDebug("Client {Id} signin-response", client.Id);
 		
 		// Check to ensure that this socket has an active signin session
 		if (client.SigninState.Stage != SigninStage.Challenged) throw new SigninNotStartedException();
@@ -114,19 +117,22 @@ public class AuthTarget : TargetBase
 		
 		// Verify the signature and encryption response
 		bool sigValid = sig.Verify(client.Id!.KeyParams, client.SigninState.SignChallenge!);
-		bool encryptVald = client.SigninState.EncryptChallenge == encryptResponse;
+		bool encryptValid = client.SigninState.EncryptChallenge!.SequenceEqual(encryptResponse);
 		
-		if (sigValid && encryptVald)
+		if (sigValid && encryptValid)
 		{
 			// Authentication successful, update client state and respond with success
 			client.SigninState.Stage = SigninStage.Completed;
 			
 			// Get the user 
-			var userDbm = await usersRepo.GetAsync((UserId)client.Id!);
+			UserDbm userDbm = (await _usersRepo.GetAsync((UserId)client.Id!))!;
 			
-			await ctx.SendAsync(this, new SigninCompleteParameters()
+			await ctx.SendAsync(this, new SigninCompleteParameters
 			{
-				User = new JUserModel()
+				User = new JUserModel
+				{
+					Id = userDbm.Id
+				}
 			});
 		}
 		else

@@ -10,13 +10,13 @@ using Org.BouncyCastle.Utilities.Encoders;
 
 namespace GuiClient.Routing;
 
-public class AuthTarget : TargetBase
+public class AuthTarget : TargetBase<AuthTarget>
 {
 	public override string Name => "auth";
 
 	private SigninState? _state;
 
-	public AuthTarget(EventBus bus)
+	public AuthTarget(EventBus bus, ILogger<AuthTarget> logger) : base(logger)
 	{
 		bus.Subscribe<ProtocolErrorEvent>(HandleProtocolError);
 	}

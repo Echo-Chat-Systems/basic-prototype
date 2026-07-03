@@ -8,9 +8,16 @@ using WebSocketSharper;
 
 namespace Client.Routing;
 
-public class AuthTarget : TargetBase
+public class AuthTarget: TargetBase<AuthTarget>
 {
 	public override string Name => "auth";
+
+	public readonly Client.SessionInfo _sessionInfo;
+
+	public AuthTarget(ILogger<AuthTarget> logger, Client.SessionInfo sessionInfo) : base(logger)
+	{
+		_sessionInfo = sessionInfo;
+	}
 
 	private static readonly SigninState State = new();
 
@@ -32,13 +39,27 @@ public class AuthTarget : TargetBase
 		Completed
 	}
 
-	public AuthTarget()
-	{
-	}
 
 	public async Task SendHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
 		await ctx.SendAsync(this, parameters);
+	}
+
+	[ActionHandler("server-hello")]
+	public async Task HandleHello(RoutingContext ctx, ServerHelloParameters parameters)
+	{
+		// Get logger
+		Logger.LogInformation("Server broadcast name: \"{ParametersServerName}\"", parameters.ServerName);
+
+		// Set server name
+		_sessionInfo.ServerName = parameters.ServerName;
+
+		// Begin login flow
+		await SendSigninStart(ctx, new SigninStartParameters()
+		{
+			Sk = Client.Keys.PubSk,
+			Ek = Client.Keys.PubEk
+		});
 	}
 
 	public async Task SendSigninStart(RoutingContext ctx, SigninStartParameters parameters)
@@ -87,15 +108,5 @@ public class AuthTarget : TargetBase
 		return ctx.SendAsync(this, response);
 	}
 
-	[ActionHandler("server-hello")]
-	private Task HandleHello(RoutingContext ctx, ServerHelloParameters parameters)
-	{
-		// Get logger
-		ctx.Services.GetRequiredService<ILogger<AuthTarget>>().LogInformation("Server broadcast name: \"{ParametersServerName}\"", parameters.ServerName);
 
-		// Set server name
-		ctx.Services.GetRequiredService<Client.SessionInfo>().ServerName = parameters.ServerName;
-
-		return Task.CompletedTask;
-	}
 }

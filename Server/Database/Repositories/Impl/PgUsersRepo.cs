@@ -7,7 +7,7 @@ using Server.Database.Models.Public;
 
 namespace Server.Database.Repositories.Impl;
 
-public class PostgresUsersRepo(IServiceProvider services) : BasePostgresRepo(services), IUsersRepo
+public class PgUsersRepo(IServiceProvider services) : PgBaseRepo(services), IUsersRepo
 {
 	public UserDbm? Get(UserId id)
 	{

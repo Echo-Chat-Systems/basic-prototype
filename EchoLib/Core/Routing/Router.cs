@@ -25,7 +25,6 @@ public sealed class Router(IServiceProvider services, ILogger<Router> logger) : 
 		if (target is null) throw new InvalidOperationException($"Unknown target: {envelope.Target}");
 
 		// Cast targetType to target
-
 		try
 		{
 			await target.HandleAsync(ctx, envelope);

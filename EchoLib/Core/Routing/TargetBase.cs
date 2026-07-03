@@ -1,19 +1,23 @@
 ﻿using System.Reflection;
 using EchoLib.Models.Params;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace EchoLib.Core.Routing;
 
-public abstract class TargetBase : ITarget
+public abstract class TargetBase<T> : ITarget
 {
 	public abstract string Name { get; }
+
+	public readonly ILogger<T> Logger;
 
 	// Dictionary of action → method delegate (startup only reflection)
 	private Dictionary<string, Func<RoutingContext, object, Task>> _actionHandlers = new();
 	private static readonly Dictionary<Type, Dictionary<string, Func<RoutingContext, object, Task>>> Cache = new();
 
-	protected TargetBase()
+	protected TargetBase(ILogger<T> logger)
 	{
+		Logger = logger;
 		InitializeActionHandlers();
 	}
 

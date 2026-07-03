@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Server.Configuration;
+using Server.Database.Repositories;
+using Server.Database.Repositories.Impl;
 using WebSocketSharper.Server;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -40,10 +42,12 @@ public class Server
 		services.AddSingleton<ClientManager>();
 		services.AddSingleton<Router>();
 
+		services.AddScoped<IUsersRepo, PgUsersRepo>();
+
 		Services = services.BuildServiceProvider();
 
 		// Get a logger for the main server
-		Logger = Services.GetRequiredService<ILogger<Server>>()!;
+		Logger = Services.GetRequiredService<ILogger<Server>>();
 
 		// Configure newtonsoft
 		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;

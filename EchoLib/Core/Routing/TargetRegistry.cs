@@ -15,7 +15,7 @@ public class TargetRegistry (IServiceProvider services)
 	private static Dictionary<string, ITarget> Discover(IServiceProvider services)
 	{
 		// This is complicated, so requires an explanation
-		return Assembly.GetEntryAssembly()
+		return Assembly.GetEntryAssembly()!
 			.GetTypes()
 			.Where( // Get the types of all targets within the executing assembly 
 				t => typeof(ITarget)

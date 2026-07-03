@@ -1,6 +1,6 @@
 ﻿namespace Server.Database.Repositories.Impl;
 
-public class BasePostgresRepo(IServiceProvider services)
+public class PgBaseRepo(IServiceProvider services)
 {
 	public readonly IServiceProvider Services = services;
 	

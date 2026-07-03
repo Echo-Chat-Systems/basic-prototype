@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math.EC.Rfc8032;
 
 namespace EchoLib.Core.Crypto.Signing;
@@ -31,7 +33,13 @@ public class PrivateSigningKey
 		Span<byte> output = new();
 
 		// Perform actual signature
-		KeyParams.Sign(Ed25519.Algorithm.Ed25519, null, sign, output);
+		Ed25519Signer signer = new();
+		signer.Init(true, KeyParams);
+		signer.BlockUpdate(sign, 0, sign.Length);
+
+		output = signer.GenerateSignature();
+
+		// KeyParams.Sign(Ed25519.Algorithm.Ed25519, null, sign, output);
 
 		return output.ToArray();
 	}

@@ -1,9 +1,10 @@
 ﻿using EchoLib.Core.Routing.Events;
 using EchoLib.Models.Params.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace EchoLib.Core.Routing.Targets;
 
-public class ErrorTarget(EventBus bus) : TargetBase
+public class ErrorTarget(EventBus bus, ILogger<ErrorTarget> logger) : TargetBase<ErrorTarget>(logger)
 {
 	public override string Name => "error";
 
