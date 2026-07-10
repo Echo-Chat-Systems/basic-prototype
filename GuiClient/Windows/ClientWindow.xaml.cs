@@ -1,15 +1,16 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using EchoLib.Core.Routing;
 using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Models.Params.Auth;
 using GuiClient.Routing;
-using GuiClient.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WebSocketSharper;
 
-namespace GuiClient;
+namespace GuiClient.Windows;
 
 public partial class ClientWindow : Window
 {
@@ -36,17 +37,14 @@ public partial class ClientWindow : Window
 		Socket = State.Socket ?? throw new InvalidOperationException($"Socket cannot be null when initialising {nameof(ClientWindow)}");
 		
 		_logger = Services.GetRequiredService<ILogger<ClientWindow>>();
-		
+
+		DataContext = new ClientWindowViewModel
+		{
+			State = State
+		};
+
 		// Initialise GUI
 		InitializeComponent();
-		
-		// Register the server name change event
-		State.ServerNameUpdated += (_, args) =>
-		{
-			_logger.LogInformation("Server name set to {Name}", args.NewName);
-
-			Application.Current.Dispatcher.BeginInvoke(() => Title = args.NewName);
-		}; 
 		
 		// Register this window as the socket handler
 		_logger.LogDebug("Registering client socket listeners");
@@ -157,5 +155,24 @@ public partial class ClientWindow : Window
 	{
 		// Re-show the parent window
 		_parent.Show();
+	}
+}
+
+public class ClientWindowViewModel : INotifyPropertyChanged
+{
+	public required StateStore State { get; set; }
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
 	}
 }

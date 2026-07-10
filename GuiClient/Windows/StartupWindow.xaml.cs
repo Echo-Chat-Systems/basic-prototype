@@ -6,6 +6,7 @@ using EchoLib.Core;
 using EchoLib.Core.Routing;
 using EchoLib.Core.Routing.Events;
 using EchoLib.Models.Misc;
+using GuiClient.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

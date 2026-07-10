@@ -1,38 +1,17 @@
-﻿using WebSocketSharper;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using WebSocketSharper;
 
 namespace GuiClient;
 
-public class StateStore
+public class StateStore : INotifyPropertyChanged
 {
 	private WebSocket? _socket;
 	private UserFile? _userFile;
 
-	private string _serverName = "";
-
 	public bool SocketConnected { get; set; } = false;
 
-	public string ServerName
-	{
-		get => _serverName;
-		set
-		{
-			ServerNameUpdated.Invoke(this, new ServerNameChangedEventArgs { OldName = _serverName, NewName = value });
-			_serverName = value;
-		}
-	}
-
-
-	#region Events
-
-	public event EventHandler<ServerNameChangedEventArgs> ServerNameUpdated = null!;
-
-	public class ServerNameChangedEventArgs : EventArgs
-	{
-		public required string OldName { get; set; }
-		public required string NewName { get; set; }
-	}
-
-	#endregion
+	public string ServerName { get; set; } = "Design-time server name";
 
 	public WebSocket? Socket
 	{
@@ -52,5 +31,20 @@ public class StateStore
 			if (_userFile != null) throw new Exception("Cannot set userfile, already set!");
 			_userFile = value;
 		}
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
 	}
 }
