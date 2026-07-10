@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Server.Database;
+using Server.Database.ParameterConverters;
 using Server.Database.Repositories;
 using Server.Database.Repositories.Impl;
 using WebSocketSharper.Server;
@@ -45,6 +46,7 @@ public class Server
 
 		// Database info
 		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+		Dapper.SqlMapper.AddTypeHandler(new PublicSigningKeyConverter());
 		services.AddScoped<IDbConnectionProvider, PgDbConnectionProvider>();
 		services.AddScoped<IUsersRepo, PgUsersRepo>();
 

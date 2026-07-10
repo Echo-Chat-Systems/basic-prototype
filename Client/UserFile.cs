@@ -35,8 +35,9 @@ public class UserFile
 	public static void Encrypt(UserFile data, FileInfo outputFile, string passphrase)
 	{
 		// Serialise data
-		Span<byte> pSpan = [];
-		Encoding.UTF8.GetEncoder().GetBytes(JsonConvert.SerializeObject(data).AsSpan(), pSpan, true);
+		Span<byte> pSpan = Encoding.UTF8.GetBytes(
+			JsonConvert.SerializeObject(data)
+		);
 
 		// Convert span into byte array
 		byte[] plaintext = pSpan.ToArray();

@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0-beta.98"/>
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-preview.1.26104.118"/>
+        <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1"/>
         <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
     </ItemGroup>

@@ -33,6 +33,10 @@ public sealed class Router(IServiceProvider services, ILogger<Router> logger) : 
 		{
 			await ctx.SendError(envelope.FromError(ex));
 		}
+		catch (Exception e)
+		{
+			logger.LogError("Unhandled exception: [{ErrorType}]\n{Message}\n{StackTrace}", e.GetType().Name, e.Message, e.StackTrace);
+		}
 	}
 
 	public T? GetTarget<T>() where T : ITarget

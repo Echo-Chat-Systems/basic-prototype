@@ -10,13 +10,13 @@
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.72" />
         <PackageReference Include="EchoLib.Configuration" Version="1.0.2"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="11.0.0-preview.1.26104.118"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.9" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="11.0.0-preview.1.26104.118" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="11.0.0-preview.1.26104.118"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.1.26104.118"/>
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-preview.1.26104.118"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-preview.1.26104.118" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.9" />
         <PackageReference Include="Npgsql" Version="10.0.3" />
         <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
     </ItemGroup>
