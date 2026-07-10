@@ -1,4 +1,5 @@
 ﻿using EchoLib.Core.Routing.Events;
+using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Models.Params.Generic;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +14,9 @@ public class ErrorTarget(EventBus bus, ILogger<ErrorTarget> logger) : TargetBase
 	{
 		Logger.LogError("Error {ErrorName} on action {Action}", parameters.Message, parameters.Action);
 
+		// Check if there are any registered callbacks, and if so, execute them
+		ExceptionCallbackRegistry.Get(parameters.Message);
+		
 		// Publish error
 		return bus.PublishAsync(new ProtocolErrorEvent
 		{
