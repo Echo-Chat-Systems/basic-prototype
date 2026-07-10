@@ -3,8 +3,8 @@ using Server.Database.Models.Public;
 
 namespace Server.Database.Repositories;
 
-public interface IUsersRepo : IRepo
+public interface IUsersRepo
 {
-	UserDbm? Get(UserId id);
-	Task<UserDbm?> GetAsync(UserId id);
+	UserDbm? Get(PublicSigningKey id);
+	Task<UserDbm?> GetAsync(PublicSigningKey id);
 }

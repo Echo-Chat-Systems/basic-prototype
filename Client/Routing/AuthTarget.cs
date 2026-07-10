@@ -51,6 +51,9 @@ public class AuthTarget: TargetBase<AuthTarget>
 		// Get logger
 		Logger.LogInformation("Server broadcast name: \"{ParametersServerName}\"", parameters.ServerName);
 
+		// Set window name
+		Console.Title = $"Connected to: {parameters.ServerName}";
+
 		// Set server name
 		_sessionInfo.ServerName = parameters.ServerName;
 

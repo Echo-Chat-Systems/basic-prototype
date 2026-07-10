@@ -4,6 +4,6 @@ namespace EchoLib.Models.Data;
 
 public class JUserModel
 {
-	public required UserId Id { get; init; }
-	
+	public required PublicSigningKey Id { get; init; }
+	public required DateTime CreatedAt { get; init; }
 }

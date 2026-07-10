@@ -1,36 +1,27 @@
 ﻿using Dapper;
 using EchoLib.Core.Crypto.Signing;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Npgsql;
-using NpgsqlTypes;
 using Server.Database.Models.Public;
 
 namespace Server.Database.Repositories.Impl;
 
-public class PgUsersRepo(IServiceProvider services) : PgBaseRepo(services), IUsersRepo
+public class PgUsersRepo(IDbConnectionProvider connectionProvider, ILogger<PgUsersRepo> logger) : IUsersRepo
 {
-	public UserDbm? Get(UserId id)
+	private const string GetUserQuery = "SELECT * FROM public.users WHERE id = @Id";
+
+	public UserDbm? Get(PublicSigningKey id)
 	{
 		// Get data source
-		NpgsqlDataSource src = Services.GetRequiredService<NpgsqlDataSource>();
-
-		// Create connection 
-		using NpgsqlConnection con = src.OpenConnection();
-
-		// Create command
-		CommandDefinition command = new(
-			"SELECT * FROM public.users WHERE id = @id", new
-			{
-				id
-			}
-		);
+		using NpgsqlConnection con = connectionProvider.GetSync<NpgsqlConnection>();
 
 		// Execute
-		return con.QueryFirstOrDefault<UserDbm>(command);
+		return con.QueryFirstOrDefault<UserDbm>(GetUserQuery, new { Id = id });
 	}
 
-	public async Task<UserDbm> GetAsync(UserId id)
+	public async Task<UserDbm?> GetAsync(PublicSigningKey id)
 	{
-		throw new NotImplementedException();
+		await using NpgsqlConnection con = await connectionProvider.Get<NpgsqlConnection>();
+		return await con.QueryFirstOrDefaultAsync<UserDbm>(GetUserQuery, new { Id = id });
 	}
 }

@@ -11,6 +11,8 @@ public class ErrorTarget(EventBus bus, ILogger<ErrorTarget> logger) : TargetBase
 	[ActionHandler("error")]
 	public Task HandleError(RoutingContext ctx, ErrorParameters parameters)
 	{
+		Logger.LogError("Error {ErrorName} on action {Action}", parameters.Message, parameters.Action);
+
 		// Publish error
 		return bus.PublishAsync(new ProtocolErrorEvent
 		{

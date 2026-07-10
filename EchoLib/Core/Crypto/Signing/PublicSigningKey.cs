@@ -25,17 +25,6 @@ public class PublicSigningKey
 	}
 }
 
-public class UserId : PublicSigningKey
-{
-	public UserId(string key) : base(key)
-	{
-	}
-
-	public UserId(byte[] key) : base(key)
-	{
-	}
-}
-
 public class PublicSigningKeyConverter : JsonConverter<PublicSigningKey>
 {
 	public override void WriteJson(JsonWriter writer, PublicSigningKey? value, JsonSerializer serializer)

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Server.Configuration;
+using Server.Database;
 using Server.Database.Repositories;
 using Server.Database.Repositories.Impl;
 using WebSocketSharper.Server;
@@ -26,6 +26,7 @@ public class Server
 		IConfiguration iConfiguration = new ConfigurationBuilder()
 			.AddEnvironmentVariables()
 			.AddJsonFile("appsettings.json")
+			.AddIniFile("secrets.ini")
 			.Build();
 
 		// Use config library to build config class 
@@ -42,6 +43,9 @@ public class Server
 		services.AddSingleton<ClientManager>();
 		services.AddSingleton<Router>();
 
+		// Database info
+		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+		services.AddScoped<IDbConnectionProvider, PgDbConnectionProvider>();
 		services.AddScoped<IUsersRepo, PgUsersRepo>();
 
 		Services = services.BuildServiceProvider();

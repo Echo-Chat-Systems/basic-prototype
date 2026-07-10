@@ -1,6 +1,6 @@
 ﻿using EchoLib.Configuration.Attributes;
 
-namespace Server.Configuration;
+namespace Server;
 
 public class Config
 {

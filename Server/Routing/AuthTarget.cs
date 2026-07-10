@@ -7,7 +7,6 @@ using EchoLib.Models.Params.Auth;
 using EchoLib.Models.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Server.Configuration;
 using Server.Database.Models.Public;
 using Server.Database.Repositories;
 
@@ -72,7 +71,14 @@ public class AuthTarget: TargetBase<AuthTarget>
 
 		// Check to ensure that this socket does not have an existing signin session 
 		if (client.SigninState.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
-		
+
+		// Check if this client exists in the db
+		if (await _usersRepo.GetAsync(client.Id!) == null)
+		{
+			Logger.LogError("Client {Id} not found!", client.Id);
+			throw new NotFoundException();
+		}
+
 		// Generate a set of challenges for the client
 		byte[] signChallenge = RandomNumberGenerator.GetBytes(64);
 		byte[] encryptChallenge = RandomNumberGenerator.GetBytes(64);
@@ -125,13 +131,13 @@ public class AuthTarget: TargetBase<AuthTarget>
 			client.SigninState.Stage = SigninStage.Completed;
 			
 			// Get the user 
-			UserDbm userDbm = (await _usersRepo.GetAsync((UserId)client.Id!))!;
+			UserDbm userDbm = (await _usersRepo.GetAsync(client.Id!))!;
 			
 			await ctx.SendAsync(this, new SigninCompleteParameters
 			{
 				User = new JUserModel
 				{
-					Id = userDbm.Id
+					Id = userDbm.Id, CreatedAt = userDbm.CreatedAt
 				}
 			});
 		}
