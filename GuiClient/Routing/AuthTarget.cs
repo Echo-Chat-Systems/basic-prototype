@@ -1,4 +1,5 @@
 ﻿using EchoLib.Core.Routing;
+using EchoLib.Core.Routing.Attributes;
 using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Models.Params.Auth;
 using Microsoft.Extensions.Logging;

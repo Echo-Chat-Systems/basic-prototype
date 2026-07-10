@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EchoLib.Core.Routing;
+namespace EchoLib.Core.Routing.Registries;
 
-public class TargetRegistry (IServiceProvider services)
+public class TargetRegistry(IServiceProvider services)
 {
 	public readonly Dictionary<string, ITarget> Targets = Discover(services);
 

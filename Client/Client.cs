@@ -16,11 +16,8 @@ public class Client
 {
     public static readonly DirectoryInfo EchoDirectory =
         new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
-
     public WebSocket Socket { get; private set; }
-
     public static IServiceProvider Services { get; set; } = null!;
-
     public static KeySetJm Keys { get; set; } = null!;
     public static ServerInfoJm ServerInfo { get; set; } = null!;
 

@@ -1,4 +1,7 @@
 ﻿using EchoLib.Core.Routing.Exceptions;
+using EchoLib.Core.Routing.Registries;
+using EchoLib.Core.Routing.Targets;
+using EchoLib.Models.Params.Generic;
 using Microsoft.Extensions.Logging;
 using WebSocketSharper;
 using WebSocketSharper.Server;
@@ -18,11 +21,22 @@ public sealed class Router(IServiceProvider services, ILogger<Router> logger) : 
 	
 	public async Task RouteAsync(RoutingContext ctx, MessageEnvelope<object> envelope)
 	{
+		// Handle error target special routing first
+		if (envelope.Target == "error")
+		{
+			// Parse envelope as error and route
+
+		}
+
 		// Lookup by target string
 		_targets.Targets.TryGetValue(envelope.Target, out ITarget? target);
 
 		// Ensure target exists
-		if (target is null) throw new InvalidOperationException($"Unknown target: {envelope.Target}");
+		if (target is null)
+		{
+			await ctx.SendError(envelope.FromError(new InvalidTargetException()));
+			return;
+		}
 
 		// Cast targetType to target
 		try

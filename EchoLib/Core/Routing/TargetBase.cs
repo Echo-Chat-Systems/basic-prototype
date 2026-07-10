@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using EchoLib.Core.Routing.Attributes;
 using EchoLib.Models.Params;
+using EchoLib.Models.Params.Generic;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
@@ -9,7 +11,7 @@ public abstract class TargetBase<T> : ITarget
 {
 	public abstract string Name { get; }
 
-	public readonly ILogger<T> Logger;
+	protected readonly ILogger<T> Logger;
 
 	// Dictionary of action → method delegate (startup only reflection)
 	private Dictionary<string, Func<RoutingContext, object, Task>> _actionHandlers = new();
@@ -33,11 +35,12 @@ public abstract class TargetBase<T> : ITarget
 
 		Dictionary<string, Func<RoutingContext, object, Task>> built = new();
 
-		IEnumerable<MethodInfo> methods = type
+		// Get incoming action handlers
+		IEnumerable<MethodInfo> actionMethods = type
 			.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 			.Where(m => m.GetCustomAttribute<ActionHandlerAttribute>() != null);
 
-		foreach (MethodInfo method in methods)
+		foreach (MethodInfo method in actionMethods)
 		{
 			ActionHandlerAttribute attr = method.GetCustomAttribute<ActionHandlerAttribute>()!;
 			ParameterInfo[] parameters = method.GetParameters();

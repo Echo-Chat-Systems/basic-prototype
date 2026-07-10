@@ -1,6 +1,8 @@
 ﻿using EchoLib.Core.Routing;
+using EchoLib.Core.Routing.Attributes;
 using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Models.Params.Auth;
+using EchoLib.Models.Params.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Encoders;
@@ -38,7 +40,6 @@ public class AuthTarget: TargetBase<AuthTarget>
 		ChallengeResponded,
 		Completed
 	}
-
 
 	public async Task SendHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
