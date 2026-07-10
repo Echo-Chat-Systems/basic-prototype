@@ -1,4 +1,4 @@
-﻿using EchoLib.Core.Crypto.Signing;
+﻿using EchoLib.Crypto.Signing;
 using Server.Database.Models.Public;
 
 namespace Server.Database.Repositories;

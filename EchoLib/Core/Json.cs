@@ -1,5 +1,5 @@
-﻿using EchoLib.Core.Crypto.Encryption;
-using EchoLib.Core.Crypto.Signing;
+﻿using EchoLib.Crypto.Encryption;
+using EchoLib.Crypto.Signing;
 using Newtonsoft.Json;
 
 namespace EchoLib.Core;

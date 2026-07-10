@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using EchoLib.Models.Crypto;
-using EchoLib.Models.Misc;
+using EchoLib.Protocol.Models.Crypto;
+using EchoLib.Protocol.Models.Misc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 

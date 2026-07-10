@@ -1,8 +1,6 @@
 ﻿using EchoLib.Core.Routing;
-using EchoLib.Core.Routing.Attributes;
 using EchoLib.Core.Routing.Exceptions;
-using EchoLib.Models.Params.Auth;
-using EchoLib.Models.Params.Generic;
+using EchoLib.Protocol.Models.Params.Auth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Encoders;
@@ -43,10 +41,10 @@ public class AuthTarget: TargetBase<AuthTarget>
 
 	public async Task SendHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
-		await ctx.SendAsync(this, parameters);
+		await ctx.ReplyAsync(this, parameters);
 	}
 
-	[ActionHandler("server-hello")]
+	[Route("server-hello")]
 	public async Task HandleHello(RoutingContext ctx, ServerHelloParameters parameters)
 	{
 		// Get logger
@@ -72,10 +70,10 @@ public class AuthTarget: TargetBase<AuthTarget>
 		if (State.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 
 		State.Stage = SigninStage.Started;
-		await ctx.SendAsync(this, parameters);
+		await ctx.ReplyAsync(this, parameters);
 	}
 
-	[ActionHandler("signin-challenge")]
+	[Route("signin-challenge")]
 	private Task HandleChallenge(RoutingContext ctx, SigninChallengeParameters parameters)
 	{
 		// State checks to ensure linear progression
@@ -109,7 +107,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 		};
 
 		// Send response
-		return ctx.SendAsync(this, response);
+		return ctx.ReplyAsync(this, response);
 	}
 
 

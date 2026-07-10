@@ -1,9 +1,9 @@
 ﻿using Client.Routing;
 using EchoLib.Core;
 using EchoLib.Core.Routing;
-using EchoLib.Models.Crypto;
-using EchoLib.Models.Misc;
-using EchoLib.Models.Params.Auth;
+using EchoLib.Protocol.Models.Crypto;
+using EchoLib.Protocol.Models.Misc;
+using EchoLib.Protocol.Models.Params.Auth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

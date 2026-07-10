@@ -2,12 +2,8 @@
 
 public interface ITarget
 {
-	string Name { get; }
-
 	/// <summary>
-	/// Called by the router when a message for this target is received.
+	/// Target name.
 	/// </summary>
-	/// <param name="envelope">Message</param>
-	/// <param name="ctx">Routing context.</param>
-	Task HandleAsync(RoutingContext ctx, MessageEnvelope<object> envelope);
+	string Name { get; }
 }

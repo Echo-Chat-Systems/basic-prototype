@@ -1,5 +1,5 @@
-﻿using EchoLib.Core.Crypto.Signing;
-using EchoLib.Models.Data;
+﻿using EchoLib.Crypto.Signing;
+using EchoLib.Protocol.Models.Data;
 using Server.JmDbConverter;
 
 namespace Server.Database.Models.Public;

@@ -13,4 +13,10 @@
         <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Core\Routing\Discovery\" />
+      <Folder Include="Core\Routing\Old\Attributes\" />
+      <Folder Include="Core\Routing\Server\" />
+    </ItemGroup>
+
 </Project>

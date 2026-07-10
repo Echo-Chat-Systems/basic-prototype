@@ -1,11 +1,10 @@
 ﻿using System.Security.Cryptography;
-using EchoLib.Core.Crypto.Signing;
 using EchoLib.Core.Routing;
-using EchoLib.Core.Routing.Attributes;
 using EchoLib.Core.Routing.Exceptions;
-using EchoLib.Models.Data;
-using EchoLib.Models.Params.Auth;
-using EchoLib.Models.States;
+using EchoLib.Crypto.Signing;
+using EchoLib.Protocol.Models.Data;
+using EchoLib.Protocol.Models.Params.Auth;
+using EchoLib.Protocol.Models.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Server.Database.Models.Public;
@@ -36,7 +35,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 		public byte[]? EncryptChallenge;
 	}
 	
-	[ActionHandler("client-hello")]
+	[Route("client-hello")]
 	private async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
 		Logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
@@ -52,10 +51,10 @@ public class AuthTarget: TargetBase<AuthTarget>
 		client.KeyPair = parameters.KeyPair;
 		
 		// Respond with the server-hello
-		await ctx.SendAsync(this, new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
+		await ctx.ReplyAsync(this, new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
 	}
 
-	[ActionHandler("signin-start")]
+	[Route("signin-start")]
 	private async Task HandleSigninStart(RoutingContext ctx, SigninStartParameters parameters)
 	{
 		// Get this client from the manager
@@ -90,14 +89,14 @@ public class AuthTarget: TargetBase<AuthTarget>
 		client.SigninState.Stage = SigninStage.Challenged;
 		
 		// Send the challenges to the client
-		await ctx.SendAsync(this, new SigninChallengeParameters
+		await ctx.ReplyAsync(this, new SigninChallengeParameters
 		{
 			SignChallenge = Convert.ToBase64String(signChallenge),
 			EncryptChallenge = Convert.ToBase64String(client.KeyPair!.EncryptionKey!.Encrypt(encryptChallenge))  // Encrypt the encrypt challenge with the client's encryption key so only they can read it
 		});
 	}
 
-	[ActionHandler("signin-response")]
+	[Route("signin-response")]
 	private async Task HandleSigninResponse(RoutingContext ctx, SigninResponseParameters parameters)
 	{
 		// Get this client from the manager
@@ -134,7 +133,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 			// Get the user 
 			UserDbm userDbm = (await _usersRepo.GetAsync(client.Id!))!;
 			
-			await ctx.SendAsync(this, new SigninCompleteParameters
+			await ctx.ReplyAsync(this, new SigninCompleteParameters
 			{
 				User = new JUserModel
 				{
