@@ -1,4 +1,4 @@
-﻿namespace EchoLib.Core.Routing.Exceptions;
+﻿namespace EchoLib.Protocol.Exceptions;
 
 public class InvalidTargetException : ProtocolException
 {

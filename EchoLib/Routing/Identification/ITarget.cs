@@ -1,4 +1,4 @@
-﻿namespace EchoLib.Core.Routing;
+﻿namespace EchoLib.Routing.Identification;
 
 public interface ITarget
 {

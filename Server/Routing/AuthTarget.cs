@@ -1,10 +1,12 @@
 ﻿using System.Security.Cryptography;
 using EchoLib.Core.Routing;
-using EchoLib.Core.Routing.Exceptions;
 using EchoLib.Crypto.Signing;
+using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Data;
 using EchoLib.Protocol.Models.Params.Auth;
 using EchoLib.Protocol.Models.States;
+using EchoLib.Routing;
+using EchoLib.Routing.Identification;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Server.Database.Models.Public;
@@ -36,7 +38,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 	}
 	
 	[Route("client-hello")]
-	private async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
+	private async Task<ServerHelloParameters> HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
 		Logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
 		
@@ -51,7 +53,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 		client.KeyPair = parameters.KeyPair;
 		
 		// Respond with the server-hello
-		await ctx.ReplyAsync(this, new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
+		return new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName };
 	}
 
 	[Route("signin-start")]

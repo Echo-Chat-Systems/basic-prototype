@@ -1,16 +1,19 @@
 ﻿using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace EchoLib.Protocol;
 
-public sealed class Envelope
+public sealed record Envelope<TParams>
 {
 	public Guid? MessageId { get; init; }
 	public required string Target { get; init; }
-	public required MessageData Data { get; init; }
+	public required ActionWrapper<TParams> Data { get; init; }
 }
 
-public sealed class MessageData
+public sealed record ActionWrapper<TParams>
 {
+	[JsonProperty("action")]
 	public required string Action { get; init; }
-	public required JsonElement Parameters { get; init; }
+	[JsonProperty("params")]
+	public required TParams Parameters { get; init; }
 }

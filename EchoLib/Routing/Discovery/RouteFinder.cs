@@ -1,22 +1,25 @@
-﻿using System.Linq.Expressions;
-using System.Reflection;
-using EchoLib.Core.Routing;
+﻿using System.Reflection;
+using EchoLib.Routing.Identification;
+using EchoLib.Routing.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 
 namespace EchoLib.Routing.Discovery;
 
 public static class RouteFinder
 {
-	private static RouteTable? _cache = null;
+	private static Dictionary<(string target, string action), RouteDescriptor>? _cache = null;
 
-	public static RouteTable Discover(IServiceProvider services)
+	public static void Discover(IServiceProvider services, RouteRegistry registry)
 	{
-		if (_cache != null) return _cache;
+		if (_cache != null)
+		{
+			foreach (KeyValuePair<(string target, string action), RouteDescriptor > kvp in _cache)
+			{
+				registry.RegisterRoute(kvp.Value);
+			}
+		};
 
 		// Build new route table
-		Dictionary<(string target, string action), RouteDescriptor> routes = new();
-
 		List<Type> targets = Assembly.GetEntryAssembly()!
 			.GetTypes()
 			.Where(t => typeof(ITarget).IsAssignableFrom(t) && t is { IsAbstract: false, IsInterface: false }).ToList();
@@ -38,46 +41,14 @@ public static class RouteFinder
 				// Ensure correct number of parameters and correct types
 				if (
 					parameters.Length != 2 ||
-					parameters[0].ParameterType != typeof(RouteContext)
-				) throw new InvalidOperationException($"Method {action.Name}(routed as {actionName}) must be ({nameof(RouteContext)}, T)");
+					parameters[0].ParameterType != typeof(RoutingContext)
+				) throw new InvalidOperationException($"Method {action.Name}(routed as {actionName}) must be ({nameof(RoutingContext)}, T)");
 
 
-				routes.Add((targetInstance.Name, actionName), del);
+				registry.RegisterRoute(
+					RouteDescriptorFactory.Create(targetInstance, action, targetInstance.Name, actionName)
+					);
 			}
 		}
-
-		return new RouteTable { Routes = routes };
-	}
-
-	private static Func<RouteContext, object, Task<object?>> CompileHandler(ITarget instance, MethodInfo method)
-	{
-		ParameterExpression ctxParameter = Expression.Parameter(typeof(RouteContext));
-		ParameterExpression requestParameter = Expression.Parameter(typeof(object));
-
-		UnaryExpression requestCast = Expression.Convert(requestParameter, method.GetParameters()[1].ParameterType);
-		ConstantExpression instanceExpression =
-			Expression.Constant(instance);
-
-		MethodCallExpression call =
-			Expression.Call(
-				instanceExpression,
-				method,
-				ctxParameter,
-				requestCast);
-
-		MethodCallExpression responseTask =
-			Expression.Call(
-				typeof(RouteFinder),
-				nameof(ConvertResponse),
-				null,
-				call);
-
-
-		return Expression
-			.Lambda<Func<RouteContext, object, Task<object?>>>(
-				responseTask,
-				ctxParameter,
-				requestParameter)
-			.Compile();
 	}
 }

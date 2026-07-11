@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace EchoLib.Core.Routing.Exceptions;
+namespace EchoLib.Protocol.Exceptions;
 
 public static class ExceptionsRegistry
 {

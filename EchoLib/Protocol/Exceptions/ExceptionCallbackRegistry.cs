@@ -1,4 +1,4 @@
-namespace EchoLib.Core.Routing.Exceptions;
+namespace EchoLib.Protocol.Exceptions;
 
 public delegate void ProtocolExceptionCallback(string message, object[] parameters);
 

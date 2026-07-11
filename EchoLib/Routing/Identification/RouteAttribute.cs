@@ -1,4 +1,4 @@
-﻿namespace EchoLib.Core.Routing;
+﻿namespace EchoLib.Routing.Identification;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class RouteAttribute(string actionName) : Attribute

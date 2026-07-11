@@ -15,7 +15,7 @@
 
     <ItemGroup>
       <Folder Include="Core\Routing\Discovery\" />
-      <Folder Include="Core\Routing\Old\Attributes\" />
+      <Folder Include="Core\Routing\Pending\" />
       <Folder Include="Core\Routing\Server\" />
     </ItemGroup>
 

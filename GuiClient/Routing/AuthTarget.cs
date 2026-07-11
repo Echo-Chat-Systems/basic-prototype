@@ -1,6 +1,7 @@
 ﻿using EchoLib.Core.Routing;
-using EchoLib.Core.Routing.Exceptions;
+using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Params.Auth;
+using EchoLib.Routing.Identification;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Encoders;
 

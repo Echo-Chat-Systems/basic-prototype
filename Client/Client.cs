@@ -4,6 +4,7 @@ using EchoLib.Core.Routing;
 using EchoLib.Protocol.Models.Crypto;
 using EchoLib.Protocol.Models.Misc;
 using EchoLib.Protocol.Models.Params.Auth;
+using EchoLib.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ public class Client
     public static IServiceProvider Services { get; set; } = null!;
     public static KeySetJm Keys { get; set; } = null!;
     public static ServerInfoJm ServerInfo { get; set; } = null!;
+    private Router router;
 
     private readonly ILogger<Client> _logger;
 
@@ -102,6 +104,8 @@ public class Client
 
         Keys = file.Keys;
         ServerInfo = file.Server;
+        
+        router = Services.GetRequiredService<Router>();
 
         Socket = new WebSocket(Services.GetRequiredService<ILogger<WebSocket>>(),
             $"ws://{ServerInfo.Address}:{ServerInfo.Port}",
@@ -133,19 +137,13 @@ public class Client
 
     private void OnOpen(object? sender, EventArgs e)
     {
-        // Create new ctx
-        RoutingContext ctx = new(Socket) { Services = Services };
-
-        // Get router
-        Router router = Services.GetRequiredService<Router>();
-
         // Send hello message
         _logger.LogDebug("Sending client-hello");
-        router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters
+        router.GetTarget<AuthTarget>().SendHello(ctx, new ClientHelloParameters
         {
             KeyPair = new PublicKeyPairJm
             {
-                SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
+                 SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
             }
         });
     }
@@ -172,7 +170,7 @@ public class Client
         _logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
         // Route message
-        _ = Services.GetRequiredService<Router>().RouteAsync(ctx, envelope);
+        _ = Services.GetRequiredService<Router>().(envelope);
         return;
 
         Fail:

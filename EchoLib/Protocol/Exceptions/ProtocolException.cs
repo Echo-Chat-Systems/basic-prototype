@@ -1,4 +1,4 @@
-﻿namespace EchoLib.Core.Routing.Exceptions;
+﻿namespace EchoLib.Protocol.Exceptions;
 
 public abstract class ProtocolException : Exception
 {

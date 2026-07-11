@@ -1,8 +1,8 @@
 ﻿using WebSocketSharper;
 
-namespace EchoLib.Core.Routing;
+namespace EchoLib.Routing;
 
-public class RouteContext
+public class RoutingContext
 {
 	public required Guid? MessageId { get; init; }
 	public required WebSocket Socket { get; init; }
