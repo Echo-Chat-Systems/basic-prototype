@@ -49,27 +49,25 @@ public static class RouteFinder
 		return new RouteTable { Routes = routes };
 	}
 
-	private static Func<object, RouteContext, object, Task<object?>> CompileHandler(ITarget instance, MethodInfo method)
+	private static Func<RouteContext, object, Task<object?>> CompileHandler(ITarget instance, MethodInfo method)
 	{
 		ParameterExpression ctxParameter = Expression.Parameter(typeof(RouteContext));
 		ParameterExpression requestParameter = Expression.Parameter(typeof(object));
 
 		UnaryExpression requestCast = Expression.Convert(requestParameter, method.GetParameters()[1].ParameterType);
-		var instanceExpression =
+		ConstantExpression instanceExpression =
 			Expression.Constant(instance);
 
-
-		var call =
+		MethodCallExpression call =
 			Expression.Call(
 				instanceExpression,
 				method,
 				ctxParameter,
 				requestCast);
 
-
-		var responseTask =
+		MethodCallExpression responseTask =
 			Expression.Call(
-				typeof(Route),
+				typeof(RouteFinder),
 				nameof(ConvertResponse),
 				null,
 				call);
@@ -78,7 +76,7 @@ public static class RouteFinder
 		return Expression
 			.Lambda<Func<RouteContext, object, Task<object?>>>(
 				responseTask,
-				contextParameter,
+				ctxParameter,
 				requestParameter)
 			.Compile();
 	}
