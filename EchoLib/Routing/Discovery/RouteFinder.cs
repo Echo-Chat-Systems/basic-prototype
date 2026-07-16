@@ -9,13 +9,13 @@ public static class RouteFinder
 {
 	private static Dictionary<(string target, string action), RouteDescriptor>? _cache = null;
 
-	public static void Discover(IServiceProvider services, RouteRegistry registry)
+	public static void Discover(IServiceProvider services, RouteRegistry routeRegistry, TargetInstanceRegistry targetRegistry)
 	{
 		if (_cache != null)
 		{
 			foreach (KeyValuePair<(string target, string action), RouteDescriptor > kvp in _cache)
 			{
-				registry.RegisterRoute(kvp.Value);
+				routeRegistry.RegisterRoute(kvp.Value);
 			}
 		};
 
@@ -26,7 +26,8 @@ public static class RouteFinder
 
 		foreach (Type target in targets)
 		{
-			ITarget targetInstance = (ITarget)services.GetRequiredService(target);
+			ITarget targetInstance = (ITarget)ActivatorUtilities.CreateInstance(services, target);
+			targetRegistry.Register(target, targetInstance);
 
 			IEnumerable<MethodInfo> actions = target.GetMethods()
 				.Where(m => m.GetCustomAttribute<RouteAttribute>() != null);
@@ -45,7 +46,7 @@ public static class RouteFinder
 				) throw new InvalidOperationException($"Method {action.Name}(routed as {actionName}) must be ({nameof(RoutingContext)}, T)");
 
 
-				registry.RegisterRoute(
+				routeRegistry.RegisterRoute(
 					RouteDescriptorFactory.Create(targetInstance, action, targetInstance.Name, actionName)
 					);
 			}

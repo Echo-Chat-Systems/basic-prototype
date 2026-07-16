@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 
 namespace EchoLib.Protocol;
+
 
 public sealed record Envelope<TParams>
 {

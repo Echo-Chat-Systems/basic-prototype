@@ -1,10 +1,12 @@
-﻿using Client.Routing;
+﻿using System.Text.Json;
+using Client.Routing;
 using EchoLib.Core;
-using EchoLib.Core.Routing;
+using EchoLib.Protocol;
 using EchoLib.Protocol.Models.Crypto;
 using EchoLib.Protocol.Models.Misc;
 using EchoLib.Protocol.Models.Params.Auth;
 using EchoLib.Routing;
+using EchoLib.Transport;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,11 +19,12 @@ public class Client
 {
     public static readonly DirectoryInfo EchoDirectory =
         new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
-    public WebSocket Socket { get; private set; }
+    public static WebSocket Socket { get; private set; }
     public static IServiceProvider Services { get; set; } = null!;
     public static KeySetJm Keys { get; set; } = null!;
     public static ServerInfoJm ServerInfo { get; set; } = null!;
     private Router router;
+    private bool _connected = false;
 
     private readonly ILogger<Client> _logger;
 
@@ -38,7 +41,8 @@ public class Client
             builder.SetMinimumLevel(LogLevel.Debug);
         });
         services.AddSingleton<SessionInfo>();
-        services.AddSingleton<Router>();
+        services.AddRouting();
+
 
         Services = services.BuildServiceProvider();
 
@@ -116,12 +120,26 @@ public class Client
         Socket.OnOpen += OnOpen;
     }
 
-    public void Run()
+    public async Task Run()
     {
         // Connect
-        Socket.Connect();
+        Socket.ConnectAsync();
 
-        // Wait until the server
+        // Wait until the server is connected
+        while (!_connected)
+        {
+
+        }
+
+        // Connect to server
+        await router.GetTarget<AuthTarget>().SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
+        {
+	        KeyPair = new PublicKeyPairJm
+	        {
+		        SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
+	        }
+        });
+
         string? input;
         while (true)
         {
@@ -138,27 +156,19 @@ public class Client
     private void OnOpen(object? sender, EventArgs e)
     {
         // Send hello message
-        _logger.LogDebug("Sending client-hello");
-        router.GetTarget<AuthTarget>().SendHello(ctx, new ClientHelloParameters
-        {
-            KeyPair = new PublicKeyPairJm
-            {
-                 SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
-            }
-        });
+        _logger.LogDebug("Socket connected.");
+
+        _connected = true;
     }
 
     private void OnMessage(object? sender, MessageEventArgs e)
     {
-        // Build a new context
-        RoutingContext ctx = new(Socket) { Services = Services };
-
         // Unpack message event 
         _logger.LogDebug("Message received, attempting to unpack");
-        MessageEnvelope<object>? envelope = null;
+        Envelope<JsonElement>? envelope = null;
         try
         {
-            envelope = JsonConvert.DeserializeObject<MessageEnvelope<object>>(e.Data);
+            envelope = JsonConvert.DeserializeObject<Envelope<JsonElement>>(e.Data);
         }
         catch (JsonReaderException)
         {
@@ -170,7 +180,7 @@ public class Client
         _logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
         // Route message
-        _ = Services.GetRequiredService<Router>().(envelope);
+        Services.GetRequiredService<Router>().Receive(envelope, Socket);
         return;
 
         Fail:

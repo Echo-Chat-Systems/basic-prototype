@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using EchoLib.Core.Routing;
 using EchoLib.Crypto.Signing;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Data;
@@ -37,8 +36,8 @@ public class AuthTarget: TargetBase<AuthTarget>
 		public byte[]? EncryptChallenge;
 	}
 	
-	[Route("client-hello")]
-	private async Task<ServerHelloParameters> HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
+	[Route("hello")]
+	private async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
 		Logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
 		
@@ -53,7 +52,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 		client.KeyPair = parameters.KeyPair;
 		
 		// Respond with the server-hello
-		return new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName };
+		await ctx.ReplyAsync(new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
 	}
 
 	[Route("signin-start")]
@@ -91,7 +90,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 		client.SigninState.Stage = SigninStage.Challenged;
 		
 		// Send the challenges to the client
-		await ctx.ReplyAsync(this, new SigninChallengeParameters
+		await ctx.ReplyAsync(new SigninChallengeParameters
 		{
 			SignChallenge = Convert.ToBase64String(signChallenge),
 			EncryptChallenge = Convert.ToBase64String(client.KeyPair!.EncryptionKey!.Encrypt(encryptChallenge))  // Encrypt the encrypt challenge with the client's encryption key so only they can read it
@@ -135,7 +134,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 			// Get the user 
 			UserDbm userDbm = (await _usersRepo.GetAsync(client.Id!))!;
 			
-			await ctx.ReplyAsync(this, new SigninCompleteParameters
+			await ctx.ReplyAsync(new SigninCompleteParameters
 			{
 				User = new JUserModel
 				{

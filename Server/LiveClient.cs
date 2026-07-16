@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using EchoLib.Core.Routing;
+using System.Text.Json;
 using EchoLib.Protocol;
 using EchoLib.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +14,7 @@ public class LiveClient : WebSocketBehavior
 {
 	private IServiceProvider _services;
 	private ILogger<LiveClient> _logger;
-	private Router  _router;
+	private Router _router;
 
 	public LiveClient(IServiceProvider services)
 	{
@@ -37,10 +37,10 @@ public class LiveClient : WebSocketBehavior
 	{
 		// Unpack message event 
 		_logger.LogDebug("Message received, attempting to unpack");
-		Envelope? envelope; 
+		Envelope<JsonElement>? envelope;
 		try
 		{
-			envelope = JsonConvert.DeserializeObject<Envelope>(e.Data);
+			envelope = JsonConvert.DeserializeObject<Envelope<JsonElement>>(e.Data);
 		}
 		catch (JsonReaderException)
 		{
@@ -52,7 +52,7 @@ public class LiveClient : WebSocketBehavior
 		_logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
 		// Route message
-		_router.Receive(envelope);
+		_router.Receive(envelope, Context.WebSocket);
 		return;
 
 		Fail:

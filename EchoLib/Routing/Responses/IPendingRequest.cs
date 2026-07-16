@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using EchoLib.Core.Routing;
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Params.Generic;
@@ -11,8 +10,8 @@ public interface IPendingRequest
 	Guid MessageId { get; }
 	Type ResponseType { get; }
 	
-	void Complete(Envelope msg);
-	void Fail(Envelope msg);
+	void Complete(Envelope<JsonElement> msg);
+	void Fail(Envelope<JsonElement> msg);
 }
 
 public sealed class PendingRequest<T> : IPendingRequest
@@ -29,7 +28,7 @@ public sealed class PendingRequest<T> : IPendingRequest
 		
 		_tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
 	}
-	public void Complete(Envelope msg)
+	public void Complete(Envelope<JsonElement> msg)
 	{
 		// Deserialise into T
 		T response = msg.Data.Parameters.Deserialize<T>() ?? throw new InvalidOperationException("Could not deserialise parameters");
@@ -37,7 +36,7 @@ public sealed class PendingRequest<T> : IPendingRequest
 		_tcs.SetResult(response);
 	}
 
-	public void Fail(Envelope msg)
+	public void Fail(Envelope<JsonElement> msg)
 	{
 		// Deserialise into error params
 		ErrorParameters error = msg.Data.Parameters.Deserialize<ErrorParameters>()!;

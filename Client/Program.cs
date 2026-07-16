@@ -1,12 +1,10 @@
 ﻿namespace Client;
 
-internal class Program
+public class Program
 {
-	public static Client Client;
-
-	private static void Main(string[] args)
+	private static async Task Main(string[] args)
 	{
-		Client = new Client();
-		Client.Run();
+		Client client = new();
+		await client.Run();
 	}
 }

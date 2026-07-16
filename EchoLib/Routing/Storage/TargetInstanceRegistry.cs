@@ -6,9 +6,9 @@ public class TargetInstanceRegistry
 {
     private Dictionary<Type, ITarget> _targets = new ();
     
-    public void Register<T>(T instance) where T : ITarget
+    public void Register<T>(Type instanceType, T instance) where T : ITarget
     {
-        _targets[typeof(T)] = instance;
+        _targets[instanceType] = instance;
     }
 
     public T Get<T>() where T : ITarget
