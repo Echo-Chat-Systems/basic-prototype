@@ -1,12 +1,17 @@
-﻿using Client.Routing;
+﻿using System.Text.Json;
+using Client.Routing;
 using EchoLib.Core;
-using EchoLib.Core.Routing;
-using EchoLib.Models.Crypto;
-using EchoLib.Models.Misc;
-using EchoLib.Models.Params.Auth;
+using EchoLib.Protocol;
+using EchoLib.Protocol.Exceptions;
+using EchoLib.Protocol.Models.Crypto;
+using EchoLib.Protocol.Models.Misc;
+using EchoLib.Protocol.Models.Params.Auth;
+using EchoLib.Routing;
+using EchoLib.Transport;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebSocketSharper;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -16,12 +21,15 @@ public class Client
 {
     public static readonly DirectoryInfo EchoDirectory =
         new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
-    public WebSocket Socket { get; private set; }
+    public static WebSocket Socket { get; private set; }
     public static IServiceProvider Services { get; set; } = null!;
     public static KeySetJm Keys { get; set; } = null!;
     public static ServerInfoJm ServerInfo { get; set; } = null!;
+    private Router router;
+    private bool _connected = false;
 
     private readonly ILogger<Client> _logger;
+    private readonly Targets _targets;
 
     public Client()
     {
@@ -36,7 +44,8 @@ public class Client
             builder.SetMinimumLevel(LogLevel.Debug);
         });
         services.AddSingleton<SessionInfo>();
-        services.AddSingleton<Router>();
+        services.AddSingleton<Targets>();
+        services.AddRouting();
 
         Services = services.BuildServiceProvider();
 
@@ -102,6 +111,9 @@ public class Client
 
         Keys = file.Keys;
         ServerInfo = file.Server;
+        
+        router = Services.GetRequiredService<Router>();
+        _targets = Services.GetRequiredService<Targets>();
 
         Socket = new WebSocket(Services.GetRequiredService<ILogger<WebSocket>>(),
             $"ws://{ServerInfo.Address}:{ServerInfo.Port}",
@@ -112,12 +124,39 @@ public class Client
         Socket.OnOpen += OnOpen;
     }
 
-    public void Run()
+    public async Task Run()
     {
         // Connect
-        Socket.Connect();
+        Socket.ConnectAsync();
 
-        // Wait until the server
+        // Wait until the server is connected
+        while (!_connected) { }
+
+        // Connect to server
+        await _targets.Auth.SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
+        {
+	        KeyPair = new PublicKeyPairJm
+	        {
+		        SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
+	        }
+        });
+
+        try
+        {
+	        await _targets.Auth.SendSigninStart(new WebsocketEndpoint(Socket, Services), new SigninStartParameters
+	        {
+		        Sk = Keys.PubSk,
+		        Ek = Keys.PubEk
+	        });
+        }
+        catch (NotFoundException)
+        {
+	        // Try and create an account on the server
+			_logger.LogError("No account of Id {Id} reported by server", Keys.PubSk);
+			//TODO: Put signup call here
+        }
+
+
         string? input;
         while (true)
         {
@@ -133,34 +172,20 @@ public class Client
 
     private void OnOpen(object? sender, EventArgs e)
     {
-        // Create new ctx
-        RoutingContext ctx = new(Socket) { Services = Services };
-
-        // Get router
-        Router router = Services.GetRequiredService<Router>();
-
         // Send hello message
-        _logger.LogDebug("Sending client-hello");
-        router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters
-        {
-            KeyPair = new PublicKeyPairJm
-            {
-                SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
-            }
-        });
+        _logger.LogDebug("Socket connected.");
+
+        _connected = true;
     }
 
     private void OnMessage(object? sender, MessageEventArgs e)
     {
-        // Build a new context
-        RoutingContext ctx = new(Socket) { Services = Services };
-
         // Unpack message event 
         _logger.LogDebug("Message received, attempting to unpack");
-        MessageEnvelope<object>? envelope = null;
+        Envelope<JToken>? envelope = null;
         try
         {
-            envelope = JsonConvert.DeserializeObject<MessageEnvelope<object>>(e.Data);
+            envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
         }
         catch (JsonReaderException)
         {
@@ -172,7 +197,7 @@ public class Client
         _logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
         // Route message
-        _ = Services.GetRequiredService<Router>().RouteAsync(ctx, envelope);
+        Services.GetRequiredService<Router>().Receive(envelope, Socket);
         return;
 
         Fail:

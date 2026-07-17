@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using EchoLib.Core.Crypto.Signing;
+using EchoLib.Crypto.Signing;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Server.Database.Models.Public;

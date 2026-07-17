@@ -1,5 +1,5 @@
-﻿using EchoLib.Core.Crypto.Encryption;
-using EchoLib.Core.Crypto.Signing;
+﻿using EchoLib.Crypto.Encryption;
+using EchoLib.Crypto.Signing;
 using Newtonsoft.Json;
 
 namespace EchoLib.Core;
@@ -10,6 +10,7 @@ public static class NewtonsoftJson
 	{
 		return new JsonSerializerSettings
 		{
+			NullValueHandling = NullValueHandling.Ignore,
 			Converters =
 			[
 				new PublicSigningKeyConverter(),

@@ -1,6 +1,6 @@
 ﻿using EchoLib.Configuration;
 using EchoLib.Core;
-using EchoLib.Core.Routing;
+using EchoLib.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -42,7 +42,7 @@ public class Server
 		});
 		services.AddSingleton(config);
 		services.AddSingleton<ClientManager>();
-		services.AddSingleton<Router>();
+		services.AddRouting();
 
 		// Database info
 		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -72,6 +72,9 @@ public class Server
 		Socket = new WebSocketServer(Services.GetRequiredService<ILogger<WebSocketServer>>(),
 			$"ws{(config.Socket.UsingWss ? 's' : "")}://{config.Socket.Host}:{config.Socket.Port}"
 		);
+
+		// Get router from services just to initialise it before we spin up anything else
+		Services.GetRequiredService<Router>();
 
 		try
 		{

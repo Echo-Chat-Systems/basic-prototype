@@ -1,9 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
-using EchoLib.Core.Routing;
-using EchoLib.Models.Params.Generic;
+using System.Text.Json;
+using EchoLib.Protocol;
+using EchoLib.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebSocketSharper;
 using WebSocketSharper.Server;
 
@@ -13,34 +15,32 @@ public class LiveClient : WebSocketBehavior
 {
 	private IServiceProvider _services;
 	private ILogger<LiveClient> _logger;
+	private ClientManager _clientManager;
+	private Router _router;
 
 	public LiveClient(IServiceProvider services)
 	{
 		// Initialise client state
 		_services = services;
+		_router = services.GetRequiredService<Router>();
+		_clientManager = _services.GetRequiredService<ClientManager>();
 		_logger = services.GetRequiredService<ILogger<LiveClient>>();
 	}
 
 	protected override void OnOpen()
 	{
 		_logger.LogDebug("New client connected. Registering now");
-
-		ClientManager manager = _services.GetRequiredService<ClientManager>();
-
-		_ = manager.Register(this);
+		_clientManager.Register(this);
 	}
 
 	protected override void OnMessage(MessageEventArgs e)
 	{
-		// Build a new context
-		RoutingContext ctx = new(Context) { Services = _services };
-
 		// Unpack message event 
 		_logger.LogDebug("Message received, attempting to unpack");
-		MessageEnvelope<object>? envelope = null;
+		Envelope<JToken>? envelope;
 		try
 		{
-			envelope = JsonConvert.DeserializeObject<MessageEnvelope<object>>(e.Data);
+			envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
 		}
 		catch (JsonReaderException)
 		{
@@ -52,7 +52,7 @@ public class LiveClient : WebSocketBehavior
 		_logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
 		// Route message
-		_ = _services.GetRequiredService<Router>().RouteAsync(ctx, envelope);
+		_router.Receive(envelope, Context.WebSocket);
 		return;
 
 		Fail:

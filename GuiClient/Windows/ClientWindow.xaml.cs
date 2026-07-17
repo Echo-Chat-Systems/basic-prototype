@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using EchoLib.Core.Routing;
-using EchoLib.Core.Routing.Exceptions;
-using EchoLib.Models.Params.Auth;
+using EchoLib.Protocol.Exceptions;
+using EchoLib.Protocol.Models.Params.Auth;
+using EchoLib.Routing;
 using GuiClient.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

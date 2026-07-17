@@ -1,6 +1,6 @@
 using System.Data;
 using Dapper;
-using EchoLib.Core.Crypto.Signing;
+using EchoLib.Crypto.Signing;
 
 namespace Server.Database.ParameterConverters;
 
