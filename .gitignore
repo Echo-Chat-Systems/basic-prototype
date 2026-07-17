@@ -1,6 +1,10 @@
+.idea
 bin/
 obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
 secrets.ini
+
+# Node
+/react-client/node_modules/
