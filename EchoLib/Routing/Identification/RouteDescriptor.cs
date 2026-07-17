@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EchoLib.Routing.Identification;
 
@@ -11,24 +12,21 @@ public abstract class RouteDescriptor
 
 	public abstract Type RequestType { get; init; }
 
-	public abstract Type ResponseType { get; init; }
 
-	public abstract Task<object?> Invoke(RoutingContext ctx, JsonElement json);
+	public abstract Task Invoke(RoutingContext ctx, JToken json);
 }
 
-public sealed class RouteDescriptor<TRequest, TResponse>(Func<RoutingContext, TRequest, Task<TResponse?>> handler) : RouteDescriptor
+public sealed class RouteDescriptor<TRequest>(Func<RoutingContext, TRequest, Task> handler) : RouteDescriptor
 {
 	public override required string Target { get; init; }
 	public override required string Action { get; init; }
 	public override Type RequestType { get; init; } =  typeof(TRequest);
-	public override Type ResponseType { get; init; } =  typeof(TResponse);
-	public override async Task<object?> Invoke(RoutingContext ctx, JsonElement json)
-	{
-		TRequest request = json.Deserialize<TRequest>() ?? throw new InvalidOperationException("Unable to deserialize request");
-		
-		TResponse? response = await handler(ctx, request);
 
-		return response;
+	public override Task Invoke(RoutingContext ctx, JToken json)
+	{
+		TRequest request = json.ToObject<TRequest>() ?? throw new InvalidOperationException("Unable to deserialize request");
+		
+		 return handler(ctx, request);
 	}
 }
 
@@ -46,17 +44,13 @@ public static class RouteDescriptorFactory
 		Type requestType =
 			parameters[1].ParameterType;
 
-		Type responseType =
-			method.ReturnType.GenericTypeArguments[0];
-
 		MethodInfo genericFactory =
 			typeof(RouteDescriptorFactory)
 				.GetMethod(
 					nameof(CreateGeneric),
 					BindingFlags.NonPublic | BindingFlags.Static)!
 				.MakeGenericMethod(
-					requestType,
-					responseType);
+					requestType);
 
 		return (RouteDescriptor)
 			genericFactory.Invoke(
@@ -69,20 +63,20 @@ public static class RouteDescriptorFactory
 				])!;
 	}
 
-	private static RouteDescriptor CreateGeneric<TRequest, TResponse>(
+	private static RouteDescriptor CreateGeneric<TRequest>(
 		object instance,
 		MethodInfo method,
 		string target,
 		string action)
 	{
-		Func<RoutingContext, TRequest, Task<TResponse>> handler =
-			(Func<RoutingContext, TRequest, Task<TResponse>>)
+		Func<RoutingContext, TRequest, Task> handler =
+			(Func<RoutingContext, TRequest, Task>)
 			Delegate.CreateDelegate(
-				typeof(Func<RoutingContext, TRequest, Task<TResponse>>),
+				typeof(Func<RoutingContext, TRequest, Task>),
 				instance,
 				method);
 
-		return new RouteDescriptor<TRequest, TResponse>(
+		return new RouteDescriptor<TRequest>(
 			handler)
 		{
 			Target = target,

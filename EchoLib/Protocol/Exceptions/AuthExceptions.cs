@@ -24,3 +24,8 @@ public class SigninChallengeFailedException : ProtocolException
 {
 	public override string Message => "challenge-failed";
 }
+
+public class KeyConflictException : ProtocolException
+{
+	public override string Message => "key-conflict";
+}

@@ -5,7 +5,6 @@ using EchoLib.Routing.Responses;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using WebSocketSharper;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EchoLib.Transport;
 
@@ -13,19 +12,34 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 {
 	private readonly PendingResponseRegistry _pendingResponses = services.GetRequiredService<PendingResponseRegistry>();
 
-	public Task ErrorAsync(ProtocolException err, Guid? mid = null)
+	public async Task ErrorAsync(ProtocolException err, Guid mid)
 	{
-		throw new NotImplementedException();
+		// Build message envelope
+		Envelope<ErrorParameters> exEnvelope = new()
+		{
+			MessageId = mid,
+			Target = "error",
+			Data = new ActionWrapper<ErrorParameters>
+			{
+				Action = "error",
+				Parameters = new ErrorParameters
+				{
+					Message = err.Message
+				}
+			}
+		};
+
+		await sock.SendTaskAsync(JsonConvert.SerializeObject(exEnvelope));
 	}
 
-	public async Task SendAsync<T>(string target, string action, T param, Guid? mid = null)
+	public async Task SendAsync<T>(string target, string action, T param, Guid mid)
 	{
 		// Build message envelope
 		Envelope<T> envelope = new()
 		{
 			MessageId = mid,
 			Target = target,
-			Data = new ActionWrapper<T>()
+			Data = new ActionWrapper<T>
 			{
 				Action = action,
 				Parameters = param
@@ -33,7 +47,7 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 		};
 
 		// Serialise and send this
-		await sock.SendTaskAsync(JsonSerializer.Serialize(envelope));
+		await sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
 	}
 
 	public Task<TResponse> RequestAsync<TResponse, TParam>(string target, string action, TParam param)
@@ -52,7 +66,7 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 		};
 
 		// Send request
-		sock.SendTaskAsync(JsonSerializer.Serialize(envelope));
+		sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
 
 		// Register in pending responses registry
 		return _pendingResponses.Register<TResponse>(mid);

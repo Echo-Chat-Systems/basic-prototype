@@ -10,6 +10,7 @@ public static class NewtonsoftJson
 	{
 		return new JsonSerializerSettings
 		{
+			NullValueHandling = NullValueHandling.Ignore,
 			Converters =
 			[
 				new PublicSigningKeyConverter(),

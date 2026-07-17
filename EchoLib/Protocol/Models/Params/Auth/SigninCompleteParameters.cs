@@ -1,4 +1,5 @@
 ﻿using EchoLib.Protocol.Models.Data;
+using EchoLib.Protocol.Models.Data.User;
 using Newtonsoft.Json;
 
 namespace EchoLib.Protocol.Models.Params.Auth;

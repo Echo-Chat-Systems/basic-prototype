@@ -2,6 +2,7 @@
 using EchoLib.Crypto.Signing;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Data;
+using EchoLib.Protocol.Models.Data.User;
 using EchoLib.Protocol.Models.Params.Auth;
 using EchoLib.Protocol.Models.States;
 using EchoLib.Routing;
@@ -35,9 +36,9 @@ public class AuthTarget: TargetBase<AuthTarget>
 		public byte[]? SignChallenge;
 		public byte[]? EncryptChallenge;
 	}
-	
+
 	[Route("hello")]
-	private async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
+	public async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
 		Logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
 		
@@ -55,8 +56,20 @@ public class AuthTarget: TargetBase<AuthTarget>
 		await ctx.ReplyAsync(new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
 	}
 
+	[Route("signup")]
+	public async Task HandleSignup(RoutingContext ctx, ClientSignupParameters parameters)
+	{
+		// Check if this user already exists
+		if (await _usersRepo.GetAsync(parameters.Keys.SigningKey) != null) throw new KeyConflictException();
+
+		// Create this user in the db
+
+	}
+
+	#region Signin
+
 	[Route("signin-start")]
-	private async Task HandleSigninStart(RoutingContext ctx, SigninStartParameters parameters)
+	public async Task HandleSigninStart(RoutingContext ctx, SigninStartParameters parameters)
 	{
 		// Get this client from the manager
 		ServerClient? client = _clientManager.Get(ctx.Socket);
@@ -98,7 +111,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 	}
 
 	[Route("signin-response")]
-	private async Task HandleSigninResponse(RoutingContext ctx, SigninResponseParameters parameters)
+	public async Task HandleSigninResponse(RoutingContext ctx, SigninResponseParameters parameters)
 	{
 		// Get this client from the manager
 		ServerClient? client = _clientManager.Get(ctx.Socket);
@@ -138,7 +151,9 @@ public class AuthTarget: TargetBase<AuthTarget>
 			{
 				User = new JUserModel
 				{
-					Id = userDbm.Id, CreatedAt = userDbm.CreatedAt
+					Id = userDbm.Id,
+					Ek = userDbm.Ek,
+					CreatedAt = userDbm.CreatedAt
 				}
 			});
 		}
@@ -148,4 +163,6 @@ public class AuthTarget: TargetBase<AuthTarget>
 			ctx.Socket.CloseAsync();
 		}
 	}
+
+	#endregion
 }

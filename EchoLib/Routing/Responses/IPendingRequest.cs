@@ -2,6 +2,8 @@
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Params.Generic;
+using EchoLib.Routing.Storage;
+using Newtonsoft.Json.Linq;
 
 namespace EchoLib.Routing.Responses;
 
@@ -10,8 +12,8 @@ public interface IPendingRequest
 	Guid MessageId { get; }
 	Type ResponseType { get; }
 	
-	void Complete(Envelope<JsonElement> msg);
-	void Fail(Envelope<JsonElement> msg);
+	void Complete(Envelope<JToken> msg);
+	void Fail(Envelope<JToken> msg);
 }
 
 public sealed class PendingRequest<T> : IPendingRequest
@@ -28,18 +30,18 @@ public sealed class PendingRequest<T> : IPendingRequest
 		
 		_tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
 	}
-	public void Complete(Envelope<JsonElement> msg)
+	public void Complete(Envelope<JToken> msg)
 	{
 		// Deserialise into T
-		T response = msg.Data.Parameters.Deserialize<T>() ?? throw new InvalidOperationException("Could not deserialise parameters");
+		T response = msg.Data.Parameters.ToObject<T>() ?? throw new InvalidOperationException("Could not deserialise parameters");
 		
 		_tcs.SetResult(response);
 	}
 
-	public void Fail(Envelope<JsonElement> msg)
+	public void Fail(Envelope<JToken> msg)
 	{
 		// Deserialise into error params
-		ErrorParameters error = msg.Data.Parameters.Deserialize<ErrorParameters>()!;
+		ErrorParameters error = msg.Data.Parameters.ToObject<ErrorParameters>()!;
 		
 		_tcs.SetException((Exception)Activator.CreateInstance(ExceptionsRegistry.Exceptions[error.Message])!);
 	}

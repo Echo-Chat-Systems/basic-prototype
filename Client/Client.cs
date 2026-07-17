@@ -2,6 +2,7 @@
 using Client.Routing;
 using EchoLib.Core;
 using EchoLib.Protocol;
+using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Crypto;
 using EchoLib.Protocol.Models.Misc;
 using EchoLib.Protocol.Models.Params.Auth;
@@ -10,6 +11,7 @@ using EchoLib.Transport;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebSocketSharper;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -27,6 +29,7 @@ public class Client
     private bool _connected = false;
 
     private readonly ILogger<Client> _logger;
+    private readonly Targets _targets;
 
     public Client()
     {
@@ -41,8 +44,8 @@ public class Client
             builder.SetMinimumLevel(LogLevel.Debug);
         });
         services.AddSingleton<SessionInfo>();
+        services.AddSingleton<Targets>();
         services.AddRouting();
-
 
         Services = services.BuildServiceProvider();
 
@@ -110,6 +113,7 @@ public class Client
         ServerInfo = file.Server;
         
         router = Services.GetRequiredService<Router>();
+        _targets = Services.GetRequiredService<Targets>();
 
         Socket = new WebSocket(Services.GetRequiredService<ILogger<WebSocket>>(),
             $"ws://{ServerInfo.Address}:{ServerInfo.Port}",
@@ -126,19 +130,32 @@ public class Client
         Socket.ConnectAsync();
 
         // Wait until the server is connected
-        while (!_connected)
-        {
-
-        }
+        while (!_connected) { }
 
         // Connect to server
-        await router.GetTarget<AuthTarget>().SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
+        await _targets.Auth.SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
         {
 	        KeyPair = new PublicKeyPairJm
 	        {
 		        SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
 	        }
         });
+
+        try
+        {
+	        await _targets.Auth.SendSigninStart(new WebsocketEndpoint(Socket, Services), new SigninStartParameters
+	        {
+		        Sk = Keys.PubSk,
+		        Ek = Keys.PubEk
+	        });
+        }
+        catch (NotFoundException)
+        {
+	        // Try and create an account on the server
+			_logger.LogError("No account of Id {Id} reported by server", Keys.PubSk);
+			//TODO: Put signup call here
+        }
+
 
         string? input;
         while (true)
@@ -165,10 +182,10 @@ public class Client
     {
         // Unpack message event 
         _logger.LogDebug("Message received, attempting to unpack");
-        Envelope<JsonElement>? envelope = null;
+        Envelope<JToken>? envelope = null;
         try
         {
-            envelope = JsonConvert.DeserializeObject<Envelope<JsonElement>>(e.Data);
+            envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
         }
         catch (JsonReaderException)
         {

@@ -73,6 +73,9 @@ public class Server
 			$"ws{(config.Socket.UsingWss ? 's' : "")}://{config.Socket.Host}:{config.Socket.Port}"
 		);
 
+		// Get router from services just to initialise it before we spin up anything else
+		Services.GetRequiredService<Router>();
+
 		try
 		{
 			// Register server as websocket service

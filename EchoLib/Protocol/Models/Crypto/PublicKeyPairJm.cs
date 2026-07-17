@@ -7,7 +7,6 @@ namespace EchoLib.Protocol.Models.Crypto;
 
 public class PublicKeyPairJm
 {
-	[JsonProperty("sk")] [Required] public PublicSigningKey? SigningKey { get; set; }
-
-	[JsonProperty("ek")] [Required] public PublicEncryptionKey? EncryptionKey { get; set; }
+	[JsonProperty("sk")] [Required] public required PublicSigningKey SigningKey { get; set; }
+	[JsonProperty("ek")] [Required] public required PublicEncryptionKey EncryptionKey { get; set; }
 }

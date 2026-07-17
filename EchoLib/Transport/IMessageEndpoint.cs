@@ -6,7 +6,7 @@ namespace EchoLib.Transport;
 
 public interface IMessageEndpoint
 {
-	public Task ErrorAsync(ProtocolException err, Guid? mid = null);
-	public Task SendAsync<T>(string target, string action, T param, Guid? mid = null);
+	public Task ErrorAsync(ProtocolException err, Guid mid);
+	public Task SendAsync<T>(string target, string action, T param, Guid mid);
 	public Task<TResponse> RequestAsync<TResponse, TParam>(string target, string action, TParam param);
 }
