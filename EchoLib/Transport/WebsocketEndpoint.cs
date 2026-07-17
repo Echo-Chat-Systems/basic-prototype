@@ -1,5 +1,6 @@
 ﻿using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
+using EchoLib.Protocol.Models.Params;
 using EchoLib.Protocol.Models.Params.Generic;
 using EchoLib.Routing.Responses;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +33,7 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 		await sock.SendTaskAsync(JsonConvert.SerializeObject(exEnvelope));
 	}
 
-	public async Task SendAsync<T>(string target, string action, T param, Guid mid)
+	public async Task SendAsync<T>(string target, T param, Guid mid) where T : IParam
 	{
 		// Build message envelope
 		Envelope<T> envelope = new()
@@ -41,7 +42,7 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 			Target = target,
 			Data = new ActionWrapper<T>
 			{
-				Action = action,
+				Action = param.Action,
 				Parameters = param
 			}
 		};
@@ -50,7 +51,7 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 		await sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
 	}
 
-	public Task<TResponse> RequestAsync<TResponse, TParam>(string target, string action, TParam param)
+	public Task<TResponse> RequestAsync<TResponse, TParam>(string target, TParam param) where TParam : IParam
 	{
 		// Build message envelope
 		Guid mid = Guid.NewGuid();
@@ -60,7 +61,7 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 			Target = target,
 			Data = new ActionWrapper<TParam>
 			{
-				Action = action,
+				Action = param.Action,
 				Parameters = param
 			}
 		};

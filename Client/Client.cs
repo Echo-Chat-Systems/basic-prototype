@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Client.Routing;
 using EchoLib.Core;
+using EchoLib.Crypto;
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Crypto;

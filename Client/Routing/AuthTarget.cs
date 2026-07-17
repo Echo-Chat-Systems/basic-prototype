@@ -37,7 +37,7 @@ public class AuthTarget(ILogger<AuthTarget> logger, Client.SessionInfo sessionIn
 	public async Task SendHello(IMessageEndpoint endpoint, ClientHelloParameters parameters)
 	{
 		Logger.LogDebug("Sending hello to server.");
-		ServerHelloParameters hello = await endpoint.RequestAsync<ServerHelloParameters, ClientHelloParameters>(Name, "hello", parameters);
+		ServerHelloParameters hello = await endpoint.RequestAsync<ServerHelloParameters, ClientHelloParameters>(Name, parameters);
 
 		Logger.LogInformation("Server broadcast name: \"{ParametersServerName}\"", hello.ServerName);
 
@@ -45,13 +45,13 @@ public class AuthTarget(ILogger<AuthTarget> logger, Client.SessionInfo sessionIn
 		sessionInfo.ServerName = hello.ServerName;
 	}
 
-	public async Task SendSigninStart(IMessageEndpoint endpoint, SigninStartParameters parameters)
+	public async Task<SigninCompleteParameters> SendSigninStart(IMessageEndpoint endpoint, SigninStartParameters parameters)
 	{
 		// State checks to ensure linear progression 
 		if (State.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 
 		State.Stage = SigninStage.Started;
-		SigninChallengeParameters challenge = await endpoint.RequestAsync<SigninChallengeParameters, SigninStartParameters>(Name, "signin-start", parameters);
+		SigninChallengeParameters challenge = await endpoint.RequestAsync<SigninChallengeParameters, SigninStartParameters>(Name, parameters);
 
 		// State checks to preserve thread sanity
 		if (State.Stage != SigninStage.Started) throw new SigninNotStartedException();
@@ -80,13 +80,13 @@ public class AuthTarget(ILogger<AuthTarget> logger, Client.SessionInfo sessionIn
 		// Send response
 		try
 		{
-			SigninCompleteParameters complete = await endpoint.RequestAsync<SigninCompleteParameters, SigninResponseParameters>(Name, "signin-response", new SigninResponseParameters()
+			return await endpoint.RequestAsync<SigninCompleteParameters, SigninResponseParameters>(Name, new SigninResponseParameters
 			{
 				Signature = signature,
 				Decrypted = decrypted
 			});
 		}
-		catch (SigninChallengeFailedException fail)
+		catch (SigninChallengeFailedException)
 		{
 			Logger.LogDebug("Signin challenge failed!");
 			throw;

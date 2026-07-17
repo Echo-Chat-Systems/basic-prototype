@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using EchoLib.Protocol;
+using EchoLib.Protocol.Models.Params;
 using EchoLib.Transport;
 using Newtonsoft.Json.Linq;
 using WebSocketSharper;
@@ -13,9 +14,9 @@ public class RoutingContext
 	public required WebSocket Socket { get; init; }
 	public required IMessageEndpoint Endpoint { get; init; }
 
-	public async Task ReplyAsync(object parameters)
+	public async Task ReplyAsync<T>(T parameters) where T : IParam
 	{
 		// Construct and send a response
-		await Endpoint.SendAsync(OriginalMessage.Target, OriginalMessage.Data.Action, parameters, MessageId);
+		await Endpoint.SendAsync(OriginalMessage.Target, parameters, MessageId);
 	}
 }

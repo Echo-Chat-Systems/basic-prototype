@@ -1,6 +1,8 @@
 ﻿using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Params.Auth;
+using EchoLib.Routing;
 using EchoLib.Routing.Identification;
+using EchoLib.Transport;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Encoders;
 
@@ -10,11 +12,13 @@ public class AuthTarget: TargetBase<AuthTarget>
 {
 	public override string Name => "auth";
 
-	public readonly StateStore _session;
+	private readonly StateStore _session;
+	private readonly IMessageEndpoint _endpoint;
 
-	public AuthTarget(ILogger<AuthTarget> logger, StateStore sessionInfo) : base(logger)
+	public AuthTarget(ILogger<AuthTarget> logger, StateStore sessionInfo, IMessageEndpoint endpoint) : base(logger)
 	{
 		_session = sessionInfo;
+		_endpoint = endpoint;
 	}
 
 	private static readonly SigninState State = new();
@@ -38,40 +42,19 @@ public class AuthTarget: TargetBase<AuthTarget>
 	}
 
 
-	public async Task SendHello(RoutingContext ctx, ClientHelloParameters parameters)
+	public async Task<ServerHelloParameters> SendHello(ClientHelloParameters parameters)
 	{
-		await ctx.ReplyAsync(this, parameters);
+		return await _endpoint.RequestAsync<ServerHelloParameters, ClientHelloParameters>(Name, parameters);
 	}
 
-	[Route("server-hello")]
-	public async Task HandleHello(RoutingContext ctx, ServerHelloParameters parameters)
-	{
-		// Get logger
-		Logger.LogInformation("Server broadcast name: \"{ParametersServerName}\"", parameters.ServerName);
-
-		// Set server name
-		_session.ServerName = parameters.ServerName;
-
-		// Begin login flow
-		await SendSigninStart(ctx, new SigninStartParameters
-		{
-			Sk = _session.UserFile!.Keys.PubSk,
-			Ek = _session.UserFile!.Keys.PubEk
-		});
-	}
-
-	public async Task SendSigninStart(RoutingContext ctx, SigninStartParameters parameters)
+	public async Task<SigninCompleteParameters> SendSigninStart(SigninStartParameters parameters)
 	{
 		// State checks to ensure linear progression
 		if (State.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 
 		State.Stage = SigninStage.Started;
-		await ctx.ReplyAsync(this, parameters);
-	}
+		SigninChallengeParameters challenge = await _endpoint.RequestAsync<SigninChallengeParameters, SigninStartParameters>(Name, parameters);
 
-	[Route("signin-challenge")]
-	private Task HandleChallenge(RoutingContext ctx, SigninChallengeParameters parameters)
-	{
 		// State checks to ensure linear progression
 		if (State.Stage != SigninStage.Started) throw new SigninNotStartedException();
 
@@ -79,12 +62,12 @@ public class AuthTarget: TargetBase<AuthTarget>
 		State.Stage = SigninStage.Challenged;
 
 		// Update state with challenge
-		State.SignChallenge = parameters.SignChallenge;
-		State.EncryptChallenge = parameters.EncryptChallenge;
+		State.SignChallenge = challenge.SignChallenge;
+		State.EncryptChallenge = challenge.EncryptChallenge;
 
 		// Decode challenges from strings into bytes using base64
-		byte[] sigChallengeBytes = Base64.Decode(parameters.SignChallenge);
-		byte[] encChallengeBytes = Base64.Decode(parameters.EncryptChallenge);
+		byte[] sigChallengeBytes = Base64.Decode(challenge.SignChallenge);
+		byte[] encChallengeBytes = Base64.Decode(challenge.EncryptChallenge);
 
 		// Complete challenges
 		byte[] sigBytes = _session.UserFile!.Keys.PrvSk.Sign(sigChallengeBytes);
@@ -103,8 +86,21 @@ public class AuthTarget: TargetBase<AuthTarget>
 		};
 
 		// Send response
-		return ctx.ReplyAsync(this, response);
-	}
+		try
+		{
+			return await _endpoint.RequestAsync<SigninCompleteParameters, SigninResponseParameters>(Name, new SigninResponseParameters
+			{
+				Signature = signature,
+				Decrypted = decrypted
+			});
+		}
+		catch (SigninChallengeFailedException)
+		{
+			Logger.LogDebug("Signin challenge failed!");
+			throw;
+		}	}
+
+
 
 
 }

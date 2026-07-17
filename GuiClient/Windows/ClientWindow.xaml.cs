@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Protocol.Models.Params.Auth;
 using EchoLib.Routing;
@@ -8,6 +9,7 @@ using GuiClient.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebSocketSharper;
 
 namespace GuiClient.Windows;
@@ -25,8 +27,8 @@ public partial class ClientWindow : Window
 	private StateStore State { get; init; }
 
 	private readonly ILogger<ClientWindow> _logger;
-	
-	
+	private Targets _targets;
+
 	public ClientWindow(Window parent, IServiceProvider services)
 	{
 		_parent = parent;
@@ -37,6 +39,7 @@ public partial class ClientWindow : Window
 		Socket = State.Socket ?? throw new InvalidOperationException($"Socket cannot be null when initialising {nameof(ClientWindow)}");
 		
 		_logger = Services.GetRequiredService<ILogger<ClientWindow>>();
+		_targets = Services.GetRequiredService<Targets>();
 
 		DataContext = new ClientWindowViewModel
 		{
@@ -48,20 +51,13 @@ public partial class ClientWindow : Window
 		
 		// Register this window as the socket handler
 		_logger.LogDebug("Registering client socket listeners");
-		Socket.OnOpen += SocketOnOnOpen;
+		Socket.OnOpen += SocketOnOpen;
 		Socket.OnClose += SocketOnOnClose;
-		Socket.OnMessage += SocketOnOnMessage;
+		Socket.OnMessage += SocketOnMessage;
 		
 		// Connect to server
 		_logger.LogInformation("Connecting to server...");
 		Socket.Connect();
-		State.SocketConnected = true;
-		_logger.LogInformation("Successfully connected to remote server.");
-		
-		// Once this window is initialised, hide the parent
-		_parent.Hide();
-		
-		Show();
 		
 		// Run auth
 		Application.Current.Dispatcher.BeginInvoke(Authenticate);
@@ -69,15 +65,22 @@ public partial class ClientWindow : Window
 
 	private async Task Authenticate()
 	{
-		// Get required services
-		Router router = Services.GetRequiredService<Router>();
-		AuthTarget tar = router.GetTarget<AuthTarget>() ?? throw new InvalidOperationException();
+		// Wait until socket is connected properly
+		while (!State.SocketConnected) ;
+
+		// Send client hello
+		ServerHelloParameters hello = await _targets.Auth.SendHello(new ClientHelloParameters
+		{
+			KeyPair = State.UserFile!.Keys.ToPublicKeyPair(),
+		});
+
+		State.ServerName = hello.ServerName;
 
 		// Attempt to login
+		SigninCompleteParameters complete;
 		try
 		{
-			await tar.SendSigninStart(
-				new RoutingContext(State.Socket!) { Services = Services },
+			complete = await _targets.Auth.SendSigninStart(
 				new SigninStartParameters { Ek = State.UserFile!.Keys.PubEk, Sk = State.UserFile.Keys.PubSk }
 			);
 		}
@@ -98,21 +101,20 @@ public partial class ClientWindow : Window
 			
 			// Account should be logged in now
 		}
-		
+
+		// Signin is complete now
+
 	}
 	
 
-	private void SocketOnOnMessage(object? sender, MessageEventArgs e)
+	private void SocketOnMessage(object? sender, MessageEventArgs e)
 	{
-		// Build a new context
-		RoutingContext ctx = new(Socket) { Services = Services };
-
 		// Unpack message event 
 		_logger.LogDebug("Message received, attempting to unpack");
-		MessageEnvelope<object>? envelope = null;
+		Envelope<JToken>? envelope = null;
 		try
 		{
-			envelope = JsonConvert.DeserializeObject<MessageEnvelope<object>>(e.Data);
+			envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
 		}
 		catch (JsonReaderException)
 		{
@@ -124,7 +126,7 @@ public partial class ClientWindow : Window
 		_logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
 		// Route message
-		_ = Services.GetRequiredService<Router>().RouteAsync(ctx, envelope);
+		Services.GetRequiredService<Router>().Receive(envelope, Socket);
 		return;
 
 		Fail:
@@ -138,17 +140,15 @@ public partial class ClientWindow : Window
 		Close();
 	}
 
-	private void SocketOnOnOpen(object? sender, EventArgs e)
+	private void SocketOnOpen(object? sender, EventArgs e)
 	{
-		// Create new ctx
-		RoutingContext ctx = new(Socket) { Services = Services };
+		_logger.LogInformation("Successfully connected to remote server.");
+		State.SocketConnected = true;
 
-		// Get router
-		Router router = Services.GetRequiredService<Router>();
-		
-		// Send hello message
-		_logger.LogDebug("Sending client-hello");
-		router.GetTarget<AuthTarget>()?.SendHello(ctx, new ClientHelloParameters { KeyPair = State.UserFile!.Keys.ToPublicKeyPair()});
+		// Once this window is initialised, hide the parent
+		_parent.Hide();
+
+		Show();
 	}
 	
 	protected override void OnClosed(EventArgs e)

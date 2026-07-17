@@ -7,7 +7,7 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
-namespace EchoLib.Core;
+namespace EchoLib.Crypto;
 
 /// <summary>
 /// Key Derivation Helper.

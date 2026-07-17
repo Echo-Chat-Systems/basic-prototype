@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using EchoLib.Protocol.Models.Data.User;
 using WebSocketSharper;
 
 namespace GuiClient;
@@ -8,6 +9,8 @@ public class StateStore : INotifyPropertyChanged
 {
 	private WebSocket? _socket;
 	private UserFile? _userFile;
+
+	public JProfileModel? RemoteUser { get; set; }
 
 	public bool SocketConnected { get; set; } = false;
 

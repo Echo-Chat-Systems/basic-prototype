@@ -3,17 +3,16 @@ using System.Windows;
 using System.Windows.Input;
 using EchoLib.Configuration;
 using EchoLib.Core;
-using EchoLib.Core.Routing.Events;
+using EchoLib.Crypto;
 using EchoLib.Protocol.Models.Misc;
 using EchoLib.Routing;
-using GuiClient.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WebSocketSharper;
 
-namespace GuiClient;
+namespace GuiClient.Windows;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -50,7 +49,6 @@ public partial class StartupWindow : Window
 		services.AddSingleton(config);
 		services.AddSingleton<Router>();
 		services.AddSingleton<StateStore>();
-		services.AddSingleton<EventBus>();
 
 		Services = services.BuildServiceProvider();
 		
