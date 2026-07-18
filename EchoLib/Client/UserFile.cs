@@ -5,7 +5,7 @@ using EchoLib.Protocol.Models.Misc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Client;
+namespace EchoLib.Client;
 
 /// <summary>
 /// Represents a decrypted locally stored user file.
@@ -23,8 +23,6 @@ public class UserFile
 	private const int NonceSize = 12;
 	private const int TagSize = 16;
 	private const int Iterations = 100_000;
-
-	[JsonIgnore] public static ILogger<UserFile>? Logger { get; set; }
 
 	/// <summary>
 	/// Encrypts a user file to a specified location using the specified passphrase.
@@ -60,8 +58,6 @@ public class UserFile
 		fs.Write(nonce);
 		fs.Write(tag);
 		fs.Write(ciphertext); // Ciphertext is written last as it is an unknown size
-
-		Logger?.LogDebug("Wrote user file to {FileLocation}", outputFile.Name);
 	}
 
 	/// <summary>

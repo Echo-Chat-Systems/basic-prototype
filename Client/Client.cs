@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Client.Routing;
+﻿using Client.Routing;
+using EchoLib.Client;
 using EchoLib.Core;
 using EchoLib.Crypto;
 using EchoLib.Protocol;
@@ -52,12 +52,6 @@ public class Client
 
         // Get the logger 
         _logger = Services.GetService<ILogger<Client>>()!;
-
-        // Configure newtonsoft
-        JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
-
-        // Give UserFile a logger
-        UserFile.Logger = Services.GetService<ILogger<UserFile>>();
 
         // Ensure .echo directory exists 
         if (!EchoDirectory.Exists)
