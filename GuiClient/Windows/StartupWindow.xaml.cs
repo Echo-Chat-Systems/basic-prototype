@@ -4,7 +4,7 @@ using System.Windows.Input;
 using EchoLib.Configuration;
 using EchoLib.Core;
 using EchoLib.Crypto;
-using EchoLib.Protocol.Models.Misc;
+using EchoLib.Models.Misc;
 using EchoLib.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

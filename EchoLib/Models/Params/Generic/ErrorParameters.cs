@@ -1,7 +1,6 @@
-﻿using EchoLib.Protocol.Models.Data;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Params.Generic;
+namespace EchoLib.Models.Params.Generic;
 
 public class ErrorParameters : IParam
 {

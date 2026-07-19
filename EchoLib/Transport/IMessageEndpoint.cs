@@ -1,7 +1,6 @@
+using EchoLib.Models.Params;
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
-using EchoLib.Protocol.Models.Params;
-using EchoLib.Protocol.Models.Params.Generic;
 
 namespace EchoLib.Transport;
 

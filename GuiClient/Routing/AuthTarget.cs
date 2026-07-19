@@ -1,5 +1,5 @@
-﻿using EchoLib.Protocol.Exceptions;
-using EchoLib.Protocol.Models.Params.Auth;
+﻿using EchoLib.Models.Params.Auth;
+using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing;
 using EchoLib.Routing.Identification;
 using EchoLib.Transport;

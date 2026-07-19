@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
+using EchoLib.Models.Params;
 using EchoLib.Protocol;
-using EchoLib.Protocol.Models.Params;
 using EchoLib.Transport;
 using Newtonsoft.Json.Linq;
 using WebSocketSharper;

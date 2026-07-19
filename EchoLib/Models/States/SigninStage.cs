@@ -1,4 +1,4 @@
-﻿namespace EchoLib.Protocol.Models.States;
+﻿namespace EchoLib.Models.States;
 
 public enum SigninStage
 {

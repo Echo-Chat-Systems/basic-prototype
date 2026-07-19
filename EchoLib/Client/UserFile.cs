@@ -1,7 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using EchoLib.Protocol.Models.Crypto;
-using EchoLib.Protocol.Models.Misc;
+using EchoLib.Models;
+using EchoLib.Models.Crypto;
+using EchoLib.Models.Misc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -12,12 +13,8 @@ namespace EchoLib.Client;
 ///
 /// All user files are encrypted with AES 256 using a user-provided password.
 /// </summary>
-public class UserFile
+public static class UserFileHelper
 {
-	[JsonProperty("keys")] public required KeySetJm Keys { get; set; }
-
-	[JsonProperty("server")] public required ServerInfoJm Server { get; set; }
-
 	private const int KeySize = 32; // 256 Bit
 	private const int SaltSize = 16;
 	private const int NonceSize = 12;
@@ -30,7 +27,7 @@ public class UserFile
 	/// <param name="data"></param>
 	/// <param name="outputFile"></param>
 	/// <param name="passphrase"></param>
-	public static void Encrypt(UserFile data, FileInfo outputFile, string passphrase)
+	public static void Encrypt(UserFileJm data, FileInfo outputFile, string passphrase)
 	{
 		// Serialise data
 		Span<byte> pSpan = Encoding.UTF8.GetBytes(
@@ -67,7 +64,7 @@ public class UserFile
 	/// <param name="password"></param>
 	/// <param name="userFile"></param>
 	/// <returns></returns>
-	public static bool Decrypt(FileInfo file, string password, out UserFile? userFile)
+	public static bool Decrypt(FileInfo file, string password, out UserFileJm? userFile)
 	{
 		// Set userFile by default to null
 		userFile = null;
@@ -97,7 +94,7 @@ public class UserFile
 		// Deserialize plaintext into content
 		string plaintext = Encoding.UTF8.GetString(pBytes);
 
-		userFile = JsonConvert.DeserializeObject<UserFile>(plaintext);
+		userFile = JsonConvert.DeserializeObject<UserFileJm>(plaintext);
 		return true;
 	}
 

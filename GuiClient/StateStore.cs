@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using EchoLib.Protocol.Models.Data.User;
+using EchoLib.Models.Data.User;
 using WebSocketSharper;
 
 namespace GuiClient;

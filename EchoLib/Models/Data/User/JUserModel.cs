@@ -1,7 +1,7 @@
 ﻿using EchoLib.Crypto.Encryption;
 using EchoLib.Crypto.Signing;
 
-namespace EchoLib.Protocol.Models.Data.User;
+namespace EchoLib.Models.Data.User;
 
 public class JUserModel
 {

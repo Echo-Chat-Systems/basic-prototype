@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Params.Auth;
+namespace EchoLib.Models.Params.Auth;
 
 public class ServerHelloParameters : IParam
 {

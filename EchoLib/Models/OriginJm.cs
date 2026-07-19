@@ -1,4 +1,4 @@
-﻿namespace EchoLib.Protocol.Models;
+﻿namespace EchoLib.Models;
 
 public class OriginJm
 {

@@ -1,5 +1,5 @@
 ﻿using EchoLib.Crypto.Signing;
-using EchoLib.Protocol.Models.Crypto;
+using EchoLib.Models.Crypto;
 using Server.Routing;
 using WebSocketSharper;
 using WebSocketSharper.Server;

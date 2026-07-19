@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using EchoLib.Crypto.Encryption;
 using EchoLib.Crypto.Signing;
-using EchoLib.Protocol.Models.Crypto;
+using EchoLib.Models.Crypto;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;

@@ -1,9 +1,8 @@
-﻿using EchoLib.Protocol.Models.Crypto;
-using EchoLib.Protocol.Models.Data.User;
+﻿using EchoLib.Models.Crypto;
+using EchoLib.Models.Data.User;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Bcpg;
 
-namespace EchoLib.Protocol.Models.Params.Auth;
+namespace EchoLib.Models.Params.Auth;
 
 public class ClientSignupParameters : IParam
 {

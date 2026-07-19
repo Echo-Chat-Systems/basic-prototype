@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Params;
+namespace EchoLib.Models.Params;
 
 public interface IParam
 {

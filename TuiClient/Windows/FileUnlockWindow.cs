@@ -1,5 +1,4 @@
 ﻿using EchoLib.Client;
-using EchoLib.Protocol.Models.Data.User;
 using Terminal.Gui.Views;
 using TuiClient.Views;
 
@@ -8,10 +7,12 @@ namespace TuiClient.Windows;
 public sealed class FileUnlockWindow : Window
 {
 	private static readonly DirectoryInfo EchoDirectory =  new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
+	private readonly WindowManager _windows;
 	private readonly ApplicationState _state;
 
 	public FileUnlockWindow(WindowManager windows, ApplicationState state)
 	{
+		_windows = windows;
 		_state = state;
 
 		Title = "Login";

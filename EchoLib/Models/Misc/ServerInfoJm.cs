@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Misc;
+namespace EchoLib.Models.Misc;
 
 public class ServerInfoJm
 {

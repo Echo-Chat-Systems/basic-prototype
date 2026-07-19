@@ -2,11 +2,12 @@
 using EchoLib.Client;
 using EchoLib.Core;
 using EchoLib.Crypto;
+using EchoLib.Models;
+using EchoLib.Models.Crypto;
+using EchoLib.Models.Misc;
+using EchoLib.Models.Params.Auth;
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
-using EchoLib.Protocol.Models.Crypto;
-using EchoLib.Protocol.Models.Misc;
-using EchoLib.Protocol.Models.Params.Auth;
 using EchoLib.Routing;
 using EchoLib.Transport;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,7 +67,7 @@ public class Client
         // Ask user for their password
         string passwd = ConsoleHelper.GetConsoleInput("Please input your encryption password: ");
         FileInfo userFileHandle = new(EchoDirectory + ".user");
-        UserFile file;
+        UserFileJm file;
 
 
         // Check if file exists
@@ -74,7 +75,7 @@ public class Client
         {
             _logger.LogDebug("User file found at {UserFileHandle}", userFileHandle.Name);
             // Attempt to read the user file
-            if (!UserFile.Decrypt(userFileHandle, passwd, out file) || file == null)
+            if (!UserFileHelper.Decrypt(userFileHandle, passwd, out file) || file == null)
             {
                 Console.WriteLine("Invalid password, exiting");
                 throw new Exception("Invalid password"); // This is really hacky
@@ -83,7 +84,7 @@ public class Client
         // User does not have an existing saved account, create a new account
         else
         {
-            file = new UserFile
+            file = new UserFileJm
             {
                 Keys = KdvHelper.Generate(),
                 Server = new ServerInfoJm
@@ -95,7 +96,7 @@ public class Client
             };
 
             // Save file
-            UserFile.Encrypt(file, userFileHandle, passwd);
+            UserFileHelper.Encrypt(file, userFileHandle, passwd);
 
             _logger.LogInformation("User file saved to {UserFileLocation}", userFileHandle.FullName);
         }

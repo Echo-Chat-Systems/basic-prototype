@@ -1,7 +1,7 @@
-﻿using EchoLib.Protocol;
+﻿using EchoLib.Models.Params;
+using EchoLib.Models.Params.Generic;
+using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
-using EchoLib.Protocol.Models.Params;
-using EchoLib.Protocol.Models.Params.Generic;
 using EchoLib.Routing.Responses;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;

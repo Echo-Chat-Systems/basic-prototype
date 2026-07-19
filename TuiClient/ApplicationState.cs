@@ -7,6 +7,14 @@ namespace TuiClient;
 
 public class ApplicationState(IServiceProvider services)
 {
-	public readonly IMessageEndpoint Endpoint = new WebsocketEndpoint(services.GetRequiredService<WebSocket>(), services);
-	public UserFile UserFile { get; set; } = null!;
+	private IServiceProvider _services = services;
+
+	public IMessageEndpoint? Endpoint { get; private set; } = null!;
+	public WebSocket? Socket { get; private set; }
+
+	public void RegisterConnection(WebSocket socket)
+	{
+		Socket = socket;
+		Endpoint = new WebsocketEndpoint(socket, _services);
+	}
 }

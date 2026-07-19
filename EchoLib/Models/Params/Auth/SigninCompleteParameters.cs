@@ -1,8 +1,7 @@
-﻿using EchoLib.Protocol.Models.Data;
-using EchoLib.Protocol.Models.Data.User;
+﻿using EchoLib.Models.Data.User;
 using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Params.Auth;
+namespace EchoLib.Models.Params.Auth;
 
 public class SigninCompleteParameters : IParam
 {

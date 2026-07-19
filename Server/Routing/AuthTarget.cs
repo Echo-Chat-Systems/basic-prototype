@@ -1,10 +1,9 @@
 ﻿using System.Security.Cryptography;
 using EchoLib.Crypto.Signing;
+using EchoLib.Models.Data.User;
+using EchoLib.Models.Params.Auth;
+using EchoLib.Models.States;
 using EchoLib.Protocol.Exceptions;
-using EchoLib.Protocol.Models.Data;
-using EchoLib.Protocol.Models.Data.User;
-using EchoLib.Protocol.Models.Params.Auth;
-using EchoLib.Protocol.Models.States;
 using EchoLib.Routing;
 using EchoLib.Routing.Identification;
 using Microsoft.Extensions.DependencyInjection;

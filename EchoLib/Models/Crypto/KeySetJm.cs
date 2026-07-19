@@ -2,7 +2,7 @@ using EchoLib.Crypto.Encryption;
 using EchoLib.Crypto.Signing;
 using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Crypto;
+namespace EchoLib.Models.Crypto;
 
 /// <summary>
 /// All user keys.

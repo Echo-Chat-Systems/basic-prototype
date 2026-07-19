@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Data;
+namespace EchoLib.Models.Data;
 
 public class JErrorSourceData
 {

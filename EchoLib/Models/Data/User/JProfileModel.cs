@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EchoLib.Protocol.Models.Data.User;
+namespace EchoLib.Models.Data.User;
 
 public class JProfileModel
 {
