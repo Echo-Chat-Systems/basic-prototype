@@ -1,14 +1,18 @@
 ﻿using System;
-using Avalonia;
+using System.IO;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
 
 namespace AvaloniaClient.Views;
 
 public partial class UnlockIdFileWindow : Window
 {
-	public UnlockIdFileWindow(IServiceProvider services)
+
+
+	public UnlockIdFileWindow()
 	{
 		InitializeComponent();
+
+
 	}
 }

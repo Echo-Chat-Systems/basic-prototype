@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
         mc:Ignorable="d"
-        x:Class="AvaloniaClient.Views.MainWindow"
+        x:Class="AvaloniaClient.Views.StartupWindow"
         x:DataType="viewModels:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaClient">
@@ -16,8 +16,10 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <StackPanel Classes="centered">
+        <Label>Welcome to Echo-Chat</Label>
+        <Button HotKey="Enter" Click="Login_OnClick" >Login</Button>
+    </StackPanel>
+
 
 </Window>

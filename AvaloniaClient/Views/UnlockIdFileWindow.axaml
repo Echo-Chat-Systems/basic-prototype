@@ -10,13 +10,28 @@
         Title="UnlockIdFileWindow"
         Icon="/Assets/avalonia-logo.ico"
         >
-
     <Design.DataContext>
         <vm:UnlockIdFileViewModel />
     </Design.DataContext>
 
-    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Label>Unlock Id File</Label>
-        <TextBox Name="PasswordTextBox" Text="{Binding Password}" />
+    <StackPanel Classes="centered">
+        <Label HorizontalAlignment="Center">Unlock Id File</Label>
+        <Line StartPoint="0,0" EndPoint="200,0" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Center"/>
+        <StackPanel Name="NewFileControls" IsVisible="{Binding IsNewFile}" IsEnabled="{Binding IsNewFile}" Spacing="10">
+            <Label HorizontalAlignment="Center">Server address:</Label>
+            <TextBox Text="{Binding ServerAddress}" />
+
+            <Label>Port:</Label>
+            <TextBox Text="{Binding Port}" />
+
+            <Label>Version:</Label>
+            <TextBox Text="{Binding Version}" />
+
+            <Line StartPoint="0,0" EndPoint="200,0" />
+        </StackPanel>
+        <Label HorizontalAlignment="Center">Password:</Label>
+        <TextBox Name="PasswordTextBox" Text="{Binding Password}" PasswordChar="*" TextAlignment="Center" />
+
+        <Button HotKey="Enter" Content="{Binding UnlockButtonContents}" Command="{Binding UnlockCommand}" />
     </StackPanel>
 </Window>

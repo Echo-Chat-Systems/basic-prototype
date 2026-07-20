@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using AvaloniaClient.ViewModels;
 using AvaloniaClient.Views;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using EchoLib.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,11 +29,14 @@ public partial class App : Application
 				l.SetMinimumLevel(LogLevel.Debug);
 			})
 			.AddRouting()
+			.AddSingleton<State.AppState>()
 			.BuildServiceProvider();
+
+		Ioc.Default.ConfigureServices(services);
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			desktop.MainWindow = new MainWindow(services)
+			desktop.MainWindow = new StartupWindow
 			{
 				DataContext = new MainViewModel(),
 			};

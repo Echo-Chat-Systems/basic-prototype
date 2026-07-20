@@ -30,4 +30,10 @@
     <ItemGroup>
       <ProjectReference Include="..\EchoLib\EchoLib.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="State\AppState.SocketState.cs">
+        <DependentUpon>AppState.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
