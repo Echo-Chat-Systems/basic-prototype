@@ -1,6 +1,7 @@
 ﻿using Terminal.Gui.ViewBase;
+using Terminal.Gui.Views;
 
-namespace TuiClient.Views;
+namespace TuiClient.Components;
 
 public class StackView : View
 {
@@ -17,15 +18,18 @@ public class StackView : View
 	public StackView(Direction direction)
 	{
 		_direction = direction;
+		CanFocus = true;
 
-		if (_direction is Direction.LeftToRight or Direction.RightToLeft)
+		Width = Dim.Fill();
+	}
+
+	public void AddControl(params View[] views)
+	{
+		foreach (View view in views)
 		{
-			Height = Dim.Fill();
+			AddControl(view);
 		}
-		else
-		{
-			Width = Dim.Fill();
-		}
+
 	}
 
 	public void AddControl(View view)
@@ -34,8 +38,18 @@ public class StackView : View
 		{
 			case Direction.TopToBottom:
 				view.X = 0;
-				view.Y = SubViews.Count == 0 ? 0 : Pos.Bottom(SubViews.ElementAt(SubViews.Count - 1));
+				view.Y = SubViews.Count == 0 ? 0 : Pos.Bottom(SubViews.ElementAt(SubViews.Count - 1)) + 1;
 				view.Width = Dim.Fill();
+
+				if (view is Button)
+				{
+					view.Height = Dim.Percent(10);
+				}
+				else
+				{
+					view.Height = 1;
+				}
+
 				break;
 			case Direction.BottomToTop:
 				throw new NotImplementedException();

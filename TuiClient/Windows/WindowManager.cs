@@ -9,7 +9,7 @@ public class WindowManager
 {
 	private readonly IApplication _app;
 	private readonly IServiceProvider _services;
-	public Window? Current { get; private set; }
+	public View? Current { get; private set; }
 
 	public WindowManager(IServiceProvider services, IApplication app)
 	{
@@ -17,22 +17,43 @@ public class WindowManager
 		_app = app;
 	}
 
-	public void Show<T>() where T : Window
+	public void Show<T>(Runnable root) where T : View
 	{
 		// Create a new instance of the view with DI and show
-		Show(_services.GetRequiredService<T>());
+		Show(_services.GetRequiredService<T>(), root);
 	}
 
-	public void Show(Window view)
+	public void Show(View view, Runnable parent)
 	{
-		if (Current != null)
+		/*if (Current != null)
 		{
 			_app.TopRunnableView?.Remove(Current);
 		}
 
 		Current = view;
 
+		view.Width = Dim.Fill();
+		view.Height = Dim.Fill();
+
 		_app.TopRunnableView?.Add(view);
+
 		view.SetFocus();
+		*/
+		if (Current != null)
+		{
+			parent.Title.Remove(parent.Title.IndexOf($" - {Current.Title}", StringComparison.Ordinal));
+			parent.Remove(Current);
+		}
+
+
+		parent.Add(view);
+		view.Width = Dim.Fill();
+		view.Height = Dim.Fill();
+		view.SetFocus();
+
+		// Set title
+		parent.Title = $"{parent.Title} - {view.Title}";
+
+		Current = view;
 	}
 }

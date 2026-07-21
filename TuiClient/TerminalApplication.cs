@@ -8,33 +8,28 @@ using TuiClient.Windows;
 
 namespace TuiClient;
 
-public sealed class TerminalApplication(IApplication app, TargetCollection targets, ApplicationState state, WindowManager windowManager)
+public sealed class TerminalApplication(IApplication app, TargetCollection targets, State state, WindowManager windowManager)
 {
 	private TargetCollection _targets = targets;
-	private ApplicationState _state = state;
+	private State _state = state;
 	private WindowManager _windowManager = windowManager;
 
-	public Task RunAsync()
+	public async Task RunAsync()
 	{
 		// Set login window to be the active window
 		app.Run<GuiBootstrapper>();
-
-		return Task.CompletedTask;
-	}
-
-	public Task RunAsync(CancellationToken ct)
-	{
-		throw new NotImplementedException();
 	}
 
 	public Task Stop()
 	{
-		throw new NotImplementedException();
+		app.RequestStop();
+		return Task.CompletedTask;
 	}
 
 	public Task Dispose()
 	{
-		throw new NotImplementedException();
+		app.Dispose();
+		return Task.CompletedTask;
 	}
 }
 
@@ -45,7 +40,7 @@ public static class TuiServiceCollectionExtensions
 		return services.AddSingleton<IApplication>(_ => Application.Create().Init())
 			.AddSingleton<WindowManager>()
 			.AddSingleton<TerminalApplication>()
-			.AddSingleton<ApplicationState>()
+			.AddSingleton<State>()
 
 			// Windows
 			.AddTransient<FileUnlockWindow>()
@@ -56,23 +51,20 @@ public static class TuiServiceCollectionExtensions
 
 public sealed class GuiBootstrapper : Runnable
 {
+	public static GuiBootstrapper Root { get; private set; }
+
 	public GuiBootstrapper()
 	{
-
-		Title = "why isn't this working";
-		Add(new Label
-		{
-			Text = "Test",
-			X = 1,
-			Y = 1
-		});
-
-
-
-
-		// Program.Services.GetRequiredService<WindowManager>()
-		// 	.Show<FileUnlockWindow>();
+		Title = "Echo Chat - Dev Client";
 	}
 
+	public override void EndInit()
+	{
+		Root = this;
 
+		base.EndInit();
+
+		Program.Services.GetRequiredService<WindowManager>()
+			.Show<FileUnlockWindow>(this);
+	}
 }

@@ -22,4 +22,13 @@
       <ProjectReference Include="..\EchoLib\EchoLib.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="State.LocalState.cs">
+        <DependentUpon>State.cs</DependentUpon>
+      </Compile>
+      <Compile Update="State.NetState.cs">
+        <DependentUpon>State.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
