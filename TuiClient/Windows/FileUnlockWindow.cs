@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using EchoLib.Client;
 using EchoLib.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,8 +83,7 @@ public sealed class FileUnlockWindow : View
 		Button submit = new()
 		{
 			Text = "Submit",
-			TabStop = TabBehavior.TabStop,
-			HotKey = Key.Enter
+			TabStop = TabBehavior.TabStop
 		};
 
 		submit.Activating += OnSubmit;

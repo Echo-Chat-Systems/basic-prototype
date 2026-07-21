@@ -43,7 +43,7 @@ public class StackView : View
 
 				if (view is Button)
 				{
-					view.Height = Dim.Percent(10);
+					view.Height = 2;
 				}
 				else
 				{
