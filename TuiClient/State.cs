@@ -1,4 +1,6 @@
-﻿namespace TuiClient;
+﻿using EchoLib.Models.Crypto;
+
+namespace TuiClient;
 
 public class State(IServiceProvider services)
 {
@@ -6,4 +8,9 @@ public class State(IServiceProvider services)
 
 	public readonly LocalState Local = new();
 	public readonly NetState Net = new(services);
+	public readonly RemoteState Remote = new();
+
+	public EchoClient? ProtocolClient { get; set; }
+
+	public KeySetJm Keys => Local.UserFile is null ? throw new NullReferenceException() : Local.UserFile.Keys;
 }

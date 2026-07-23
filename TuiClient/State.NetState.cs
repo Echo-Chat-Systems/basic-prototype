@@ -8,6 +8,8 @@ public class NetState(IServiceProvider services)
 	public IMessageEndpoint? Endpoint { get; private set; } = null!;
 	public WebSocket? Socket { get; private set; }
 
+
+
 	public void RegisterConnection(WebSocket socket)
 	{
 		Socket = socket;

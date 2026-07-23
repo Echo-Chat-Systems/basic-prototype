@@ -1,7 +1,6 @@
 ﻿using EchoLib.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Terminal.Gui.App;
 using TuiClient.Targets;
 
 namespace TuiClient;
@@ -18,7 +17,7 @@ public class Program
 	})
 	// Backend side
 	.AddRouting()
-	.AddSingleton<TargetCollection>()
+	.AddTargets()
 
 	// GUI
 	.AddTui()

@@ -29,6 +29,9 @@
       <Compile Update="State.NetState.cs">
         <DependentUpon>State.cs</DependentUpon>
       </Compile>
+      <Compile Update="State.RemoteState.cs">
+        <DependentUpon>State.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

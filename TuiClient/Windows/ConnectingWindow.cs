@@ -8,6 +8,12 @@ public sealed class ConnectingWindow : View
 {
 	private readonly State _state = Program.Services.GetRequiredService<State>();
 
+	private static readonly Label ConnectingStatusLabel = new Label
+	{
+		Text = "",
+
+	};
+
 	public ConnectingWindow()
 	{
 		// Check if user file is null
@@ -19,9 +25,16 @@ public sealed class ConnectingWindow : View
 		{
 			Text = "Connecting..",
 			X = Pos.Center(),
-			Y = Pos.Center(),
-			Width = Dim.Percent(50),
-			Height = Dim.Percent(50)
+			Y = Pos.Top(this),
+			Width = Dim.Fill(),
+			Height = Dim.Percent(10)
 		});
+
+		Add(ConnectingStatusLabel);
+
+		_state.Remote.OnServerNameChanged += args => ConnectingStatusLabel.Text = $"Connected to {args.NewName}!";
+
+		// Build the echo client
+		_state.ProtocolClient = new EchoClient();
 	}
 }
