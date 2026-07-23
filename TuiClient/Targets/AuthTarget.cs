@@ -1,9 +1,11 @@
 using EchoLib.Models.Params.Auth;
+using EchoLib.Models.States;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing.Identification;
 using EchoLib.Transport;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Encoders;
+using TuiClient.Events;
 
 namespace TuiClient.Targets;
 
@@ -11,25 +13,21 @@ public class AuthTarget(ILogger<AuthTarget> logger, State state) : TargetBase<Au
 {
 	public override string Name => "auth";
 
-	private static readonly SigninStateModel SigninState = new();
+	public delegate void SigninStageChangedEventHandler(SigninStageChangedEventArgs e);
 
-	private record SigninStateModel
-	{
-		public SigninStage Stage = SigninStage.NotStarted;
-		public string? SignChallenge;
-		public string? EncryptChallenge;
-		public string? SignResponse;
-		public string? EncryptResponse;
-	}
+	public event SigninStageChangedEventHandler? OnSigninStageChanged;
 
-	private enum SigninStage
+	public SigninStage SigninState
 	{
-		NotStarted,
-		Started,
-		Challenged,
-		ChallengeResponded,
-		Completed
-	}
+		get => field;
+		private set
+		{
+			SigninStage old = field;
+			field = value;
+
+			OnSigninStageChanged?.Invoke(new SigninStageChangedEventArgs(old, value));
+		}
+	} = SigninStage.NotStarted;
 
 	public async Task<ServerHelloParameters> SendHello(IMessageEndpoint endpoint, ClientHelloParameters parameters)
 	{
@@ -40,23 +38,19 @@ public class AuthTarget(ILogger<AuthTarget> logger, State state) : TargetBase<Au
 		return hello;
 	}
 
-	public async Task<SigninCompleteParameters> SendSigninStart(IMessageEndpoint endpoint, SigninStartParameters parameters)
+	public async Task<SigninCompleteParameters> Signin(IMessageEndpoint endpoint, SigninStartParameters parameters)
 	{
 		// State checks to ensure linear progression
-		if (SigninState.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
+		if (SigninState != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 
-		SigninState.Stage = SigninStage.Started;
+		SigninState = SigninStage.Started;
 		SigninChallengeParameters challenge = await endpoint.RequestAsync<SigninChallengeParameters, SigninStartParameters>(Name, parameters);
 
 		// State checks to preserve thread sanity
-		if (SigninState.Stage != SigninStage.Started) throw new SigninNotStartedException();
+		if (SigninState != SigninStage.Started) throw new SigninNotStartedException();
 
 		// Update stage
-		SigninState.Stage = SigninStage.Challenged;
-
-		// Update state with challenge
-		SigninState.SignChallenge = challenge.SignChallenge;
-		SigninState.EncryptChallenge = challenge.EncryptChallenge;
+		SigninState = SigninStage.Challenged;
 
 		// Decode challenges from strings into bytes using base64
 		byte[] sigChallengeBytes = Base64.Decode(challenge.SignChallenge);
@@ -75,6 +69,7 @@ public class AuthTarget(ILogger<AuthTarget> logger, State state) : TargetBase<Au
 		// Send response
 		try
 		{
+			SigninState = SigninStage.ChallengeResponded;
 			return await endpoint.RequestAsync<SigninCompleteParameters, SigninResponseParameters>(Name, new SigninResponseParameters
 			{
 				Signature = signature,

@@ -74,8 +74,6 @@ public sealed class FileUnlockWindow : View
 			TabStop = TabBehavior.TabGroup
 		};
 
-
-
 		if (!EchoFile.Exists)
 			// Show controls for creating a new user file
 		{

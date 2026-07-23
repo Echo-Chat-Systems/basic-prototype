@@ -9,6 +9,7 @@ public class WindowManager
 {
 	private readonly IApplication _app;
 	private readonly IServiceProvider _services;
+	private string? DefaultTitle;
 	public View? Current { get; private set; }
 
 	public WindowManager(IServiceProvider services, IApplication app)
@@ -41,8 +42,12 @@ public class WindowManager
 		*/
 		if (Current != null)
 		{
-			parent.Title.Remove(parent.Title.IndexOf($" - {Current.Title}", StringComparison.Ordinal));
+			parent.Title = parent.Title.Remove(parent.Title.IndexOf($" - {Current.Title}", StringComparison.Ordinal));
 			parent.Remove(Current);
+		}
+		else
+		{
+			DefaultTitle = parent.Title;
 		}
 
 

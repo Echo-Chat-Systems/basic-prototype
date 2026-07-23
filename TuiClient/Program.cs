@@ -11,7 +11,7 @@ public class Program
 	public static readonly IServiceProvider Services = new ServiceCollection()
 	.AddLogging(builder =>
 	{
-		builder.AddConsole();
+		builder.AddDebug();
 		builder.SetMinimumLevel(LogLevel.Debug);
 
 	})

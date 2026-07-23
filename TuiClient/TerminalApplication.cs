@@ -29,6 +29,7 @@ public sealed class TerminalApplication(IApplication app, TargetCollection targe
 
 	public Task Dispose()
 	{
+		_state.Net.Socket?.Close();
 		app.Dispose();
 		return Task.CompletedTask;
 	}
@@ -46,7 +47,7 @@ public static class TuiServiceCollectionExtensions
 			// Windows
 			.AddTransient<FileUnlockWindow>()
 			.AddTransient<ConnectingWindow>()
-
+			.AddTransient<SigninWindow>()
 			;
 	}
 }

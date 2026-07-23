@@ -178,7 +178,7 @@ public class Client
     {
         // Unpack message event 
         _logger.LogDebug("Message received, attempting to unpack");
-        Envelope<JToken>? envelope = null;
+        Envelope<JToken>? envelope;
         try
         {
             envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
