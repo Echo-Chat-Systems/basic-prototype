@@ -24,22 +24,14 @@ public class WindowManager
 		Show(_services.GetRequiredService<T>(), root);
 	}
 
+	public void ShowDialogue<T>() where T : View
+	{
+		T view = _services.GetRequiredService<T>();
+
+	}
+
 	public void Show(View view, Runnable parent)
 	{
-		/*if (Current != null)
-		{
-			_app.TopRunnableView?.Remove(Current);
-		}
-
-		Current = view;
-
-		view.Width = Dim.Fill();
-		view.Height = Dim.Fill();
-
-		_app.TopRunnableView?.Add(view);
-
-		view.SetFocus();
-		*/
 		if (Current != null)
 		{
 			parent.Title = parent.Title.Remove(parent.Title.IndexOf($" - {Current.Title}", StringComparison.Ordinal));

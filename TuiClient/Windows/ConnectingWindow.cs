@@ -1,4 +1,6 @@
+using EchoLib.Models.Data.User;
 using EchoLib.Models.Params.Auth;
+using EchoLib.Protocol.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Terminal.Gui.App;
@@ -37,7 +39,6 @@ public sealed class ConnectingWindow : View
 
 	public ConnectingWindow()
 	{
-
 		// Check if user file is null
 		if (_state.Local.UserFile == null) throw new InvalidOperationException($"Unable to create {nameof(ConnectingWindow)} without valid UserFile");
 
@@ -73,7 +74,32 @@ public sealed class ConnectingWindow : View
 
 		_state.Remote.ServerName = serverHello.ServerName;
 
+		// Now try and sign in
+		try
+		{
+			SigninCompleteParameters complete = await _targets.Auth.Signin(_state.Net.Endpoint!, new SigninStartParameters { Ek = _state.Keys.PubEk, Sk = _state.Keys.PubSk });
+		}
+		catch (NotFoundException)
+		{
+			// Run new app
+			IApplication app = Application.Create().Init();
+			app.Run<CreateAccountWindow>();
+
+			JProfile? result = app.GetResult<JProfile>();
+
+			if (result is null) throw new NullReferenceException(nameof(JProfile));
+
+			// Create a new account with the server
+			await _targets.Auth.Signup(_state.Net.Endpoint!, new SignupParameters() { Keys = _state.Keys.ToPublicKeyPair(), Profile = result });
+
+		}
+		catch (SigninChallengeFailedException)
+		{
+			_logger.LogCritical("Signin challenge failed somehow?");
+			throw;
+		}
+
 		// Connected successfully, show SigninWindow
-		_windowManager.Show<SigninWindow>(GuiBootstrapper.Root);
+		// _windowManager.Show<SigninWindow>(GuiBootstrapper.Root);
 	}
 }

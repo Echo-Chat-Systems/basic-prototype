@@ -38,6 +38,12 @@ public class AuthTarget(ILogger<AuthTarget> logger, State state) : TargetBase<Au
 		return hello;
 	}
 
+	public async Task<SignupCompleteParameters> Signup(IMessageEndpoint endpoint, SignupParameters parameters)
+	{
+		// Request a new signup
+		return await endpoint.RequestAsync<SignupCompleteParameters, SignupParameters>(Name, parameters);
+	}
+
 	public async Task<SigninCompleteParameters> Signin(IMessageEndpoint endpoint, SigninStartParameters parameters)
 	{
 		// State checks to ensure linear progression

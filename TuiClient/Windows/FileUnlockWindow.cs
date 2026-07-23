@@ -118,7 +118,7 @@ public sealed class FileUnlockWindow : View
 
 	private void OnSubmit(object? o, CommandEventArgs e)
 	{
-		UserFileJm? userFile;
+		JUserFile? userFile;
 
 		if (EchoFile.Exists)
 		{
@@ -140,7 +140,7 @@ public sealed class FileUnlockWindow : View
 			}
 
 			// Create new user file
-			userFile = new UserFileJm
+			userFile = new JUserFile
 			{
 				Keys = KdvHelper.Generate(),
 				Server = new ServerInfoJm

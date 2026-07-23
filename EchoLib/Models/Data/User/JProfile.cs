@@ -2,7 +2,7 @@
 
 namespace EchoLib.Models.Data.User;
 
-public class JProfileModel
+public class JProfile
 {
 	[JsonProperty("username")] public required string Username { get; init; }
 	[JsonProperty("tag")] public required ushort Tag { get; set; }

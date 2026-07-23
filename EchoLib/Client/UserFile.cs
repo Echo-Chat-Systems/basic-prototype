@@ -27,7 +27,7 @@ public static class UserFileHelper
 	/// <param name="data"></param>
 	/// <param name="outputFile"></param>
 	/// <param name="passphrase"></param>
-	public static void Encrypt(UserFileJm data, FileInfo outputFile, string passphrase)
+	public static void Encrypt(JUserFile data, FileInfo outputFile, string passphrase)
 	{
 		// Serialise data
 		Span<byte> pSpan = Encoding.UTF8.GetBytes(
@@ -64,7 +64,7 @@ public static class UserFileHelper
 	/// <param name="password"></param>
 	/// <param name="userFile"></param>
 	/// <returns></returns>
-	public static bool Decrypt(FileInfo file, string password, out UserFileJm? userFile)
+	public static bool Decrypt(FileInfo file, string password, out JUserFile? userFile)
 	{
 		// Set userFile by default to null
 		userFile = null;
@@ -94,7 +94,7 @@ public static class UserFileHelper
 		// Deserialize plaintext into content
 		string plaintext = Encoding.UTF8.GetString(pBytes);
 
-		userFile = JsonConvert.DeserializeObject<UserFileJm>(plaintext);
+		userFile = JsonConvert.DeserializeObject<JUserFile>(plaintext);
 		return true;
 	}
 

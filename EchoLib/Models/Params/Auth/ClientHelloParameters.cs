@@ -7,5 +7,5 @@ public class ClientHelloParameters : IParam
 {
 	public string Action => "hello";
 
-	[JsonProperty("key-pair")] public required PublicKeyPairJm KeyPair { get; init; }
+	[JsonProperty("key-pair")] public required JPublicKeyPair KeyPair { get; init; }
 }

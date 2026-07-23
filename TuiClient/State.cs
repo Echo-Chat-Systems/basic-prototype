@@ -12,5 +12,5 @@ public class State(IServiceProvider services)
 
 	public EchoClient? ProtocolClient { get; set; }
 
-	public KeySetJm Keys => Local.UserFile is null ? throw new NullReferenceException() : Local.UserFile.Keys;
+	public JKeySet Keys => Local.UserFile is null ? throw new NullReferenceException() : Local.UserFile.Keys;
 }

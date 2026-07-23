@@ -41,13 +41,11 @@ public class StackView : View
 				view.Y = SubViews.Count == 0 ? 0 : Pos.Bottom(SubViews.ElementAt(SubViews.Count - 1)) + 1;
 				view.Width = Dim.Fill();
 
-				if (view is Button)
+				view.Height = view is Button ? 2 : 1;
+
+				if (view is TextField or Button)
 				{
-					view.Height = 2;
-				}
-				else
-				{
-					view.Height = 1;
+					view.TabStop = TabBehavior.TabStop;
 				}
 
 				break;
