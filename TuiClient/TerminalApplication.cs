@@ -1,6 +1,7 @@
 ﻿using EchoLib.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Terminal.Gui.App;
+using Terminal.Gui.Drivers;
 using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
 using TuiClient.Targets;
@@ -37,13 +38,14 @@ public static class TuiServiceCollectionExtensions
 {
 	public static IServiceCollection AddTui(this IServiceCollection services)
 	{
-		return services.AddSingleton<IApplication>(_ => Application.Create().Init())
+		return services.AddSingleton<IApplication>(_ => Application.Create().Init(DriverRegistry.Names.DOTNET))
 			.AddSingleton<WindowManager>()
 			.AddSingleton<TerminalApplication>()
 			.AddSingleton<State>()
 
 			// Windows
 			.AddTransient<FileUnlockWindow>()
+			.AddTransient<ConnectingWindow>()
 
 			;
 	}

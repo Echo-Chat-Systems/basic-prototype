@@ -1,8 +1,12 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using EchoLib.Client;
+using EchoLib.Crypto;
 using EchoLib.Models;
+using EchoLib.Models.Misc;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 using Terminal.Gui.Input;
 using Terminal.Gui.Text;
 using Terminal.Gui.ViewBase;
@@ -86,7 +90,7 @@ public sealed class FileUnlockWindow : View
 			TabStop = TabBehavior.TabStop
 		};
 
-		submit.Activating += OnSubmit;
+		submit.Accepting += OnSubmit;
 
 		stack.AddControl(PasswordLabel, PasswordField, submit, ErrorLabel);
 
@@ -116,18 +120,16 @@ public sealed class FileUnlockWindow : View
 
 	private void OnSubmit(object? o, CommandEventArgs e)
 	{
+		UserFileJm? userFile;
+
 		if (EchoFile.Exists)
 		{
 			// Try and unlock echo file with key
-			if (!UserFileHelper.Decrypt(EchoFile, PasswordField.Text, out UserFileJm? userFile))
+			if (!UserFileHelper.Decrypt(EchoFile, PasswordField.Text, out userFile))
 			{
 				PasswordLabel.Text = "Encryption Password - *Invalid Password!*";
 				return;
 			}
-
-			// Decryption worked
-			Program.Services.GetRequiredService<State>().Local.UserFile = userFile;
-			Program.Services.GetRequiredService<WindowManager>().Show<ConnectingWindow>(GuiBootstrapper.Root);
 		}
 		else
 		{
@@ -140,7 +142,21 @@ public sealed class FileUnlockWindow : View
 			}
 
 			// Create new user file
+			userFile = new UserFileJm
+			{
+				Keys = KdvHelper.Generate(),
+				Server = new ServerInfoJm
+				{
+					Address = IpField.Text,
+					Port = result,
+					Version = VersionField.Text
+				}
+			};
 
+			UserFileHelper.Encrypt(userFile, EchoFile, PasswordField.Text);
 		}
+
+		Program.Services.GetRequiredService<State>().Local.UserFile = userFile;
+		Program.Services.GetRequiredService<WindowManager>().Show<ConnectingWindow>(GuiBootstrapper.Root);
 	}
 }
