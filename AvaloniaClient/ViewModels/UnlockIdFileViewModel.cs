@@ -51,7 +51,7 @@ public partial class UnlockIdFileViewModel : ViewModelBase
 
 		if (IsNewFile)
 		{
-			state.UserFile = new UserFileJm
+			state.UserFile = new JUserFile
 			{
 				Keys = KdvHelper.Generate(),
 				Server = new ServerInfoJm
@@ -67,7 +67,7 @@ public partial class UnlockIdFileViewModel : ViewModelBase
 		else
 		{
 			// Handle unlocking of existing file
-			if (!UserFileHelper.Decrypt(UserFile, Password, out UserFileJm? userFile))
+			if (!UserFileHelper.Decrypt(UserFile, Password, out JUserFile? userFile))
 			{
 				_diag!.Close(false);
 			}

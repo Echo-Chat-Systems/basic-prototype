@@ -6,7 +6,7 @@ namespace AvaloniaClient.State;
 
 public partial class AppState : ObservableObject
 {
-	[ObservableProperty] public partial UserFileJm? UserFile { get; set; } = null!;
+	[ObservableProperty] public partial JUserFile? UserFile { get; set; } = null!;
 
 	public bool IsUserFileLoaded => UserFile != null;
 
