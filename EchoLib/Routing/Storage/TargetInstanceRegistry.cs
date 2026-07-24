@@ -15,4 +15,9 @@ public class TargetInstanceRegistry
     {
         return (T) _targets[typeof(T)];
     }
+
+    public bool TryGet(Type t, out ITarget? target)
+    {
+	    return _targets.TryGetValue(t, out target);
+    }
 }

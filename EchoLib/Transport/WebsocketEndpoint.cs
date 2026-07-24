@@ -4,14 +4,21 @@ using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing.Responses;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WebSocketSharper;
 
 namespace EchoLib.Transport;
 
-public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMessageEndpoint
+public class WebsocketEndpoint(ILogger<WebsocketEndpoint> logger, WebSocket sock, PendingResponseRegistry pending) : IMessageEndpoint
 {
-	private readonly PendingResponseRegistry _pendingResponses = services.GetRequiredService<PendingResponseRegistry>();
+	public WebsocketEndpoint(WebSocket sock, IServiceProvider services) : this(
+		services.GetRequiredService<ILogger<WebsocketEndpoint>>(),
+		sock,
+		services.GetRequiredService<PendingResponseRegistry>()
+	)
+	{
+	}
 
 	public async Task ErrorAsync(ProtocolException err, Guid mid)
 	{
@@ -30,6 +37,8 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 			}
 		};
 
+		logger.LogError("[{Mid}] [error:error] [{Error}] sending", mid, err.Message);
+
 		await sock.SendTaskAsync(JsonConvert.SerializeObject(exEnvelope));
 	}
 
@@ -46,6 +55,8 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 				Parameters = param
 			}
 		};
+
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] sending", mid, target, param.Action);
 
 		// Serialise and send this
 		await sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
@@ -66,10 +77,15 @@ public class WebsocketEndpoint(WebSocket sock, IServiceProvider services) : IMes
 			}
 		};
 
+#if DEBUG
+		// This is in a debug check as reflection here will be costly
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] Requesting {ParamType}", mid, target, param.Action, typeof(TParam).FullName);
+#endif
+
 		// Send request
 		sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
 
 		// Register in pending responses registry
-		return _pendingResponses.Register<TResponse>(mid);
+		return pending.Register<TResponse>(mid);
 	}
 }

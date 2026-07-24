@@ -36,11 +36,9 @@ public sealed class Router
 
 		// Find routes (cached, so it's fine to run this in non-static code)
 		RouteFinder.Discover(serviceProvider, _routes, _targets);
-	}
 
-	public T GetTarget<T>() where T : ITarget
-	{
-		return _targets.Get<T>();
+		serviceProvider.GetService<ITargetHub>()?
+			.Populate(_targets);
 	}
 	
 	public async void Receive(Envelope<JToken> message, WebSocket socket)
@@ -78,9 +76,6 @@ public sealed class Router
 			_logger.LogError("[{ErrorId}] [{ErrorName}] : \n{Stacktrace}", iex.Eid, ex.Message, ex.StackTrace);
 			await new WebsocketEndpoint(socket, _serviceProvider).ErrorAsync(iex, message.MessageId);
 		}
-
-
-
 	}
 }
 
@@ -98,7 +93,15 @@ public static class RoutingServiceCollectionExtensions
 		services.AddSingleton<PendingResponseRegistry>();
 		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(NewtonsoftJson.DefaultSettings()));
 
+		Type? targetHub = TargetHubFinder.Find();
+		if (targetHub != null)
+		{
+			// Add as generic
+			services.AddSingleton(typeof(ITargetHub), targetHub);
 
+			// Add mapping to use generic implementation
+			services.AddSingleton(targetHub, s => s.GetService<ITargetHub>()!);
+		}
 
 		return services;
 	}
