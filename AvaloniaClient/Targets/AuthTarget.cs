@@ -45,7 +45,7 @@ public class AuthTarget(ILogger<AuthTarget> logger, AppState state) : ITarget
 		if (_signinState != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 
 		_signinState = SigninStage.Started;
-		SigninChallengeParameters challenge = await Endpoint.RequestAsync<SigninChallengeParameters, SigninStartParameters>(Name, new SigninStartParameters()
+		SigninChallengeParameters challenge = await Endpoint.RequestAsync<SigninChallengeParameters, SigninStartParameters>(Name, new SigninStartParameters
 		{
 			Ek = Keys.PubEk,
 			Sk = Keys.PubSk

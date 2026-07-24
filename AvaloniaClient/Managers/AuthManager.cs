@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using EchoLib.Models.Params.Auth;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing.Identification;
+using EchoLib.Transport;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WebSocketSharper;
@@ -50,17 +51,7 @@ public partial class AuthManager : ObservableObject
 	{
 		if (e.PropertyName == nameof(LocalState.AuthState) && _state.Local.AuthState == LocalState.AuthStates.StartConnect)
 		{
-			try
-			{
-				_ = StartAsync();
-			}
-			catch (Exception)
-			{
-				Log("Exception occured in startup.");
-				_logger.LogCritical("Ex in startup");
-				throw;
-
-			}
+			StartAsync().Forget(_logger);
 		}
 	}
 
@@ -78,7 +69,7 @@ public partial class AuthManager : ObservableObject
 		{
 			Log("Sending hello...");
 			ServerHelloParameters response = await _targets.Auth.SendHello();
-			Log("Hello response received. Server name {}", response.ServerName);
+			Log("Hello response received. Server name {0}", response.ServerName);
 			_state.Remote.ServerName = response.ServerName;
 		}
 		catch (ProtocolException e)

@@ -15,10 +15,24 @@
 
     <!-- Root -->
     <Panel>
-        <DockPanel IsVisible="{Binding State.Local.FrontendReady}">
+        <DockPanel>
             <StackPanel DockPanel.Dock="Top">
-
+                <TextBlock HorizontalAlignment="Left">Echo Chat - Alpha</TextBlock>
+                <Border MinWidth="50" MinHeight="50" CornerRadius="50" BorderThickness="4" BorderBrush="Aqua" HorizontalAlignment="Right"><TextBlock> test </TextBlock></Border>
             </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <TextBlock Text="{Binding ConnectedTo}"/>
+            </StackPanel>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Stretch" Orientation="Vertical">
+                    <TextBlock>Test</TextBlock>
+                    <TextBlock>Test</TextBlock>
+                    <TextBlock>Test</TextBlock>
+                    <TextBlock>Test</TextBlock>
+                    <TextBlock>Test</TextBlock>
+                    <TextBlock>Test</TextBlock>
+                </StackPanel>
+            </DockPanel>
         </DockPanel>
         <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding Visible}" />
     </Panel>
