@@ -47,6 +47,7 @@ public static class TuiServiceCollectionExtensions
 			// Windows
 			.AddTransient<FileUnlockWindow>()
 			.AddTransient<ConnectingWindow>()
+			.AddTransient<CreateAccountWindow>()
 			;
 	}
 }

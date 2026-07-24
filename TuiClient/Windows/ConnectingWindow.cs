@@ -44,6 +44,9 @@ public sealed class ConnectingWindow : View
 
 		Title = "Connecting...";
 
+		CanFocus = true;
+		TabStop = TabBehavior.TabGroup;
+
 		Add(LogField, ConnectButton);
 
 		ConnectButton.Accepted += ConnectPressed;
@@ -53,45 +56,41 @@ public sealed class ConnectingWindow : View
 
 	private async void ConnectPressed(object? sender, CommandEventArgs commandEventArgs)
 	{
-		// Build the echo client
-		try
+		if (_state.Net.Socket?.IsAlive != true)
 		{
-			_state.ProtocolClient = new EchoClient();
-			await _state.ProtocolClient.Connect();
-		}
-		catch (Exception ex)
-		{
-			_logger.LogCritical("Failed to connect to server: {ErrorName}\n{Stacktrace}", ex.Message, ex.StackTrace);
-			// ReSharper disable once AsyncVoidThrowException  // We want to rethrow here, the application has failed TODO: Something other than this
-			throw;
-		}
+			// Build the echo client
+			try
+			{
+				_state.ProtocolClient = new EchoClient();
+				await _state.ProtocolClient.Connect();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogCritical("Failed to connect to server: {ErrorName}\n{Stacktrace}", ex.Message, ex.StackTrace);
+				// ReSharper disable once AsyncVoidThrowException  // We want to rethrow here, the application has failed TODO: Something other than this
+				throw;
+			}
 
-		// Now that socket is connected, run auth login
-		ServerHelloParameters serverHello = await _targets.Auth.SendHello(_state.Net.Endpoint!, new ClientHelloParameters
-		{
-			KeyPair = _state.Keys.ToPublicKeyPair()
-		});
+			// Now that socket is connected, run auth login
+			ServerHelloParameters serverHello = await _targets.Auth.SendHello(_state.Net.Endpoint!, new ClientHelloParameters
+			{
+				KeyPair = _state.Keys.ToPublicKeyPair()
+			});
 
-		_state.Remote.ServerName = serverHello.ServerName;
+			_state.Remote.ServerName = serverHello.ServerName;
+		}
 
 		// Now try and sign in
+		SigninCompleteParameters complete;
+
 		try
 		{
-			SigninCompleteParameters complete = await _targets.Auth.Signin(_state.Net.Endpoint!, new SigninStartParameters { Ek = _state.Keys.PubEk, Sk = _state.Keys.PubSk });
+			complete = await _targets.Auth.Signin(_state.Net.Endpoint!, new SigninStartParameters { Ek = _state.Keys.PubEk, Sk = _state.Keys.PubSk });
 		}
 		catch (NotFoundException)
 		{
 			// Run new app
-			IApplication app = Application.Create().Init();
-			app.Run<CreateAccountWindow>();
-
-			JProfile? result = app.GetResult<JProfile>();
-
-			if (result is null) throw new NullReferenceException(nameof(JProfile));
-
-			// Create a new account with the server
-			await _targets.Auth.Signup(_state.Net.Endpoint!, new SignupParameters() { Keys = _state.Keys.ToPublicKeyPair(), Profile = result });
-
+			_windowManager.Show<CreateAccountWindow>(GuiBootstrapper.Root);
 		}
 		catch (SigninChallengeFailedException)
 		{
@@ -101,5 +100,10 @@ public sealed class ConnectingWindow : View
 
 		// Connected successfully, show SigninWindow
 		// _windowManager.Show<SigninWindow>(GuiBootstrapper.Root);
+	}
+
+	private void ShowCreateAccount()
+	{
+
 	}
 }
