@@ -8,5 +8,5 @@ public class SigninCompleteParameters : IParam
 	public string Action => "signin-complete";
 	
 	[JsonProperty("user")] 
-	public required JUserModel User { get; init; }
+	public required JUser User { get; init; }
 }

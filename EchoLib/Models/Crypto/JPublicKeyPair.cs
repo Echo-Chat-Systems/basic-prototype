@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace EchoLib.Models.Crypto;
 
-public class PublicKeyPairJm
+public class JPublicKeyPair
 {
 	[JsonProperty("sk")] [Required] public required PublicSigningKey SigningKey { get; set; }
 	[JsonProperty("ek")] [Required] public required PublicEncryptionKey EncryptionKey { get; set; }

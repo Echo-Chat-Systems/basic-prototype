@@ -11,7 +11,7 @@ public class ServerClient
 {
 	public required LiveClient Instance;
 	public PublicSigningKey? Id;
-	public PublicKeyPairJm? KeyPair;
+	public JPublicKeyPair? KeyPair;
 
 	public AuthTarget.SigninState SigninState = new();
 }

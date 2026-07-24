@@ -56,7 +56,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 	}
 
 	[Route("signup")]
-	public async Task HandleSignup(RoutingContext ctx, ClientSignupParameters parameters)
+	public async Task HandleSignup(RoutingContext ctx, SignupParameters parameters)
 	{
 		// Check if this user already exists
 		if (await _usersRepo.GetAsync(parameters.Keys.SigningKey) != null) throw new KeyConflictException();
@@ -148,7 +148,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 			
 			await ctx.ReplyAsync(new SigninCompleteParameters
 			{
-				User = new JUserModel
+				User = new JUser
 				{
 					Id = userDbm.Id,
 					Ek = userDbm.Ek,

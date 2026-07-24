@@ -5,7 +5,7 @@ using Server.JmDbConverter;
 
 namespace Server.Database.Models.Public;
 
-[BindsToModel(typeof(JUserModel))]
+[BindsToModel(typeof(JUser))]
 public class UserDbm
 {
 	public required PublicSigningKey Id { get; init; }

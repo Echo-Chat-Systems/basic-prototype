@@ -4,8 +4,8 @@ using Newtonsoft.Json;
 
 namespace EchoLib.Models;
 
-public class UserFileJm
+public class JUserFile
 {
-	[JsonProperty("keys")] public required KeySetJm Keys { get; set; }
+	[JsonProperty("keys")] public required JKeySet Keys { get; set; }
 	[JsonProperty("server")] public required ServerInfoJm Server { get; set; }
 }

@@ -7,7 +7,7 @@ namespace EchoLib.Models.Crypto;
 /// <summary>
 /// All user keys.
 /// </summary>
-public class KeySetJm
+public class JKeySet
 {
 	[JsonProperty("pub_sk")] public PublicSigningKey PubSk { get; set; }
 
@@ -17,9 +17,9 @@ public class KeySetJm
 
 	[JsonProperty("prv_ek")] public PrivateEncryptionKey PrvEk { get; set; }
 
-	public PublicKeyPairJm ToPublicKeyPair()
+	public JPublicKeyPair ToPublicKeyPair()
 	{
-		return new PublicKeyPairJm()
+		return new JPublicKeyPair
 		{
 			SigningKey = PubSk,
 			EncryptionKey = PubEk

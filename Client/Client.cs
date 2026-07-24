@@ -25,7 +25,7 @@ public class Client
         new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
     public static WebSocket Socket { get; private set; }
     public static IServiceProvider Services { get; set; } = null!;
-    public static KeySetJm Keys { get; set; } = null!;
+    public static JKeySet Keys { get; set; } = null!;
     public static ServerInfoJm ServerInfo { get; set; } = null!;
     private Router router;
     private bool _connected = false;
@@ -67,7 +67,7 @@ public class Client
         // Ask user for their password
         string passwd = ConsoleHelper.GetConsoleInput("Please input your encryption password: ");
         FileInfo userFileHandle = new(EchoDirectory + ".user");
-        UserFileJm file;
+        JUserFile file;
 
 
         // Check if file exists
@@ -84,7 +84,7 @@ public class Client
         // User does not have an existing saved account, create a new account
         else
         {
-            file = new UserFileJm
+            file = new JUserFile
             {
                 Keys = KdvHelper.Generate(),
                 Server = new ServerInfoJm
@@ -131,7 +131,7 @@ public class Client
         // Connect to server
         await _targets.Auth.SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
         {
-	        KeyPair = new PublicKeyPairJm
+	        KeyPair = new JPublicKeyPair
 	        {
 		        SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
 	        }
@@ -178,7 +178,7 @@ public class Client
     {
         // Unpack message event 
         _logger.LogDebug("Message received, attempting to unpack");
-        Envelope<JToken>? envelope = null;
+        Envelope<JToken>? envelope;
         try
         {
             envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);

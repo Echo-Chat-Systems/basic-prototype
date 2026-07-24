@@ -14,7 +14,7 @@ namespace EchoLib.Crypto;
 /// </summary>
 public static class KdvHelper
 {
-	public static KeySetJm Generate()
+	public static JKeySet Generate()
 	{
 		// Generate encryption keys
 		using RSA encryption = RSA.Create(2048);
@@ -29,7 +29,7 @@ public static class KdvHelper
 		byte[] pubSk = ((Ed25519PublicKeyParameters)keyPair.Public).GetEncoded();
 		byte[] prvSk = ((Ed25519PrivateKeyParameters)keyPair.Private).GetEncoded();
 
-		return new KeySetJm
+		return new JKeySet
 		{
 			PubSk = new PublicSigningKey(pubSk),
 			PrvSk = new PrivateSigningKey(prvSk),
