@@ -2,12 +2,48 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Login"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaClient.Views.Login.NewAccountView"
         xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
         x:DataType="viewModels:Login.NewAccountViewModel"
         >
-    <StackPanel Classes="centered">
 
+    <Design.DataContext>
+        <login:NewAccountViewModel />
+    </Design.DataContext>
+
+    <StackPanel Classes="centered">
+        <!-- Required -->
+        <Label>Username</Label>
+        <TextBox Text="{Binding Username}" />
+        <Label>Tag</Label>
+        <TextBox Text="{Binding Tag}" />
+
+        <!-- Optional -->
+        <Label>Optional</Label>
+        <Expander HorizontalAlignment="Stretch">
+            <StackPanel Classes="centered">
+                <Label>Pronouns</Label>
+                <TextBox Text="{Binding Pronouns}" />
+
+                <Label>Bio</Label>
+                <TextBox MinLines="3" Text="{Binding Bio}" />
+
+                <Label>Css</Label>
+                <TextBox MinLines="3" Text="{Binding CustomCss}" />
+
+                <Label>Profile Picture Link</Label>
+                <TextBox Text="{Binding PfpLink}" />
+
+                <Label>Banner Picture Link</Label>
+                <TextBox Text="{Binding BannerLink}" />
+
+                <Label>Save Current Timezone</Label>
+                <CheckBox IsChecked="{Binding SaveCurrentTimezone}" />
+            </StackPanel>
+        </Expander>
+
+        <Button Command="{Binding CreateAsync}">Create!</Button>
     </StackPanel>
 </UserControl>

@@ -49,9 +49,18 @@ public partial class AuthManager : ObservableObject
 
 	private void LocalStateChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName == nameof(LocalState.AuthState) && _state.Local.AuthState == LocalState.AuthStates.StartConnect)
+		if (e.PropertyName != nameof(LocalState.AuthState) ) return;
+
+		switch (_state.Local.AuthState)
 		{
-			StartAsync().Forget(_logger);
+			case LocalState.AuthStates.StartConnect:
+				StartAsync().Forget(_logger);
+				break;
+			case LocalState.AuthStates.StartAuth:
+				AuthAsync().Forget(_logger);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -71,13 +80,19 @@ public partial class AuthManager : ObservableObject
 			ServerHelloParameters response = await _targets.Auth.SendHello();
 			Log("Hello response received. Server name {0}", response.ServerName);
 			_state.Remote.ServerName = response.ServerName;
+
+			// Start auth process
+			_state.Local.AuthState = LocalState.AuthStates.StartAuth;
 		}
 		catch (ProtocolException e)
 		{
-			Log("Sever hello failed with error {}", e.Message);
+			Log("Sever hello failed with error {0}", e.Message);
 			_state.Local.AuthState = LocalState.AuthStates.Failed;
 		}
+	}
 
+	private async Task AuthAsync()
+	{
 		SigninCompleteParameters complete;
 		try
 		{
@@ -90,8 +105,12 @@ public partial class AuthManager : ObservableObject
 		}
 		catch (ProtocolException e)
 		{
-			Log("Signin failed with error {}", e.Message);
+			Log("Signin failed with error {0}", e.Message);
 			_state.Local.AuthState = LocalState.AuthStates.Failed;
+			return;
 		}
+
+		_state.Remote.User = complete.User;
+		_logger.LogInformation("Completed auth flow successfully.");
 	}
 }

@@ -8,10 +8,12 @@
              x:DataType="viewModels:Login.AuthOverlayViewModel"
              >
 
-    <Border Background="MidnightBlue" CornerRadius="10">
-        <StackPanel Orientation="Vertical">
+    <Border Background="MidnightBlue" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" Classes="centered">
             <ContentControl Content="{Binding CurrentPage}" />
-            <ListBox ItemsSource="{Binding AuthLogs}"></ListBox>
+            <ListBox ItemsSource="{Binding AuthLogs}" IsVisible="False"/>
+            <TextBlock>Loading...</TextBlock>
+            <TextBlock Text="{Binding AuthStage}"/>
         </StackPanel>
 
 

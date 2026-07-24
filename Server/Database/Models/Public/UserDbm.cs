@@ -12,4 +12,10 @@ public class UserDbm
 	public required PublicEncryptionKey Ek { get; init; }
 	public required DateTime CreatedAt { get; init; }
 
+
+	public class New
+	{
+		public required PublicSigningKey Id { get; init; }
+		public required PublicEncryptionKey Ek { get; init; }
+	}
 }

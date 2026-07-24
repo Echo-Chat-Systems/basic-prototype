@@ -3,14 +3,14 @@ using EchoLib.Routing.Identification;
 
 namespace EchoLib.Routing.Discovery;
 
-public static class TargetHubFinder
+public static class ImplementationFinder
 {
-	public static Type? Find()
+	public static Type? Find<T>()
 	{
 		// ReSharper disable once ReplaceWithSingleCallToFirstOrDefault
 		return Assembly.GetEntryAssembly()?
 			.GetTypes()
-			.Where(t => typeof(ITargetHub).IsAssignableFrom(t) && t is { IsAbstract: false, IsInterface: false })
+			.Where(t => typeof(T).IsAssignableFrom(t) && t is { IsAbstract: false, IsInterface: false })
 			.FirstOrDefault();
 	}
 }

@@ -8,5 +8,5 @@ namespace AvaloniaClient;
 public partial class RemoteState : ObservableObject
 {
 	[ObservableProperty] public partial string ServerName { get; set; } = "";
-	[ObservableProperty] public partial JProfile? Profile { get; set; } = null;
+	[ObservableProperty] public partial JUser? User { get; set; } = null;
 }

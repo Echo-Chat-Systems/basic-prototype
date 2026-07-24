@@ -8,6 +8,7 @@ using EchoLib.Routing;
 using EchoLib.Routing.Identification;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Server.Database;
 using Server.Database.Models.Public;
 using Server.Database.Repositories;
 
@@ -17,14 +18,14 @@ public class AuthTarget: TargetBase<AuthTarget>
 {
 	private readonly Config _config;
 	private readonly ClientManager _clientManager;
-	private readonly IUsersRepo _usersRepo;
+	private readonly DbHub _db;
 
 	public override string Name => "auth";
 
-	public AuthTarget(ILogger<AuthTarget> logger, ClientManager clientManager, Config config, IUsersRepo usersRepo) : base(logger)
+	public AuthTarget(ILogger<AuthTarget> logger, ClientManager clientManager, Config config, DbHub db) : base(logger)
 	{
 		_config = config;
-		_usersRepo = usersRepo;
+		_db = db;
 		_clientManager = clientManager;
 	}
 
@@ -59,7 +60,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 	public async Task HandleSignup(RoutingContext ctx, SignupParameters parameters)
 	{
 		// Check if this user already exists
-		if (await _usersRepo.GetAsync(parameters.Keys.SigningKey) != null) throw new KeyConflictException();
+		if (await _db.Users.GetAsync(parameters.Keys.SigningKey) != null) throw new KeyConflictException();
 
 		// Create this user in the db
 
@@ -86,7 +87,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 		if (client.SigninState.Stage != SigninStage.NotStarted) throw new SigninAlreadyStartedException();
 
 		// Check if this client exists in the db
-		if (await _usersRepo.GetAsync(client.Id!) == null)
+		if (await _db.Users.GetAsync(client.Id!) == null)
 		{
 			Logger.LogError("Client {Id} not found!", client.Id);
 			throw new NotFoundException();
@@ -144,7 +145,7 @@ public class AuthTarget: TargetBase<AuthTarget>
 			client.SigninState.Stage = SigninStage.Completed;
 			
 			// Get the user 
-			UserDbm userDbm = (await _usersRepo.GetAsync(client.Id!))!;
+			UserDbm userDbm = (await _db.Users.GetAsync(client.Id!))!;
 			
 			await ctx.ReplyAsync(new SigninCompleteParameters
 			{

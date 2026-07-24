@@ -19,7 +19,7 @@ public partial class AuthOverlayViewModel : ViewModelBase
 	[ObservableProperty] public partial object? CurrentPage { get; set; }
 	[ObservableProperty] public partial bool Visible { get; set; } = true;
 	[ObservableProperty] public partial ObservableCollection<string> AuthLogs { get; set; }
-
+	[ObservableProperty] public partial string AuthStage { get; set; } = "Not Connected";
 
 
 	// ReSharper disable once MemberCanBePrivate.Global
@@ -56,14 +56,20 @@ public partial class AuthOverlayViewModel : ViewModelBase
 				CurrentPage = _services.GetRequiredService<UnlockFileViewModel>();
 				break;
 			case LocalState.AuthStates.StartConnect:
+				AuthStage = "Starting Connection";
 				break;
 			case LocalState.AuthStates.Connecting:
+				AuthStage = "Connecting";
 				break;
 			case LocalState.AuthStates.CreatingNewAccount:
+				CurrentPage = _services.GetRequiredService<NewAccountViewModel>();
+				AuthStage = "Waiting for new account creation";
 				break;
 			case LocalState.AuthStates.Authenticating:
+				AuthStage = "Authenticating with server";
 				break;
 			case LocalState.AuthStates.FrontendReady:
+				AuthStage = "Finishing up";
 				break;
 			case null:
 				break;

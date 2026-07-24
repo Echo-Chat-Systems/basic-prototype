@@ -93,7 +93,7 @@ public static class RoutingServiceCollectionExtensions
 		services.AddSingleton<PendingResponseRegistry>();
 		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(NewtonsoftJson.DefaultSettings()));
 
-		Type? targetHub = TargetHubFinder.Find();
+		Type? targetHub = ImplementationFinder.Find<ITargetHub>();
 		if (targetHub != null)
 		{
 			// Add as generic

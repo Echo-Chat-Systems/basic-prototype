@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Server.Database;
+using Server.Database.Discovery;
 using Server.Database.ParameterConverters;
 using Server.Database.Repositories;
 using Server.Database.Repositories.Impl;
@@ -43,12 +44,12 @@ public class Server
 		services.AddSingleton(config);
 		services.AddSingleton<ClientManager>();
 		services.AddRouting();
+		services.AddDatabase();
 
 		// Database info
 		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 		Dapper.SqlMapper.AddTypeHandler(new PublicSigningKeyConverter());
-		services.AddScoped<IDbConnectionProvider, PgDbConnectionProvider>();
-		services.AddScoped<IUsersRepo, PgUsersRepo>();
+
 
 		Services = services.BuildServiceProvider();
 
