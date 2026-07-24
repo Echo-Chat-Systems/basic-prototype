@@ -1,11 +1,17 @@
-using System.Threading.Tasks;
-using AvaloniaClient.Views;
+using AvaloniaClient.ViewModels.Login;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace AvaloniaClient.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+[SingletonModel]
+public partial class MainViewModel(AppState state, AuthOverlayViewModel authOverlay) : ViewModelBase
 {
+	[ObservableProperty] public partial AppState State { get; set; } = state;
+	[ObservableProperty] public partial AuthOverlayViewModel AuthOverlay { get; set; } = authOverlay;
+
+#if DEBUG
+	public MainViewModel() : this(new AppState(), new AuthOverlayViewModel()){}
+#endif
 
 }
+

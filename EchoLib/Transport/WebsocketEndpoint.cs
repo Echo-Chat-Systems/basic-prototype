@@ -20,6 +20,18 @@ public class WebsocketEndpoint(ILogger<WebsocketEndpoint> logger, WebSocket sock
 	{
 	}
 
+	private bool Preflight(out Exception? ex)
+	{
+		if (!sock.IsAlive)
+		{
+			ex = new InvalidOperationException();
+			return false;
+		}
+
+		ex = null;
+		return true;
+	}
+
 	public async Task ErrorAsync(ProtocolException err, Guid mid)
 	{
 		// Build message envelope
@@ -37,9 +49,10 @@ public class WebsocketEndpoint(ILogger<WebsocketEndpoint> logger, WebSocket sock
 			}
 		};
 
-		logger.LogError("[{Mid}] [error:error] [{Error}] sending", mid, err.Message);
-
+		logger.LogError("[{Mid}] [error:error] [-- Prepared] [{Error}]", mid, err.Message);
+		if (!Preflight(out Exception? exception)) throw exception!;
 		await sock.SendTaskAsync(JsonConvert.SerializeObject(exEnvelope));
+		logger.LogError("[{Mid}] [error:error] [-> Sent] [{Error}]", mid, err.Message);
 	}
 
 	public async Task SendAsync<T>(string target, T param, Guid mid) where T : IParam
@@ -56,10 +69,10 @@ public class WebsocketEndpoint(ILogger<WebsocketEndpoint> logger, WebSocket sock
 			}
 		};
 
-		logger.LogDebug("[{Mid}] [{Target}:{Action}] sending", mid, target, param.Action);
-
-		// Serialise and send this
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] [-- Prepared]", mid, target, param.Action);
+		if (!Preflight(out Exception? exception)) throw exception!;
 		await sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] [-> Sent]", mid, target, param.Action);
 	}
 
 	public Task<TResponse> RequestAsync<TResponse, TParam>(string target, TParam param) where TParam : IParam
@@ -79,13 +92,23 @@ public class WebsocketEndpoint(ILogger<WebsocketEndpoint> logger, WebSocket sock
 
 #if DEBUG
 		// This is in a debug check as reflection here will be costly
-		logger.LogDebug("[{Mid}] [{Target}:{Action}] Requesting {ParamType}", mid, target, param.Action, typeof(TParam).FullName);
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] [-- Prepared] Requesting <-> {ParamType}", mid, target, param.Action, typeof(TParam).FullName);
 #endif
-
+		if (!Preflight(out Exception? exception)) return Task.FromException<TResponse>(exception!);
 		// Send request
 		sock.SendTaskAsync(JsonConvert.SerializeObject(envelope));
 
+#if DEBUG
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] [-> Sent] Expecting <-> {ParamType}", mid, target, param.Action, typeof(TParam).FullName);
+#endif
+
 		// Register in pending responses registry
-		return pending.Register<TResponse>(mid);
+		Task<TResponse> t = pending.Register<TResponse>(mid);
+#if DEBUG
+		logger.LogDebug("[{Mid}] [{Target}:{Action}] [-- Waiting] Expect <-> {ParamType}", mid, target, param.Action, typeof(TParam).FullName);
+#endif
+		return t;
 	}
+
+
 }

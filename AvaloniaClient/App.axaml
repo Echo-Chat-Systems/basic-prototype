@@ -5,7 +5,7 @@
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-             <Application.DataTemplates>
+    <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
 
@@ -17,9 +17,10 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="25" />
+            <Setter Property="MinWidth" Value="400" />
 
             <Style Selector="^ Label, ^ Button, ^ TextBox">
-                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
             </Style>
         </Style>
     </Application.Styles>

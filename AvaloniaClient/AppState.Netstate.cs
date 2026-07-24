@@ -1,11 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using WebSocketSharper;
 
-namespace AvaloniaClient.State;
+namespace AvaloniaClient;
 
-public partial class SocketState : ObservableObject
+public partial class NetState : ObservableObject
 {
 	[ObservableProperty] public partial WebSocket Socket { get; set; } = null!;
-
-	public bool IsConnected => Socket is { IsAlive: true };
+	[ObservableProperty] public partial EchoClient Client { get; set; } = null!;
 }

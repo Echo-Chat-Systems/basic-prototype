@@ -1,17 +1,17 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaClient.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
+        xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Login"
         mc:Ignorable="d"
-        x:Class="AvaloniaClient.Views.UnlockIdFileWindow"
-        x:DataType="viewModels:UnlockIdFileViewModel"
-        Title="UnlockIdFileWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        x:Class="AvaloniaClient.Views.Login.UnlockFileView"
+        x:DataType="login:UnlockFileViewModel"
+        d:DesignWidth="500" d:DesignHeight="500"
         >
     <Design.DataContext>
-        <vm:UnlockIdFileViewModel />
+        <login:UnlockFileViewModel />
     </Design.DataContext>
 
     <StackPanel Classes="centered">
@@ -34,4 +34,4 @@
 
         <Button HotKey="Enter" Content="{Binding UnlockButtonContents}" Command="{Binding UnlockCommand}" />
     </StackPanel>
-</Window>
+</UserControl>

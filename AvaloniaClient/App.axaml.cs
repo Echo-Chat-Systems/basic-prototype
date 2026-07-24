@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using AvaloniaClient.Managers;
 using AvaloniaClient.ViewModels;
 using AvaloniaClient.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -29,17 +30,16 @@ public partial class App : Application
 				l.SetMinimumLevel(LogLevel.Debug);
 			})
 			.AddRouting()
-			.AddSingleton<State.AppState>()
+			.AddViewModels()
+			.AddSingleton<AppState>()
+			.AddSingleton<AuthManager>()
 			.BuildServiceProvider();
 
 		Ioc.Default.ConfigureServices(services);
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			desktop.MainWindow = new StartupWindow
-			{
-				DataContext = new MainViewModel(),
-			};
+			desktop.MainWindow = new MainWindow();
 		}
 
 		base.OnFrameworkInitializationCompleted();

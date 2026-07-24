@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using AvaloniaClient.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
@@ -10,22 +9,27 @@ using EchoLib.Client;
 using EchoLib.Crypto;
 using EchoLib.Models;
 using EchoLib.Models.Misc;
+using Microsoft.Extensions.Logging;
 
-namespace AvaloniaClient.ViewModels;
+namespace AvaloniaClient.ViewModels.Login;
 
-public partial class UnlockIdFileViewModel : ViewModelBase
+[TransientModel]
+public partial class UnlockFileViewModel : ViewModelBase
 {
-	private readonly Window? _diag = null;
+	private readonly ILogger<UnlockFileViewModel> _logger;
+	private readonly AppState _state;
 
-	public UnlockIdFileViewModel(Window diag)
+	public UnlockFileViewModel(ILogger<UnlockFileViewModel> logger, AppState state)
 	{
-		_diag = diag;
+		_logger = logger;
+		_state = state;
+
+		_logger.LogDebug("Initializing new UnlockFileView");
 	}
 
-	public UnlockIdFileViewModel()
-	{
-
-	}
+#if DEBUG
+	public UnlockFileViewModel(): this(null!, new AppState()) {}
+#endif
 
 	public static FileInfo UserFile =>
 		new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/.user");
@@ -47,11 +51,11 @@ public partial class UnlockIdFileViewModel : ViewModelBase
 	[RelayCommand]
 	private async Task UnlockAsync()
 	{
-		State.AppState state = Ioc.Default.GetRequiredService<State.AppState>();
+		JUserFile userFile;
 
 		if (IsNewFile)
 		{
-			state.UserFile = new JUserFile
+			userFile = new JUserFile
 			{
 				Keys = KdvHelper.Generate(),
 				Server = new ServerInfoJm
@@ -61,20 +65,20 @@ public partial class UnlockIdFileViewModel : ViewModelBase
 					Version = Version
 				}
 			};
-
-			UserFileHelper.Encrypt(state.UserFile, UserFile, Password);
+			UserFileHelper.Encrypt(userFile, UserFile, Password);
 		}
 		else
 		{
 			// Handle unlocking of existing file
-			if (!UserFileHelper.Decrypt(UserFile, Password, out JUserFile? userFile))
+			if (!UserFileHelper.Decrypt(UserFile, Password, out userFile!))
 			{
-				_diag!.Close(false);
+				_logger.LogError("File unlock failed!");
+				return;
 			}
-
-			state.UserFile = userFile;
 		}
 
-		_diag!.Close(true);
+		// Set userfile and request socket connection through state
+		_state.Local.UserFile = userFile;
+		_state.Local.AuthState = LocalState.AuthStates.StartConnect;
 	}
 }
