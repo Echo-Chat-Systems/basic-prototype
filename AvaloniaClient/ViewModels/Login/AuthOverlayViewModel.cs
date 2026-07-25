@@ -71,10 +71,6 @@ public partial class AuthOverlayViewModel : ViewModelBase
 			case LocalState.AuthStates.FrontendReady:
 				AuthStage = "Finishing up";
 				break;
-			case null:
-				break;
-			default:
-				throw new ArgumentOutOfRangeException();
 		}
 	}
 

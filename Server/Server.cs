@@ -46,11 +46,6 @@ public class Server
 		services.AddRouting();
 		services.AddDatabase();
 
-		// Database info
-		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-		Dapper.SqlMapper.AddTypeHandler(new PublicSigningKeyConverter());
-
-
 		Services = services.BuildServiceProvider();
 
 		// Get a logger for the main server

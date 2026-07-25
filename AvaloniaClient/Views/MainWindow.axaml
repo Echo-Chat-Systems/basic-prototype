@@ -6,7 +6,7 @@
         xmlns:loginviews="clr-namespace:AvaloniaClient.Views.Login"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaClient.Views.MainWindow"
-        Title="ClientWindow"
+        Title="Echo-Chat Pre-Alpha"
         x:DataType="viewModels:MainViewModel">
 
     <Design.DataContext>

@@ -3,6 +3,9 @@ using Server.Database.Repositories;
 namespace Server.Database;
 
 public class DbHub
+(
+	IUsersRepo users
+)
 {
-	public required IUsersRepo Users { get; init; }
+	public IUsersRepo Users { get; } = users;
 }
