@@ -46,5 +46,8 @@
       <Compile Update="AppState.LocalState.cs">
         <DependentUpon>AppState.cs</DependentUpon>
       </Compile>
+      <Compile Update="AppState.Netstate.cs">
+        <DependentUpon>AppState.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

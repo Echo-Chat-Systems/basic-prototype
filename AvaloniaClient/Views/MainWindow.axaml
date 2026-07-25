@@ -21,7 +21,8 @@
                 <Border MinWidth="50" MinHeight="50" CornerRadius="50" BorderThickness="4" BorderBrush="Aqua" HorizontalAlignment="Right"><TextBlock> test </TextBlock></Border>
             </StackPanel>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                <TextBlock Text="{Binding ConnectedTo}"/>
+                <TextBlock Text="{Binding ConnectedTo}" Margin="0 0 150 0" />
+                <TextBlock TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding Username}" />
             </StackPanel>
             <DockPanel>
                 <StackPanel DockPanel.Dock="Left" VerticalAlignment="Stretch" Orientation="Vertical">

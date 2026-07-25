@@ -27,6 +27,9 @@ public partial class MainViewModel : ViewModelBase
 				// Update local server name
 				ConnectedTo = $"Connected to {_state.Remote.ServerName}";
 				break;
+			case nameof(RemoteState.User):
+				Username = $"{_state.Remote.User!.Profile.Username}#{_state.Remote.User.Profile.Tag}";
+				break;
 		}
 	}
 
@@ -34,6 +37,7 @@ public partial class MainViewModel : ViewModelBase
 	#region Observable
 	[ObservableProperty] public partial AuthOverlayViewModel AuthOverlay { get; set; }
 	[ObservableProperty] public partial string ConnectedTo { get; set; } = "Not connected";
+	[ObservableProperty] public partial string Username { get; set; }
 	#endregion
 
 
