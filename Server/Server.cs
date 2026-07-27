@@ -35,18 +35,17 @@ public class Server
 		Config config = ConfigBuilder.Build<Config>(iConfiguration);
 
 		// Build service collection
-		ServiceCollection services = new();
-		services.AddLogging(builder =>
-		{
-			builder.AddConsole();
-			builder.SetMinimumLevel(LogLevel.Debug);
-		});
-		services.AddSingleton(config);
-		services.AddSingleton<ClientManager>();
-		services.AddRouting();
-		services.AddDatabase();
-
-		Services = services.BuildServiceProvider();
+		Services = new ServiceCollection()
+			.AddLogging(builder =>
+			{
+				builder.AddConsole();
+				builder.SetMinimumLevel(LogLevel.Debug);
+			})
+			.AddSingleton(config)
+			.AddSingleton<ClientManager>()
+			.AddRouting()
+			.AddDatabase()
+			.BuildServiceProvider();
 
 		// Get a logger for the main server
 		Logger = Services.GetRequiredService<ILogger<Server>>();

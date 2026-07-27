@@ -1,40 +1,32 @@
-﻿using EchoLib.Core;
-using EchoLib.Crypto.Encryption;
+﻿using EchoLib.Crypto.Encryption;
 using EchoLib.Crypto.Signing;
 using EchoLib.Models.Data.User;
-using Newtonsoft.Json;
 
 namespace Server.Database.Models.Public;
 
-public class UserDbm
+public class UserDbm : BaseDbm<UserDbm.New>
 {
-	public required PublicSigningKey Id { get; init; }
+	public new required PublicSigningKey Id { get; init; }
 	public required PublicEncryptionKey Ek { get; init; }
 	public required DateTime CreatedAt { get; init; }
 	public required string Username { get; set; }
 	public required short Tag { get; set; }
-	public required string Profile { get; set; }
+	public required JProfile Profile { get; set; }
+	public required string Settings { get; set; }  // Settings is a client-side encrypted blob
+	public DateTime? LastOnline { get; set; }
+	public required bool IsOnline { get; set; }
+	public required bool IsBanned { get; set; }
 
-	// Only deserialize when needed.
-	public JProfile? JProfile {
-		get
-		{
-			field ??= JsonConvert.DeserializeObject<JProfile>(Profile);
-			return field;
-		}
-		set
-		{
-			field = value;
-			Profile = JsonConvert.ToString(value);
-		}
-}
-
-	public class New
+	public class New : NewBase
 	{
-		public required PublicSigningKey Id { get; init; }
+		public new required PublicSigningKey Id { get; init; }
 		public required PublicEncryptionKey Ek { get; init; }
 		public required string Username { get; init; }
 		public required short Tag { get; init; }
-		public JProfile Profile { get; set; } = null;
+		public required JProfile Profile { get; set; }
+		public string Settings { get; set; } = "";
+		public DateTime? LastOnline { get; set; }
+		public bool IsOnline { get; set; } = false;
+		public bool IsBanned { get; set; } = false;
 	}
 }

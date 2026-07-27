@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using EchoLib.Core;
+using EchoLib.Extensions;
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing.Discovery;
@@ -50,31 +51,38 @@ public sealed class Router
 			else request!.Complete(message);
 			return;
 		}
-		
+
+		WebsocketEndpoint endpoint = new(socket, _serviceProvider);
+		RoutingContext ctx = new RoutingContext
+		{
+			OriginalMessage = message,
+			MessageId = message.MessageId,
+			Socket = socket,
+			Endpoint = endpoint
+
+		};
+
 		RouteDescriptor? route = _routes.Get(message.Target, message.Data.Action);
 		if (route == null)
-			throw new InvalidOperationException($"Couldn't find route for {message.Target}:{message.Data.Action}");
+		{
+			_logger.MessageError(ctx, "Route not found!");
+			await endpoint.ErrorAsync(new NotFoundException(), message.MessageId);
+		}
 
 		try
 		{
-			await route.Invoke(new RoutingContext
-			{
-				OriginalMessage = message,
-				MessageId = message.MessageId,
-				Socket = socket,
-				Endpoint = new WebsocketEndpoint(socket, _serviceProvider)
-
-			}, message.Data.Parameters);
+			_logger.MessageDebug(ctx, "Message received");
+			await route!.Invoke(ctx, message.Data.Parameters);
 		}
 		catch (ProtocolException ex)
 		{
-			await new WebsocketEndpoint(socket, _serviceProvider).ErrorAsync(ex, message.MessageId);
+			await endpoint.ErrorAsync(ex, message.MessageId);
 		}
 		catch (Exception ex)
 		{
 			InternalServerException iex = new();
 			_logger.LogError("[{ErrorId}] [{ErrorName}] : \n{Stacktrace}", iex.Eid, ex.Message, ex.StackTrace);
-			await new WebsocketEndpoint(socket, _serviceProvider).ErrorAsync(iex, message.MessageId);
+			await endpoint.ErrorAsync(iex, message.MessageId);
 		}
 	}
 }

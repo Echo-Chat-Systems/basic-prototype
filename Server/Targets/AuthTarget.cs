@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Server.Database;
 using Server.Database.Models.Public;
 
-namespace Server.Routing;
+namespace Server.Targets;
 
 public class AuthTarget : TargetBase<AuthTarget>
 {
@@ -76,7 +76,9 @@ public class AuthTarget : TargetBase<AuthTarget>
                         Id = parameters.Keys.SigningKey,
                         Ek = parameters.Keys.EncryptionKey,
                         Username = parameters.Profile.Username,
-                        Tag = (short) parameters.Profile.Tag
+                        Tag = (short) parameters.Profile.Tag,
+                        Profile = parameters.Profile,
+
                     }))
             }
         );

@@ -13,6 +13,12 @@ public class JProfile
 	[JsonProperty("bammer")] public string? Banner { get; set; }
 	[JsonProperty("timezone")] public string? Timezone { get; set; }
 	[JsonProperty("status")] public JStatusModel? Status { get; init; }
+
+	public static JProfile Empty => new()
+	{
+		Username = string.Empty,
+		Tag = 0
+	};
 }
 
 public class JStatusModel
