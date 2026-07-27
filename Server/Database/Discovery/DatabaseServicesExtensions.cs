@@ -54,7 +54,7 @@ public static class DatabaseServicesExtensions
 
 public static class LoggerExtensions
 {
-	public static void LogDb(this ILogger logger, string methodName, object para)
+	public static void LogDb(this ILogger logger, string methodName, object? para)
 	{
 		logger.LogDebug("[{Method}]: {Para}", methodName, para.ToString());
 	}

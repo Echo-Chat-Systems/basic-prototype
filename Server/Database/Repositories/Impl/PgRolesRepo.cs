@@ -1,68 +1,46 @@
 using EchoLib.Core.Snowflake;
 using EchoLib.Crypto.Signing;
+using Microsoft.Extensions.Logging;
 using Server.Database.Models.Chat;
 
 namespace Server.Database.Repositories.Impl;
 
-public class PgRolesRepo : IRolesRepo
+public class PgRolesRepo(ILogger logger, IDbConnectionProvider connectionProvider) : BaseRepo<RoleDbm, Snowflake, RoleDbm.New>(logger, connectionProvider), IRolesRepo
 {
-	public RoleDbm? Get(Snowflake id)
-	{
-		throw new NotImplementedException();
-	}
+	protected override string GetQuery => "";
+	protected override string InsertQuery => "";
+	protected override string UpdateQuery => "";
+	protected override string DeleteQuery => "";
 
-	public Task<RoleDbm?> GetAsync(Snowflake id)
-	{
-		throw new NotImplementedException();
-	}
 
-	public RoleDbm Insert(RoleDbm.New item)
-	{
-		throw new NotImplementedException();
-	}
+	#region Generics
 
-	public Task<RoleDbm> InsertAsync(RoleDbm.New item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public RoleDbm Update(RoleDbm item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<RoleDbm> UpdateAsync(RoleDbm item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public bool Delete(RoleDbm item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> DeleteAsync(RoleDbm item)
-	{
-		throw new NotImplementedException();
-	}
+	public new RoleDbm? Get(Snowflake id) => base.Get(id);
+	public new Task<RoleDbm?> GetAsync(Snowflake id) => base.GetAsync(id);
+	public new RoleDbm Insert(RoleDbm.New item) => base.Insert(item);
+	public new Task<RoleDbm> InsertAsync(RoleDbm.New item) => base.InsertAsync(item);
+	public new RoleDbm Update(RoleDbm item) => base.Update(item);
+	public new Task<RoleDbm> UpdateAsync(RoleDbm item) => base.UpdateAsync(item);
+	public new void Delete(Snowflake id) => base.Delete(id);
+	public new Task DeleteAsync(Snowflake id) => base.DeleteAsync(id);
+	#endregion
 
 	public IEnumerable<RoleDbm> Query(Snowflake guildId)
 	{
-		throw new NotImplementedException();
+
 	}
 
 	public Task<IEnumerable<RoleDbm>> QueryAsync(Snowflake guildId)
 	{
-		throw new NotImplementedException();
+
 	}
 
 	public IEnumerable<RoleDbm> Query(PublicSigningKey userId)
 	{
-		throw new NotImplementedException();
+
 	}
 
 	public Task<IEnumerable<RoleDbm>> QueryAsync(PublicSigningKey userId)
 	{
-		throw new NotImplementedException();
 	}
 }

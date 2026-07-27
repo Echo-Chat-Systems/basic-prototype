@@ -1,50 +1,30 @@
 using EchoLib.Core.Snowflake;
 using EchoLib.Crypto.Signing;
+using Microsoft.Extensions.Logging;
 using Server.Database.Models.Chat;
 
 namespace Server.Database.Repositories.Impl;
 
-public class PgGuildMembersRepo : IGuildMembersRepo
+public class PgGuildMembersRepo(ILogger<PgGuildMembersRepo> logger, IDbConnectionProvider connectionProvider)
+	: BaseRepo<GuildMemberDbm, Snowflake, GuildMemberDbm.New>(logger, connectionProvider), IGuildMembersRepo
 {
-	public GuildMemberDbm? Get(Snowflake id)
-	{
-		throw new NotImplementedException();
-	}
+	protected override string GetQuery => "SELECT * FROM chat.guild_members WHERE id = @Id;";
+	protected override string InsertQuery => "";
+	protected override string UpdateQuery => "";
+	protected override string DeleteQuery => "";
 
-	public Task<GuildMemberDbm?> GetAsync(Snowflake id)
-	{
-		throw new NotImplementedException();
-	}
+	#region Generics
 
-	public GuildMemberDbm Insert(GuildMemberDbm.New item)
-	{
-		throw new NotImplementedException();
-	}
+	public new GuildMemberDbm? Get(Snowflake id) => base.Get(id);
+	public new Task<GuildMemberDbm?> GetAsync(Snowflake id) => base.GetAsync(id);
+	public new GuildMemberDbm Insert(GuildMemberDbm.New item) => base.Insert(item);
+	public new Task<GuildMemberDbm> InsertAsync(GuildMemberDbm.New item) => base.InsertAsync(item);
+	public new GuildMemberDbm Update(GuildMemberDbm item) => base.Update(item);
+	public new Task<GuildMemberDbm> UpdateAsync(GuildMemberDbm item) => base.UpdateAsync(item);
+	public new void Delete(Snowflake item) => base.Delete(item);
+	public new Task DeleteAsync(Snowflake item) => base.DeleteAsync(item);
 
-	public Task<GuildMemberDbm> InsertAsync(GuildMemberDbm.New item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public GuildMemberDbm Update(GuildMemberDbm item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<GuildMemberDbm> UpdateAsync(GuildMemberDbm item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public bool Delete(GuildMemberDbm item)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> DeleteAsync(GuildMemberDbm item)
-	{
-		throw new NotImplementedException();
-	}
+	#endregion
 
 	public IEnumerable<GuildMemberDbm> Query(Snowflake guildId)
 	{

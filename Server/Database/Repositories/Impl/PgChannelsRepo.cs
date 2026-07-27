@@ -1,57 +1,43 @@
 using EchoLib.Core.Snowflake;
+using EchoLib.Crypto.Signing;
+using Microsoft.Extensions.Logging;
 using Server.Database.Models.Chat;
 
 namespace Server.Database.Repositories.Impl;
 
-public class PgChannelsRepo : IChannelsRepo
+public class PgChannelsRepo(ILogger<PgChannelsRepo> logger, IDbConnectionProvider connectionProvider)
+	: BaseRepo<ChannelDbm, Snowflake, ChannelDbm.New>(logger, connectionProvider), IChannelsRepo
 {
-	public ChannelDbm? Get(Snowflake id)
-	{
-		throw new NotImplementedException();
-	}
+	protected override string GetQuery => "SELECT * FROM chat.channels WHERE id = @Id;";
+	protected override string InsertQuery => "INSERT INTO chat.channels VALUES (@Id, @GuildId, @Name, @Parent, @Index, @Customisation, @Config) RETURNING *;";
 
-	public Task<ChannelDbm?> GetAsync(Snowflake id)
-	{
-		throw new NotImplementedException();
-	}
+	protected override string UpdateQuery =>
+		"UPDATE chat.channels SET name = @Name, parent = @Parent, index = @Index, customisation = @Customisation, config = @Config WHERE id = @Id RETURNING *;";
 
-	public ChannelDbm Insert(ChannelDbm.New item)
-	{
-		throw new NotImplementedException();
-	}
+	protected override string DeleteQuery => "DELETE FROM chat.channels WHERE id = @Id;";
+	private const string GuildQuery = "SELECT * FROM chat.channels WHERE guild_id = @GuildId;";
 
-	public Task<ChannelDbm> InsertAsync(ChannelDbm.New item)
-	{
-		throw new NotImplementedException();
-	}
+	#region Generics
 
-	public ChannelDbm Update(ChannelDbm item)
-	{
-		throw new NotImplementedException();
-	}
+	public new ChannelDbm? Get(Snowflake id) => base.Get(id);
 
-	public Task<ChannelDbm> UpdateAsync(ChannelDbm item)
-	{
-		throw new NotImplementedException();
-	}
+	public new Task<ChannelDbm?> GetAsync(Snowflake id) => base.GetAsync(id);
 
-	public bool Delete(ChannelDbm item)
-	{
-		throw new NotImplementedException();
-	}
+	public new ChannelDbm Insert(ChannelDbm.New item) => base.Insert(item);
 
-	public Task<bool> DeleteAsync(ChannelDbm item)
-	{
-		throw new NotImplementedException();
-	}
+	public new Task<ChannelDbm> InsertAsync(ChannelDbm.New item) => base.InsertAsync(item);
 
-	public IEnumerable<ChannelDbm> Query(Snowflake guildId)
-	{
-		throw new NotImplementedException();
-	}
+	public new ChannelDbm Update(ChannelDbm item) => base.Update(item);
 
-	public Task<IEnumerable<ChannelDbm>> QueryAsync(Snowflake guildId)
-	{
-		throw new NotImplementedException();
-	}
+	public new Task<ChannelDbm> UpdateAsync(ChannelDbm item) => base.UpdateAsync(item);
+
+	public new void Delete(Snowflake id) => base.Delete(id);
+
+	public new Task DeleteAsync(Snowflake id) => base.DeleteAsync(id);
+
+	#endregion
+
+	public IEnumerable<ChannelDbm> Query(Snowflake guildId) => Many(nameof(Query), GuildQuery, guildId);
+
+	public Task<IEnumerable<ChannelDbm>> QueryAsync(Snowflake guildId) => ManyAsync(nameof(QueryAsync), GuildQuery, guildId);
 }
