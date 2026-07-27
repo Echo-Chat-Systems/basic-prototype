@@ -111,6 +111,7 @@ public partial class AuthManager : ObservableObject
 		}
 
 		_state.Remote.User = complete.User;
+		_state.Local.AuthState = LocalState.AuthStates.Preloading;
 		_logger.LogInformation("Completed auth flow successfully.");
 	}
 }

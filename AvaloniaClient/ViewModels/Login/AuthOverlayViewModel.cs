@@ -68,8 +68,13 @@ public partial class AuthOverlayViewModel : ViewModelBase
 			case LocalState.AuthStates.Authenticating:
 				AuthStage = "Authenticating with server";
 				break;
+			case LocalState.AuthStates.Preloading:
+				// Skip preloading for now and go straight to ready
+				_state.Local.AuthState = LocalState.AuthStates.FrontendReady;
+				break;
 			case LocalState.AuthStates.FrontendReady:
 				AuthStage = "Finishing up";
+				Visible = false;
 				break;
 		}
 	}

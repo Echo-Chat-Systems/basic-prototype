@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
+        xmlns:comp="clr-namespace:AvaloniaClient.Views.Components"
         xmlns:loginviews="clr-namespace:AvaloniaClient.Views.Login"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaClient.Views.MainWindow"
@@ -17,13 +18,13 @@
     <Panel>
         <DockPanel>
             <StackPanel DockPanel.Dock="Top">
-                <TextBlock HorizontalAlignment="Left">Echo Chat - Alpha</TextBlock>
-                <Border MinWidth="50" MinHeight="50" CornerRadius="50" BorderThickness="4" BorderBrush="Aqua" HorizontalAlignment="Right"><TextBlock> test </TextBlock></Border>
+
             </StackPanel>
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                <TextBlock Text="{Binding ConnectedTo}" Margin="0 0 150 0" />
-                <TextBlock TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding Username}" />
-            </StackPanel>
+            <Grid DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>* *</Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding ConnectedTo}" Margin="0 0 150 0" />
+                <TextBlock Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding Username}" />
+            </Grid>
             <DockPanel>
                 <StackPanel DockPanel.Dock="Left" VerticalAlignment="Stretch" Orientation="Vertical">
                     <TextBlock>Test</TextBlock>
@@ -33,9 +34,10 @@
                     <TextBlock>Test</TextBlock>
                     <TextBlock>Test</TextBlock>
                 </StackPanel>
+                <comp:ChatView />
             </DockPanel>
         </DockPanel>
-        <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding Visible}" />
+        <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding Visible}" IsVisible="{Binding Visible}" />
     </Panel>
 
 

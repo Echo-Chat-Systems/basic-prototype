@@ -84,14 +84,14 @@ public static class RoutingServiceCollectionExtensions
 	public static IServiceCollection AddRouting(this IServiceCollection services)
 	{
 		// Configure Json Serializer
-		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
+		JsonConvert.DefaultSettings = Json.DefaultSettings;
 
 		// Register exceptions
 		ExceptionsRegistry.Find();
 
 		services.AddSingleton<Router>();
 		services.AddSingleton<PendingResponseRegistry>();
-		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(NewtonsoftJson.DefaultSettings()));
+		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(Json.DefaultSettings()));
 		
 		Type? targetHub = ImplementationFinder.Find<ITargetHub>();
 		if (targetHub != null)

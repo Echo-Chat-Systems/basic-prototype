@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace EchoLib.Core;
 
-public static class NewtonsoftJson
+public static class Json
 {
 	public static JsonSerializerSettings DefaultSettings()
 	{
@@ -20,4 +20,6 @@ public static class NewtonsoftJson
 			]
 		};
 	}
+
+	public static JsonSerializer Serializer => JsonSerializer.Create();
 }

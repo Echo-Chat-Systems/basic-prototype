@@ -52,7 +52,7 @@ public class Server
 		Logger = Services.GetRequiredService<ILogger<Server>>();
 
 		// Configure newtonsoft
-		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
+		JsonConvert.DefaultSettings = Json.DefaultSettings;
 	}
 
 
