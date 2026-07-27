@@ -10,8 +10,11 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.72" />
-        <PackageReference Include="EchoLib.Configuration" Version="1.0.2"/>
-        <PackageReference Include="EchoLib.Core.Snowflake" Version="1.2.0" />
+        <PackageReference Include="EchoLib.Configuration" Version="1.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="10.0.9" />
@@ -20,11 +23,12 @@
         <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.9" />
         <PackageReference Include="Npgsql" Version="10.0.3" />
-        <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+        <PackageReference Include="WebSocketSharper" Version="1.0.42" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EchoLib\EchoLib.csproj"/>
+        <ProjectReference Include="..\EchoLib\EchoLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>

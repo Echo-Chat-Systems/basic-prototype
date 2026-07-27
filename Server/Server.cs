@@ -6,10 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Server.Database;
-using Server.Database.Discovery;
-using Server.Database.ParameterConverters;
-using Server.Database.Repositories;
-using Server.Database.Repositories.Impl;
 using WebSocketSharper.Server;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -34,6 +30,9 @@ public class Server
 		// Use config library to build config class 
 		Config config = ConfigBuilder.Build<Config>(iConfiguration);
 
+		// Set db connection string
+		DbContext.ConnectionString = config.Database.CreateConnectionString("Main");
+
 		// Build service collection
 		Services = new ServiceCollection()
 			.AddLogging(builder =>
@@ -44,11 +43,12 @@ public class Server
 			.AddSingleton(config)
 			.AddSingleton<ClientManager>()
 			.AddRouting()
-			.AddDatabase()
+			.AddDbContext<DbContext>()
 			.BuildServiceProvider();
 
 		// Get a logger for the main server
 		Logger = Services.GetRequiredService<ILogger<Server>>();
+		AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 		// Configure newtonsoft
 		JsonConvert.DefaultSettings = Json.DefaultSettings;

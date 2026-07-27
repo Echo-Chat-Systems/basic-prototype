@@ -67,12 +67,13 @@ public sealed class Router
 		{
 			_logger.MessageError(ctx, "Route not found!");
 			await endpoint.ErrorAsync(new NotFoundException(), message.MessageId);
+			return;
 		}
 
 		try
 		{
 			_logger.MessageDebug(ctx, "Message received");
-			await route!.Invoke(ctx, message.Data.Parameters);
+			await route.Invoke(ctx, message.Data.Parameters);
 		}
 		catch (ProtocolException ex)
 		{

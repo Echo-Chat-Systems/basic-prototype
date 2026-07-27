@@ -29,6 +29,18 @@ public class Config
 		public required string Name { get; init; }
 		public required int Port { get; init; }
 		public required IReadOnlyDictionary<string, CredentialsSet> Credentials { get; init; }
+
+		public string CreateConnectionString(string cred)
+		{
+			return $"Host={Host};" +
+			       $"Port={Port};" +
+			       $"Database={Name};" +
+			       $"Username={Credentials[cred].Username};" +
+			       $"Password={Credentials[cred].Password};"
+#if DEBUG
+			       + $"Include Error Detail=true;";
+#endif
+		}
 	}
 
 	[ConfigModel]

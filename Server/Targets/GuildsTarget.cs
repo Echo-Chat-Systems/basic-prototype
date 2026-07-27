@@ -14,7 +14,7 @@ namespace Server.Targets;
 
 public class GuildsTarget(
 	ILogger<GuildsTarget> logger,
-	DbHub hub
+	DbContext db
 )
 	: ITarget
 {
@@ -42,15 +42,14 @@ public class GuildsTarget(
 	{
 		logger.LogDebug("balls");
 
-		IEnumerable<Snowflake> ids = (await hub.GuildMembers.QueryAsync(ctx.User!))
-			.Select(m => m.GuildId);
+		IEnumerable<Snowflake> ids = db.GuildMembers.Where(m => m.User.Id == ctx.User!).Select(m => m.Guild.Id);
 
 		// Get all guilds
-		List<GuildDbm> dbGuilds = [];
+		List<Guild> dbGuilds = [];
 
 		foreach (Snowflake id in ids)
 		{
-			GuildDbm? guild = await hub.Guilds.GetAsync(id);
+			Guild? guild = await db.Guilds.FindAsync(id);
 
 			if (guild != null) dbGuilds.Add(guild);
 		}
@@ -58,16 +57,23 @@ public class GuildsTarget(
 		// Construct each guild
 		List<JGuild> guilds = [];
 
-		foreach (GuildDbm dbm in dbGuilds)
+		foreach (Guild dbm in dbGuilds)
 		{
-			List<JGuildMember> members = (await hub.GuildMembers.QueryAsync(dbm.Id)).Select(DtoMapper.Map<GuildMemberDbm, JGuildMember>).ToList();
-			List<JChannel> channels = (await hub.Channels.QueryAsync(dbm.Id)).Select(DtoMapper.Map<ChannelDbm, JChannel>).ToList();
+			List<JGuildMember> members = db.GuildMembers
+				.Where(m => m.Guild.Id == dbm.Id)
+				.AsEnumerable()
+				.Select(DtoMapper.Map<GuildMember, JGuildMember>)
+				.ToList();
+			List<JChannel> channels = db.Channels.Where(m => m.Guild!.Id == dbm.Id)
+				.AsEnumerable()
+				.Select(DtoMapper.Map<Channel, JChannel>)
+				.ToList();
 
 			guilds.Add(new JGuild
 			{
 				Id = dbm.Id,
 				Name = dbm.Name,
-				Owner = dbm.OwnerId,
+				Owner = dbm.Owner.Id,
 				Members = members,
 				Channels = channels,
 				Config = dbm.Config,
