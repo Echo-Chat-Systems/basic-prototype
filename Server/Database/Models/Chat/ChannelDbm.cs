@@ -17,7 +17,7 @@ public class ChannelDbm : BaseDbm<ChannelDbm.New>
 		public Snowflake? GuildId { get; set; } = null;
 		public required string Name { get; init; }
 		public Snowflake? Parent { get; init; }
-		public required int Index { get; init; }
+		public required int Index { get; init ; }
 		public JChannelCustomisation Customisation { get; set; } = JChannelCustomisation.Empty;
 		public JChannelConfig Config { get; set; } = JChannelConfig.Empty;
 	}

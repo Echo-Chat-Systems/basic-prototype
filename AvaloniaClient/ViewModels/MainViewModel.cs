@@ -37,7 +37,7 @@ public partial class MainViewModel : ViewModelBase
 	#region Observable
 	[ObservableProperty] public partial AuthOverlayViewModel AuthOverlay { get; set; }
 	[ObservableProperty] public partial string ConnectedTo { get; set; } = "Not connected";
-	[ObservableProperty] public partial string Username { get; set; }
+	[ObservableProperty] public partial string? Username { get; set; }
 	#endregion
 
 

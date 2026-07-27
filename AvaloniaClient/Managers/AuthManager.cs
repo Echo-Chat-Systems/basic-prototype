@@ -61,6 +61,7 @@ public partial class AuthManager : ObservableObject
 				break;
 			default:
 				break;
+
 		}
 	}
 
@@ -113,5 +114,9 @@ public partial class AuthManager : ObservableObject
 		_state.Remote.User = complete.User;
 		_state.Local.AuthState = LocalState.AuthStates.Preloading;
 		_logger.LogInformation("Completed auth flow successfully.");
+
+		// Super hacky way of triggering guilds query
+		var guilds = await _targets.Guilds.Query();
+		_logger.LogDebug("balls");
 	}
 }

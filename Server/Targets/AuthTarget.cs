@@ -183,6 +183,9 @@ public class AuthTarget : TargetBase<AuthTarget>
                     }
                 }
             });
+
+            // Set authenticated to true for the client manager
+            _clientManager.Get(ctx.Socket)!.Authenticated = true;
         }
         else
         {

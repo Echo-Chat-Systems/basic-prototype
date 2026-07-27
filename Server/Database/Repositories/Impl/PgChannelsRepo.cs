@@ -44,4 +44,14 @@ public class PgChannelsRepo : IChannelsRepo
 	{
 		throw new NotImplementedException();
 	}
+
+	public IEnumerable<ChannelDbm> Query(Snowflake guildId)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task<IEnumerable<ChannelDbm>> QueryAsync(Snowflake guildId)
+	{
+		throw new NotImplementedException();
+	}
 }

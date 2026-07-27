@@ -58,8 +58,8 @@ public sealed class Router
 			OriginalMessage = message,
 			MessageId = message.MessageId,
 			Socket = socket,
-			Endpoint = endpoint
-
+			Endpoint = endpoint,
+			Services = _serviceProvider
 		};
 
 		RouteDescriptor? route = _routes.Get(message.Target, message.Data.Action);

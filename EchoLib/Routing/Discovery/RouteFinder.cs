@@ -22,7 +22,8 @@ public static class RouteFinder
 		// Build new route table
 		List<Type> targets = Assembly.GetEntryAssembly()!
 			.GetTypes()
-			.Where(t => typeof(ITarget).IsAssignableFrom(t) && t is { IsAbstract: false, IsInterface: false }).ToList();
+			.Where(t => typeof(ITarget).IsAssignableFrom(t) && t is { IsAbstract: false, IsInterface: false })
+			.ToList();
 
 		foreach (Type target in targets)
 		{
@@ -38,7 +39,6 @@ public static class RouteFinder
 
 				ParameterInfo[] parameters = action.GetParameters();
 
-
 				// Ensure correct number of parameters and correct types
 				if (
 					parameters.Length != 2 ||
@@ -47,7 +47,9 @@ public static class RouteFinder
 
 
 				routeRegistry.RegisterRoute(
-					RouteDescriptorFactory.Create(targetInstance, action, targetInstance.Name, actionName)
+					RouteDescriptorFactory.Create(
+						action.GetCustomAttributes<BasePreProcessorAttribute>(),
+						targetInstance, action, targetInstance.Name, actionName)
 					);
 			}
 		}

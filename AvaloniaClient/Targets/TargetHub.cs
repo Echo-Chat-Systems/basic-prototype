@@ -6,4 +6,5 @@ namespace AvaloniaClient.Targets;
 public class TargetHub : ITargetHub
 {
 	public AuthTarget Auth { get; private set; } = null!;
+	public GuildsTarget Guilds { get; private set; } = null!;
 }

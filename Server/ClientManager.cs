@@ -14,6 +14,8 @@ public class ServerClient
 	public JPublicKeyPair? KeyPair;
 
 	public AuthTarget.SigninState SigninState = new();
+
+	public bool Authenticated = false;
 }
 
 public class ClientManager
