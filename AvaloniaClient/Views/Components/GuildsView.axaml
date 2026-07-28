@@ -2,29 +2,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vcomp="clr-namespace:AvaloniaClient.ViewModels.Components"
+             xmlns:vm="clr-namespace:AvaloniaClient.ViewModels.Components"
+             xmlns:comp="clr-namespace:AvaloniaClient.Views.Components"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="vcomp:GuildsViewModel"
+             x:DataType="vm:GuildsViewModel"
              x:Class="AvaloniaClient.Views.Components.GuildsView">
-    <ScrollViewer>
-        <StackPanel>
-            <Button Classes="circle" Command="{Binding NewGuild}">
-                <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">+</Label>
-            </Button>
-            <Button Classes="circle" Command="{Binding Reload}" VerticalAlignment="Bottom">
-                <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">⟳</Label>
-            </Button>
-            <ItemsControl ItemsSource="{Binding Guilds}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border>
-                            <Button Classes="circle">
-                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-                            </Button>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-    </ScrollViewer>
+    <DockPanel>
+        <ScrollViewer>
+            <StackPanel>
+                <Button Classes="circle" Command="{Binding NewGuild}">
+                    <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">+</Label>
+                </Button>
+                <Button Classes="circle" Command="{Binding Reload}" VerticalAlignment="Bottom">
+                    <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">⟳</Label>
+                </Button>
+                <ItemsControl ItemsSource="{Binding Guilds}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <Button Classes="circle" Command="{Binding $parent[ItemsControl].((vm:GuildsViewModel)DataContext).SelectGuildCommand}" CommandParameter="{Binding Id}">
+                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+        <Border IsVisible="{Binding GuildSelected}">
+            <comp:ChatView DataContext="{Binding Current}" />
+        </Border>
+
+    </DockPanel>
 </UserControl>

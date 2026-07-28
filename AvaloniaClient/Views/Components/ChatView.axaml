@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:comp="clr-namespace:AvaloniaClient.ViewModels.Components"
+             xmlns:comp="clr-namespace:AvaloniaClient.Views.Components"
              xmlns:vcomp="clr-namespace:AvaloniaClient.ViewModels.Components"
              x:DataType="vcomp:ChatViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -19,7 +19,13 @@
             *
             Auto
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            Auto
+            *
+        </Grid.ColumnDefinitions>
+        <comp:ChannelsView Grid.Column="0" Grid.RowSpan="1" DataContext="{Binding ChannelsData}" />
+
+        <ScrollViewer Grid.Column="1" Grid.Row="0">
             <ItemsControl>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -28,7 +34,7 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ScrollViewer>
-        <Grid Grid.Row="1">
+        <Grid Grid.Column="1" Grid.Row="1">
             <Grid.ColumnDefinitions>* Auto</Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" HorizontalAlignment="Stretch" PlaceholderText="Messages here..." TextWrapping="Wrap" />
             <Button Grid.Column="0" HorizontalAlignment="Right">Send</Button>
@@ -37,7 +43,7 @@
 
     <!-- Message Data Template -->
     <UserControl.DataTemplates>
-        <DataTemplate DataType="{x:Type comp:ChatMessageModel}">
+        <DataTemplate DataType="{x:Type vcomp:ChatMessageModel}">
             <SelectableTextBlock Text="{Binding Text}" TextWrapping="Wrap" />
         </DataTemplate>
     </UserControl.DataTemplates>

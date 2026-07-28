@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,6 +11,7 @@ using AvaloniaClient.ViewModels.Dialog;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EchoLib.Core.Snowflake;
+using EchoLib.Models.Data.Channel;
 using EchoLib.Models.Data.Guild;
 using EchoLib.Transport;
 using Microsoft.Extensions.Logging;
@@ -44,9 +46,10 @@ public partial class GuildsViewModel : ViewModelBase
 		}
 	}
 
-	[ObservableProperty] public partial ObservableCollection<JGuild> Guilds { get; set; }
+	[ObservableProperty] public partial ObservableCollection<JGuild> Guilds { get; set; } = [];
 	[ObservableProperty] public partial bool ReloadRequired { get; set; } = true;
-	[ObservableProperty] public partial JGuild? Current { get; set; }
+	[ObservableProperty] public partial ChannelsViewModel? Current { get; set; }
+	[ObservableProperty] public partial bool GuildSelected { get; set; } = false;
 
 	[RelayCommand]
 	public async Task Reload()
@@ -64,5 +67,18 @@ public partial class GuildsViewModel : ViewModelBase
 		string? newName = await _diag.ShowAsync<NewGuildViewModel, string>();
 
 		Snowflake newId = await _targets.Guilds.New(newName!);
+
+		// Set reload requested
+		ReloadRequired = true;
+	}
+
+	[RelayCommand]
+	public async Task SelectGuild(Snowflake id)
+	{
+		Current = new ChannelsViewModel
+		{
+			Channels = new ObservableCollection<JChannel>(Guilds.FirstOrDefault(g => g.Id == id)!.Channels)
+		};
+		GuildSelected = true;
 	}
 }

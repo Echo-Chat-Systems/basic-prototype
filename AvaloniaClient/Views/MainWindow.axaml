@@ -26,7 +26,6 @@
             </Grid>
             <DockPanel>
                 <comp:GuildsView DataContext="{Binding GuildsVm}" DockPanel.Dock="Left" VerticalAlignment="Stretch" />
-                <comp:ChatView />
             </DockPanel>
         </DockPanel>
         <Border Background="{StaticResource DBackground50T80}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding Dialogs.IsOpen} ">
