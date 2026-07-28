@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
         xmlns:comp="clr-namespace:AvaloniaClient.Views.Components"
-        xmlns:loginviews="clr-namespace:AvaloniaClient.Views.Login"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaClient.Views.MainWindow"
         Title="Echo-Chat Pre-Alpha"
@@ -26,18 +25,15 @@
                 <TextBlock Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding Username}" />
             </Grid>
             <DockPanel>
-                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Stretch" Orientation="Vertical">
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                </StackPanel>
+                <comp:GuildsView DataContext="{Binding GuildsVm}" DockPanel.Dock="Left" VerticalAlignment="Stretch" />
                 <comp:ChatView />
             </DockPanel>
         </DockPanel>
-        <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding Visible}" IsVisible="{Binding Visible}" />
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding Dialogs.IsOpen}">
+            <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Dialogs.CurrentDialog}" IsEnabled="{Binding Dialogs.IsOpen}" />
+        </Border>
+
+        <!-- <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding Visible}" IsVisible="{Binding Visible}" /> -->
     </Panel>
 
 

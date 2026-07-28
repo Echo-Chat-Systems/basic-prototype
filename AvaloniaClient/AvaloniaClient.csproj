@@ -32,14 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\LoginModal\LoginPage.axaml.cs">
-        <DependentUpon>LoginDialog.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\LoginModal\UnlockFilePage.axaml.cs">
-        <DependentUpon>UnlockIdFileWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="AppState.RemoteState.cs">
         <DependentUpon>AppState.cs</DependentUpon>
       </Compile>

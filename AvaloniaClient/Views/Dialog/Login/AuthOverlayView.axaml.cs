@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace AvaloniaClient.Views.Login;
+namespace AvaloniaClient.Views.Dialog.Login;
 
 public partial class AuthOverlayView : UserControl
 {

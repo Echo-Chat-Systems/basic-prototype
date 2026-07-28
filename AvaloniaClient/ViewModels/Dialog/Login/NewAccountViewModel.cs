@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AvaloniaClient.Targets;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,7 +6,7 @@ using EchoLib.Models.Data.User;
 using EchoLib.Models.Params.Auth;
 using Microsoft.Extensions.Logging;
 
-namespace AvaloniaClient.ViewModels.Login;
+namespace AvaloniaClient.ViewModels.Dialog.Login;
 
 [TransientModel]
 public partial class NewAccountViewModel : ViewModelBase

@@ -1,13 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using AvaloniaClient.Dialog;
 using AvaloniaClient.Managers;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace AvaloniaClient.ViewModels.Login;
+namespace AvaloniaClient.ViewModels.Dialog.Login;
 
 [TransientModel]
 public partial class AuthOverlayViewModel : ViewModelBase
@@ -16,6 +16,8 @@ public partial class AuthOverlayViewModel : ViewModelBase
 	private readonly ILogger<AuthOverlayViewModel> _logger;
 
 	private readonly AppState _state;
+	private readonly IDialogService _dialogs;
+
 	[ObservableProperty] public partial object? CurrentPage { get; set; }
 	[ObservableProperty] public partial bool Visible { get; set; } = true;
 	[ObservableProperty] public partial ObservableCollection<string> AuthLogs { get; set; }
@@ -28,10 +30,12 @@ public partial class AuthOverlayViewModel : ViewModelBase
 		ILogger<AuthOverlayViewModel> logger,
 		AppState state,
 		AuthManager authManager,
-		IServiceProvider services
+		IServiceProvider services,
+		DialogService dialogs
 	)
 	{
 		_services = services;
+		_dialogs = dialogs;
 		_logger = logger;
 		_state = state;
 
@@ -41,6 +45,7 @@ public partial class AuthOverlayViewModel : ViewModelBase
 
 		// Set state to logging in
 		_state.Local.AuthState = LocalState.AuthStates.UnlockRequired;
+		CurrentPage = _services.GetRequiredService<UnlockFileViewModel>();
 	}
 
 	private void LocalStateChanged(object? sender, PropertyChangedEventArgs e)
@@ -74,14 +79,20 @@ public partial class AuthOverlayViewModel : ViewModelBase
 				break;
 			case LocalState.AuthStates.FrontendReady:
 				AuthStage = "Finishing up";
-				Visible = false;
+				_dialogs.Close(true);
 				break;
 		}
 	}
 
+	private object? Complete(bool result)
+	{
+		_dialogs.Close(result);
+		return null;
+	}
+
 
 #if DEBUG
-	public AuthOverlayViewModel() : this(null!, new AppState(), null!, null!)
+	public AuthOverlayViewModel() : this(null!, new AppState(), null!, null!, null!)
 	{
 		AuthLogs = ["Example line1", "Example line 2"];
 	}

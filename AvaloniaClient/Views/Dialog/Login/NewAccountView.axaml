@@ -2,11 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Login"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="AvaloniaClient.Views.Login.NewAccountView"
-        xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
-        x:DataType="viewModels:Login.NewAccountViewModel"
+        x:Class="AvaloniaClient.Views.Dialog.Login.NewAccountView"
+        xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Dialog.Login"
+        x:DataType="login:NewAccountViewModel"
         >
 
     <Design.DataContext>

@@ -3,19 +3,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaClient.Views.Login.AuthOverlayView"
-             xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
-             x:DataType="viewModels:Login.AuthOverlayViewModel"
+             x:Class="AvaloniaClient.Views.Dialog.Login.AuthOverlayView"
+             xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Dialog.Login"
+             x:DataType="login:AuthOverlayViewModel"
              >
 
-    <Border Background="MidnightBlue" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+    <Border CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Stretch">
         <StackPanel Orientation="Vertical" Classes="centered">
             <ContentControl Content="{Binding CurrentPage}" />
             <ListBox ItemsSource="{Binding AuthLogs}" IsVisible="False"/>
             <TextBlock>Loading...</TextBlock>
             <TextBlock Text="{Binding AuthStage}"/>
         </StackPanel>
-
-
     </Border>
 </UserControl>

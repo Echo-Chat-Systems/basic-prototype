@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using EchoLib.Client;
 using EchoLib.Crypto;
@@ -11,7 +9,7 @@ using EchoLib.Models;
 using EchoLib.Models.Misc;
 using Microsoft.Extensions.Logging;
 
-namespace AvaloniaClient.ViewModels.Login;
+namespace AvaloniaClient.ViewModels.Dialog.Login;
 
 [TransientModel]
 public partial class UnlockFileViewModel : ViewModelBase
