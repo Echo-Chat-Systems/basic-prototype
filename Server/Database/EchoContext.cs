@@ -32,7 +32,6 @@ public class EchoContext : Microsoft.EntityFrameworkCore.DbContext
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 		optionsBuilder
-			.UseLazyLoadingProxies()
 			.UseNpgsql(ConnectionString);
 	}
 

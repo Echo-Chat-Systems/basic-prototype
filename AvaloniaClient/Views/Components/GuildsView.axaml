@@ -18,7 +18,9 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border>
-                            <TextBlock Text="{Binding Name}" />
+                            <Button Classes="circle">
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                            </Button>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

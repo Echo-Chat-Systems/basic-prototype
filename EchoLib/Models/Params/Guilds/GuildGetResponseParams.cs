@@ -6,5 +6,5 @@ public class GuildGetResponseParams : IParam
 {
 	public string Action => "get";
 
-	public required JGuild Guild { get; init; }
+	public required JGuild? Guild { get; init; }
 }

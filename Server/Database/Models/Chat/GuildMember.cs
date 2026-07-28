@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 using EchoLib.Core.Snowflake;
 using EchoLib.Crypto.Signing;
 using EchoLib.Models.Data.Guild;
@@ -11,7 +9,7 @@ using Server.Database.Models.Public;
 namespace Server.Database.Models.Chat;
 
 [PrimaryKey(nameof(Id))]
-public class GuildMember
+public sealed class GuildMember
 {
 	public required Snowflake Id { get; init; }
 	public required JGuildCustomisation GuildCustomisationOverride { get; set; }
@@ -23,6 +21,6 @@ public class GuildMember
 	public required PublicSigningKey UserId { get; init; }
 
 
-	[ForeignKey(nameof(GuildId))] public virtual Guild Guild { get; init; } = null!;
-	[ForeignKey(nameof(UserId))] public virtual User User { get; init; } = null!;
+	[ForeignKey(nameof(GuildId))] public Guild Guild { get; init; } = null!;
+	[ForeignKey(nameof(UserId))] public User User { get; init; } = null!;
 }
