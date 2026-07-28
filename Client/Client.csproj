@@ -9,8 +9,8 @@
 
     <ItemGroup>
         <PackageReference Include="EchoLib.Configuration" Version="1.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.10" />
         <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
     </ItemGroup>
 

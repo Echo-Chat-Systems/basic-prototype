@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Server.Database;
 
-public class DesignTimeFactory : IDesignTimeDbContextFactory<DbContext> {
+public class DesignTimeFactory : IDesignTimeDbContextFactory<EchoContext> {
 
-	public DbContext CreateDbContext(string[] args)
+	public EchoContext CreateDbContext(string[] args)
 	{
 		// Read in config and .env files
 		IConfiguration iConfiguration = new ConfigurationBuilder()
@@ -19,9 +19,11 @@ public class DesignTimeFactory : IDesignTimeDbContextFactory<DbContext> {
 		// Use config library to build config class
 		Config config = ConfigBuilder.Build<Config>(iConfiguration);
 
-		DbContextOptionsBuilder opt = new DbContextOptionsBuilder<DbContext>()
+		DbContextOptionsBuilder opt = new DbContextOptionsBuilder<EchoContext>()
 			.UseNpgsql(config.Database.CreateConnectionString("Main"));
 
-		return new DbContext(opt.Options);
+		EchoContext.ConnectionString = config.Database.CreateConnectionString("Main");
+
+		return new EchoContext(opt.Options);
 	}
 }

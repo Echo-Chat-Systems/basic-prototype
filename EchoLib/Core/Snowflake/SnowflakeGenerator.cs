@@ -1,6 +1,6 @@
 ﻿namespace EchoLib.Core.Snowflake;
 
-internal class SnowflakeGenerator
+public class SnowflakeGenerator
 {
 	/// <summary>
 	/// Epoch time in milliseconds from which snowflakes are generated.

@@ -14,7 +14,7 @@ using PublicSigningKeyConverter = Server.Database.Converters.PublicSigningKeyCon
 
 namespace Server.Database;
 
-public class DbContext : Microsoft.EntityFrameworkCore.DbContext
+public class EchoContext : Microsoft.EntityFrameworkCore.DbContext
 {
 	public DbSet<User> Users { get; set; }
 
@@ -25,13 +25,15 @@ public class DbContext : Microsoft.EntityFrameworkCore.DbContext
 
 	public static string ConnectionString = null!;
 
-	public DbContext(DbContextOptions opt) : base(opt)
+	public EchoContext(DbContextOptions opt) : base(opt)
 	{
 	}
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		optionsBuilder.UseNpgsql(ConnectionString);
+		optionsBuilder
+			.UseLazyLoadingProxies()
+			.UseNpgsql(ConnectionString);
 	}
 
 	protected override void ConfigureConventions(ModelConfigurationBuilder c)

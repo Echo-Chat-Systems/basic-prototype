@@ -5,15 +5,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaClient.Views.Dialog.Login.AuthOverlayView"
              xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Dialog.Login"
-             x:DataType="login:AuthOverlayViewModel"
-             >
+             x:DataType="login:AuthOverlayViewModel">
 
-    <Border CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Stretch">
-        <StackPanel Orientation="Vertical" Classes="centered">
-            <ContentControl Content="{Binding CurrentPage}" />
-            <ListBox ItemsSource="{Binding AuthLogs}" IsVisible="False"/>
-            <TextBlock>Loading...</TextBlock>
-            <TextBlock Text="{Binding AuthStage}"/>
-        </StackPanel>
-    </Border>
+    <StackPanel Orientation="Vertical" Classes="centered">
+        <ContentControl Content="{Binding CurrentPage}" />
+        <ListBox ItemsSource="{Binding AuthLogs}" IsVisible="False" />
+        <TextBlock>Loading...</TextBlock>
+        <TextBlock Text="{Binding AuthStage}" />
+    </StackPanel>
 </UserControl>

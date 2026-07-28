@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using EchoLib.Core.Snowflake;
 using EchoLib.Models.Data.Channel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Server.Database.Models.Chat;
 
@@ -14,7 +16,19 @@ public class Channel
 	public required JChannelCustomisation Customisation { get; set; }
 	public required JChannelConfig Config { get; set; }
 
-	public Guild? Guild { get; set; }
-	public Channel? Parent { get; set; }
-	public List<ChannelMember> Members { get; set; }
+	public Snowflake? GuildId { get; init; }
+	public Snowflake? ParentId { get; init; }
+
+	[ForeignKey(nameof(GuildId))] public virtual Guild Guild { get; private init; }  = null!;
+	[ForeignKey(nameof(ParentId))] public virtual Channel Parent { get; private init; } = null!;
+
+	public virtual List<ChannelMember> Members { get; } = [];
+}
+
+public class ChannelConfiguration : IEntityTypeConfiguration<Channel>
+{
+	public void Configure(EntityTypeBuilder<Channel> builder)
+	{
+
+	}
 }

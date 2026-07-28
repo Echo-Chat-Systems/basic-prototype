@@ -31,7 +31,7 @@ public class Server
 		Config config = ConfigBuilder.Build<Config>(iConfiguration);
 
 		// Set db connection string
-		DbContext.ConnectionString = config.Database.CreateConnectionString("Main");
+		EchoContext.ConnectionString = config.Database.CreateConnectionString("Main");
 
 		// Build service collection
 		Services = new ServiceCollection()
@@ -43,7 +43,7 @@ public class Server
 			.AddSingleton(config)
 			.AddSingleton<ClientManager>()
 			.AddRouting()
-			.AddDbContext<DbContext>()
+			.AddDbContext<EchoContext>()
 			.BuildServiceProvider();
 
 		// Get a logger for the main server

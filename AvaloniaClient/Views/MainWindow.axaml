@@ -29,11 +29,9 @@
                 <comp:ChatView />
             </DockPanel>
         </DockPanel>
-        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding Dialogs.IsOpen}">
-            <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Dialogs.CurrentDialog}" IsEnabled="{Binding Dialogs.IsOpen}" />
+        <Border Background="{StaticResource DBackground50T80}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding Dialogs.IsOpen} ">
+            <ContentControl Background="{StaticResource DBackground100}" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Dialogs.CurrentDialog}" IsEnabled="{Binding Dialogs.IsOpen}" />
         </Border>
-
-        <!-- <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding Visible}" IsVisible="{Binding Visible}" /> -->
     </Panel>
 
 

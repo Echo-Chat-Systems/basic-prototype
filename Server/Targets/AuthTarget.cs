@@ -17,7 +17,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 {
 	private readonly Config _config;
 	private readonly ClientManager _clientManager;
-	private readonly DbContext _db;
+	private readonly EchoContext _db;
 
 	public override string Name => "auth";
 
@@ -25,7 +25,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 		ILogger<AuthTarget> logger,
 		ClientManager clientManager,
 		Config config,
-		DbContext db
+		EchoContext db
 	) : base(logger)
 	{
 		_config = config;

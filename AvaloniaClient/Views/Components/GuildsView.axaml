@@ -11,6 +11,9 @@
             <Button Classes="circle" Command="{Binding NewGuild}">
                 <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">+</Label>
             </Button>
+            <Button Classes="circle" Command="{Binding Reload}" VerticalAlignment="Bottom">
+                <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">⟳</Label>
+            </Button>
             <ItemsControl ItemsSource="{Binding Guilds}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

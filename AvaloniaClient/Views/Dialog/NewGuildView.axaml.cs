@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace AvaloniaClient.Views.Dialog;
 
-public partial class NewGuild : UserControl
+public partial class NewGuildView : UserControl
 {
-	public NewGuild()
+	public NewGuildView()
 	{
 		InitializeComponent();
 	}

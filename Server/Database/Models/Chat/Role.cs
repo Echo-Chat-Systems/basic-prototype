@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Core.Models.Permissions;
 using EchoLib.Core.Snowflake;
 using EchoLib.Models.Data.Guild;
@@ -13,5 +15,7 @@ public class Role
 	public required JRoleCustomisation Customisation { get; set; }
 	public required JRolePermissionSet Permissions { get; set; }
 
-	public required Guild Guild { get; set; }
+	public required Snowflake GuildId { get; init; }
+
+	[ForeignKey(nameof(GuildId))] public virtual Guild Guild { get; private init; } = null!;
 }
