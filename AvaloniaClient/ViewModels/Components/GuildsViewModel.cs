@@ -75,6 +75,8 @@ public partial class GuildsViewModel : ViewModelBase
 	[RelayCommand]
 	public async Task SelectGuild(Snowflake id)
 	{
+		_logger.LogInformation("Selected channel {cId}", id);
+		
 		Current = new ChannelsViewModel
 		{
 			Channels = new ObservableCollection<JChannel>(Guilds.FirstOrDefault(g => g.Id == id)!.Channels)

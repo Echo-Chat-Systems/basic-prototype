@@ -19,7 +19,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border>
-                            <Button Classes="circle" Command="{Binding $parent[ItemsControl].((vm:ChannelsViewModel)DataContext).SelectChannelCommand}" CommandParameter="{Binding Id}">
+                            <Button Classes="circle" Command="{Binding $parent[ItemsControl]}" CommandParameter="{Binding Id}">
                                 <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                             </Button>
                         </Border>
