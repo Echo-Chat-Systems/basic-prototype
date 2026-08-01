@@ -68,7 +68,15 @@ public class GuildsTarget(
 	public async Task Get(RoutingContext ctx, GuildGetParams para)
 	{
 		// Ensure that the user is meant to be able to see this guild
-		if (await db.GuildMembers.Where(m => m.UserId == ctx.User && m.GuildId == para.Id).CountAsync() != 1) throw new UnauthorizedException();
+		// Debugging tests
+		var temp = await db.GuildMembers.ToListAsync();
+		
+		// This isn't working because para.Id is 0
+		if (
+			 (await db.GuildMembers
+				.Where(m => m.UserId == ctx.User)
+				.ToListAsync()
+				).Where(m => m.GuildId == para.Id).Count() != 1) throw new UnauthorizedException();
 
 		await ctx.ReplyAsync(new GuildGetResponseParams
 		{

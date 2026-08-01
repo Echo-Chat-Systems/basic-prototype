@@ -17,9 +17,9 @@ public class GuildsTarget
 
 	private IMessageEndpoint Endpoint => state.Net.Client.BuildEndpoint;
 
-	public async Task<JGuild> Get(Snowflake id)
+	public async Task<JGuild?> Get(Snowflake id)
 	{
-		return (await Endpoint.RequestAsync<GuildGetResponseParams, GuildGetParams>(Name, new GuildGetParams()
+		return (await Endpoint.RequestAsync<GuildGetResponseParams, GuildGetParams>(Name, new GuildGetParams
 		{
 			Id = id
 		})).Guild;

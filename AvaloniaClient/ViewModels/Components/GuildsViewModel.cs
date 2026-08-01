@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using AvaloniaClient.Dialog;
 using AvaloniaClient.Targets;
 using AvaloniaClient.ViewModels.Dialog;
+using AvaloniaClient.Views.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EchoLib.Core.Snowflake;
 using EchoLib.Models.Data.Channel;
 using EchoLib.Models.Data.Guild;
+using EchoLib.Protocol.Exceptions;
 using EchoLib.Transport;
 using Microsoft.Extensions.Logging;
 
@@ -48,7 +50,7 @@ public partial class GuildsViewModel : ViewModelBase
 
 	[ObservableProperty] public partial ObservableCollection<JGuild> Guilds { get; set; } = [];
 	[ObservableProperty] public partial bool ReloadRequired { get; set; } = true;
-	[ObservableProperty] public partial ChannelsViewModel? Current { get; set; }
+	[ObservableProperty] public partial ChatViewModel? Current { get; set; }
 	[ObservableProperty] public partial bool GuildSelected { get; set; } = false;
 
 	[RelayCommand]
@@ -70,17 +72,19 @@ public partial class GuildsViewModel : ViewModelBase
 
 		// Set reload requested
 		ReloadRequired = true;
+		
+		// Select the newly created guild
+		await SelectGuild(newId);
 	}
 
 	[RelayCommand]
 	public async Task SelectGuild(Snowflake id)
 	{
 		_logger.LogInformation("Selected channel {cId}", id);
-		
-		Current = new ChannelsViewModel
-		{
-			Channels = new ObservableCollection<JChannel>(Guilds.FirstOrDefault(g => g.Id == id)!.Channels)
-		};
+
+		Current = new ChatViewModel(
+			await _targets.Guilds.Get(id) ?? throw new NotFoundException()
+			);
 		GuildSelected = true;
 	}
 }

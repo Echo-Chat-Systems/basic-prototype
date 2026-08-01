@@ -7,7 +7,7 @@ namespace Server.Targets.PreProcessors;
 
 public class AuthenticatedAttribute : BasePreProcessorAttribute
 {
-	private static ILogger<AuthenticatedAttribute>? _logger = null;
+	private static ILogger<AuthenticatedAttribute>? _logger;
 
 	public override async Task<bool> Run(RoutingContext ctx)
 	{

@@ -156,6 +156,4 @@ public struct Snowflake : IParsable<Snowflake>, IEquatable<Snowflake>
 	{
 		return Value.GetHashCode();
 	}
-
-
 }

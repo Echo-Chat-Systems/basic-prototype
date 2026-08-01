@@ -14,7 +14,7 @@ public partial class ChannelsViewModel : ViewModelBase
 	[RelayCommand]
 	public async Task SelectChannel(Snowflake channelId)
 	{
-
+		
 	}
 
 
