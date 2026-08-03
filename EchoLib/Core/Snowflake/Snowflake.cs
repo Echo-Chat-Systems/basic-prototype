@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
 namespace EchoLib.Core.Snowflake;
 
@@ -155,5 +156,28 @@ public struct Snowflake : IParsable<Snowflake>, IEquatable<Snowflake>
 	public override int GetHashCode()
 	{
 		return Value.GetHashCode();
+	}
+
+	public override string ToString()
+	{
+		return Value.ToString();
+	}
+}
+
+public class SnowflakeJsonConverter : JsonConverter<Snowflake>
+{
+	public override void WriteJson(JsonWriter writer, Snowflake value, JsonSerializer serializer)
+	{
+		writer.WriteValue(value.ToString());
+	}
+
+	public override Snowflake ReadJson(JsonReader reader, Type objectType, Snowflake existingValue, bool hasExistingValue,
+		JsonSerializer serializer)
+	{
+		if (reader.TokenType == JsonToken.Null) throw new NullReferenceException();
+
+		if (ulong.TryParse(reader.Value!.ToString(), out ulong value)) throw new FormatException();
+		
+		return new  Snowflake(value);
 	}
 }

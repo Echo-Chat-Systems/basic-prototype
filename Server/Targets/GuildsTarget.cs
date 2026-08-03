@@ -71,7 +71,7 @@ public class GuildsTarget(
 		// Debugging tests
 		var temp = await db.GuildMembers.ToListAsync();
 		
-		// This isn't working because para.Id is 0
+		// This isn't working now because the parameter deserialisation isn't working
 		if (
 			 (await db.GuildMembers
 				.Where(m => m.UserId == ctx.User)
@@ -88,7 +88,7 @@ public class GuildsTarget(
 	[Authenticated]
 	public async Task Query(RoutingContext ctx, GuildQueryParams para)
 	{
-		IEnumerable<Snowflake> ids = await db.GuildMembers.Where(m => m.User.Id == ctx.User!).Select(m => m.Guild.Id).ToListAsync();
+		IEnumerable<Snowflake> ids = await db.GuildMembers.Where(m => m.User.Id == ctx.User!).Select(m => m.GuildId).ToListAsync();
 
 		// Get all guilds
 		List<Guild> dbGuilds = [];

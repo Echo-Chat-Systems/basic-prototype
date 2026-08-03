@@ -1,4 +1,5 @@
-﻿using EchoLib.Crypto.Encryption;
+﻿using EchoLib.Core.Snowflake;
+using EchoLib.Crypto.Encryption;
 using EchoLib.Crypto.Signing;
 using Newtonsoft.Json;
 
@@ -16,7 +17,8 @@ public static class Json
 				new PublicSigningKeyConverter(),
 				new PrivateSigningKeyConverter(),
 				new PublicEncryptionKeyJsonConverter(),
-				new PrivateEncryptionKeyConverter()
+				new PrivateEncryptionKeyConverter(),
+				new SnowflakeJsonConverter()
 			]
 		};
 	}
