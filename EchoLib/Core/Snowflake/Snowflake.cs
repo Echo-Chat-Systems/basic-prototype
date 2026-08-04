@@ -176,7 +176,7 @@ public class SnowflakeJsonConverter : JsonConverter<Snowflake>
 	{
 		if (reader.TokenType == JsonToken.Null) throw new NullReferenceException();
 
-		if (ulong.TryParse(reader.Value!.ToString(), out ulong value)) throw new FormatException();
+		if (!ulong.TryParse(reader.Value!.ToString(), out ulong value)) throw new FormatException();
 		
 		return new  Snowflake(value);
 	}

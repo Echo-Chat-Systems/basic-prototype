@@ -74,7 +74,7 @@ public class GuildsTarget(
 		// This isn't working now because the parameter deserialisation isn't working
 		if (
 			 (await db.GuildMembers
-				.Where(m => m.UserId == ctx.User)
+				.Where(m => m.UserId == ctx.User!)
 				.ToListAsync()
 				).Where(m => m.GuildId == para.Id).Count() != 1) throw new UnauthorizedException();
 
