@@ -67,13 +67,10 @@ public class GuildsTarget(
 	public async Task Get(RoutingContext ctx, GuildGetParams para)
 	{
 		// Ensure that the user is meant to be able to see this guild
-		// TODO: figure out if this chunk can be converted into a server-side query, as this has the potential to be EXTREMELY slow
-		if (
-			// ReSharper disable once ReplaceWithSingleCallToCount
-			(await db.GuildMembers
-				.Where(m => m.UserId == ctx.User!)
-				.ToListAsync()
-			).Where(m => m.GuildId == para.Id).Count() != 1) throw new NotFoundException();
+		if ((
+			    await db.GuildMembers
+				    .Where(m => m.GuildId == para.Id && m.UserId == ctx.User!)
+				    .ToListAsync()).Count != 1) throw new NotFoundException();
 
 		await ctx.ReplyAsync(new GuildGetResponseParams
 		{
