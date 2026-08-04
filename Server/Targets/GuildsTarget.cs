@@ -76,7 +76,7 @@ public class GuildsTarget(
 			 (await db.GuildMembers
 				.Where(m => m.UserId == ctx.User!)
 				.ToListAsync()
-				).Where(m => m.GuildId == para.Id).Count() != 1) throw new UnauthorizedException();
+				).Where(m => m.GuildId == para.Id).Count() != 1) throw new NotFoundException();
 
 		await ctx.ReplyAsync(new GuildGetResponseParams
 		{
