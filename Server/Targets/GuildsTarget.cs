@@ -30,7 +30,6 @@ public class GuildsTarget(
 	public async Task Create(RoutingContext ctx, GuildCreateParams para)
 	{
 		// Create a new guild and guild member item for this user
-		Debug.Assert(ctx.User != null);
 
 		EntityEntry<Guild> guild = await db.Guilds.AddAsync(new Guild
 		{
@@ -38,7 +37,7 @@ public class GuildsTarget(
 			Name = para.Name,
 			Customisation = JGuildCustomisation.Empty,
 			Config = JGuildConfig.Empty,
-			OwnerId = ctx.User
+			OwnerId = ctx.User!
 		});
 
 		await db.GuildMembers.AddAsync(new GuildMember
@@ -47,7 +46,7 @@ public class GuildsTarget(
 			GuildCustomisationOverride = JGuildCustomisation.Empty,
 			UserProfileOverride = JProfile.Empty,
 			GuildId = guild.Entity.Id,
-			UserId = ctx.User
+			UserId = ctx.User!
 		});
 
 		await db.SaveChangesAsync();
@@ -61,6 +60,7 @@ public class GuildsTarget(
 	[Authenticated]
 	public async Task Delete(RoutingContext ctx, GuildDeleteParams para)
 	{
+		throw new NotImplementedException();
 	}
 
 	[Route("get")]
@@ -68,12 +68,10 @@ public class GuildsTarget(
 	public async Task Get(RoutingContext ctx, GuildGetParams para)
 	{
 		// Ensure that the user is meant to be able to see this guild
-		// Debugging tests
-		var temp = await db.GuildMembers.ToListAsync();
-		
-		// This isn't working now because the parameter deserialisation isn't working
+		// TODO: figure out if this chunk can be converted into a server-side query, as this has the potential to be EXTREMELY slow
 		if (
-			 (await db.GuildMembers
+			// ReSharper disable once ReplaceWithSingleCallToCount
+			(await db.GuildMembers
 				.Where(m => m.UserId == ctx.User!)
 				.ToListAsync()
 				).Where(m => m.GuildId == para.Id).Count() != 1) throw new NotFoundException();
