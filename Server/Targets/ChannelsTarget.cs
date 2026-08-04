@@ -18,4 +18,11 @@ public class ChannelsTarget(ILogger<ChannelsTarget> logger, EchoContext db) : Ta
 	{
 		
 	}
+	
+	[Route(RouteNames.Channels.Get)]
+	[Authenticated]
+	public async Task HandleGet(RoutingContext ctx, ChannelGetParams para)
+	{
+		
+	}
 }
