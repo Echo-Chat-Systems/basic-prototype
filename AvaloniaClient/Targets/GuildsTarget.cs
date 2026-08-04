@@ -5,15 +5,17 @@ using EchoLib.Models.Params.Guilds;
 using EchoLib.Routing.Identification;
 using EchoLib.Transport;
 using EchoLib.Core.Snowflake;
+using Microsoft.Extensions.Logging;
 
 namespace AvaloniaClient.Targets;
 
 public class GuildsTarget
 (
+	ILogger<GuildsTarget> logger,
 	AppState state
-) : ITarget
+) : TargetBase<GuildsTarget>(logger)
 {
-	public string Name => "guilds";
+	public override string Name => "guilds";
 
 	private IMessageEndpoint Endpoint => state.Net.Client.BuildEndpoint;
 

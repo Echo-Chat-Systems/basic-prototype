@@ -41,7 +41,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 		public byte[]? EncryptChallenge;
 	}
 
-	[Route("hello")]
+	[Route(RouteNames.Auth.ClientHello)]
 	public async Task HandleHello(RoutingContext ctx, ClientHelloParameters parameters)
 	{
 		Logger.LogInformation("New Client, Hello! Key: {PublicSigningKey}", parameters.KeyPair.SigningKey);
@@ -60,7 +60,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 		await ctx.ReplyAsync(new ServerHelloParameters { ServerName = _config.Appearance.BroadcastName });
 	}
 
-	[Route("signup")]
+	[Route(RouteNames.Auth.Signup)]
 	public async Task HandleSignup(RoutingContext ctx, SignupParameters parameters)
 	{
 		// Check if this user already exists
@@ -91,7 +91,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 
 	#region Signin
 
-	[Route("signin-start")]
+	[Route(RouteNames.Auth.SigninStart)]
 	public async Task HandleSigninStart(RoutingContext ctx, SigninStartParameters parameters)
 	{
 		// Get this client from the manager
@@ -137,7 +137,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 		});
 	}
 
-	[Route("signin-response")]
+	[Route(RouteNames.Auth.SigninResponse)]
 	public async Task HandleSigninResponse(RoutingContext ctx, SigninResponseParameters parameters)
 	{
 		// Get this client from the manager

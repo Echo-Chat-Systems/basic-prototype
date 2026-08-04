@@ -12,9 +12,9 @@ using Org.BouncyCastle.Utilities.Encoders;
 
 namespace AvaloniaClient.Targets;
 
-public class AuthTarget(ILogger<AuthTarget> logger, AppState state) : ITarget
+public class AuthTarget(ILogger<AuthTarget> logger, AppState state) : TargetBase<AuthTarget>(logger)
 {
-	public string Name => "auth";
+	public override string Name => "auth";
 
 	private IMessageEndpoint Endpoint => state.Net.Client.BuildEndpoint;
 

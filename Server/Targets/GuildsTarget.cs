@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using EchoLib.Core;
 using EchoLib.Core.Snowflake;
 using EchoLib.Models.Data.Channel;
@@ -21,9 +20,9 @@ public class GuildsTarget(
 	ILogger<GuildsTarget> logger,
 	EchoContext db
 )
-	: ITarget
+	: TargetBase<GuildsTarget>(logger)
 {
-	public string Name => "guilds";
+	public override string Name => "guilds";
 
 	[Route("create")]
 	[Authenticated]
