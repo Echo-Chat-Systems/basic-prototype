@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using EchoLib.Models.Data.Channel;
 using EchoLib.Models.Data.Guild;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AvaloniaClient.ViewModels.Components;
 
@@ -17,10 +19,9 @@ public partial class ChatViewModel : ViewModelBase
 	{
 		Channels = [.. guild.Channels];
 
-		ChannelsData = new ChannelsViewModel
-		{
-			Channels = Channels
-		};
+		ChannelsData = Ioc.Default.GetRequiredService<ChannelsViewModel>();
+		ChannelsData.Channels = Channels;
+		ChannelsData.Guild = guild;
 	}
 }
 

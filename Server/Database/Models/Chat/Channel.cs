@@ -3,6 +3,7 @@ using EchoLib.Core.Snowflake;
 using EchoLib.Models.Data.Channel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace Server.Database.Models.Chat;
 
@@ -12,10 +13,11 @@ public class Channel
 	public required Snowflake Id { get; init; }
 
 	public required string Name { get; set; }
-	public required int Index { get; set; }
 	public required JChannelCustomisation Customisation { get; set; }
 	public required JChannelConfig Config { get; set; }
 
+	public int? Index { get; set; }
+	
 	public Snowflake? GuildId { get; init; }
 	public Snowflake? ParentId { get; init; }
 
