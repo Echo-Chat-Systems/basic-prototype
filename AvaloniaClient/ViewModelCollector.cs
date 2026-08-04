@@ -9,12 +9,10 @@ namespace AvaloniaClient;
 
 public static class ViewModelCollector
 {
-
-
 	public static IServiceCollection AddViewModels(this IServiceCollection services)
 	{
 		// Enumerate over all implementations of ViewModelBase
-		var types = Assembly.GetExecutingAssembly()
+		IEnumerable<Type> types = Assembly.GetExecutingAssembly()
 			.GetTypes()
 			.Where(t => t is { IsAbstract: false } && typeof(ViewModelBase).IsAssignableFrom(t));
 
@@ -46,8 +44,6 @@ public static class ViewModelCollector
 		return services;
 	}
 }
-
-
 
 [AttributeUsage(AttributeTargets.Class)]
 public class TransientModelAttribute : Attribute;

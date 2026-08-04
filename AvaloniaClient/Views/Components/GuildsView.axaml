@@ -20,7 +20,8 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border>
-                                <Button Classes="circle" Command="{Binding $parent[ItemsControl].((vm:GuildsViewModel)DataContext).SelectGuildCommand}" CommandParameter="{Binding Id}">
+                                <Button Classes="circle" Command="{Binding $parent[ItemsControl].((vm:GuildsViewModel)DataContext).SelectGuildCommand}"
+                                        CommandParameter="{Binding Id}">
                                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                                 </Button>
                             </Border>

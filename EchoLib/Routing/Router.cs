@@ -41,7 +41,7 @@ public sealed class Router
 		serviceProvider.GetService<ITargetHub>()?
 			.Populate(_targets);
 	}
-	
+
 	public async void Receive(Envelope<JToken> message, WebSocket socket)
 	{
 		// Check if the envelope has an MID
@@ -53,7 +53,7 @@ public sealed class Router
 		}
 
 		WebsocketEndpoint endpoint = new(socket, _serviceProvider);
-		RoutingContext ctx = new RoutingContext
+		RoutingContext ctx = new()
 		{
 			OriginalMessage = message,
 			MessageId = message.MessageId,
@@ -101,7 +101,7 @@ public static class RoutingServiceCollectionExtensions
 		services.AddSingleton<Router>();
 		services.AddSingleton<PendingResponseRegistry>();
 		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(Json.DefaultSettings()));
-		
+
 		Type? targetHub = ImplementationFinder.Find<ITargetHub>();
 		if (targetHub != null)
 		{

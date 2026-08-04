@@ -29,9 +29,8 @@ public sealed class RouteDescriptor<TRequest>(Func<RoutingContext, TRequest, Tas
 	{
 		// Run preprocessors first
 		foreach (BasePreProcessorAttribute task in Preprocessors)
-		{
-			if (!await task.Run(ctx)) return;
-		}
+			if (!await task.Run(ctx))
+				return;
 
 		TRequest request = json.ToObject<TRequest>() ?? throw new InvalidOperationException("Unable to deserialize request");
 

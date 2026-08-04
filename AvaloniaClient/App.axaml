@@ -36,8 +36,7 @@
                                        AltMedium="{StaticResource DSecondary500}"
                                        AltMediumHigh="{StaticResource DSecondary600}"
                                        AltHigh="{StaticResource DSecondary700}"
-                                       RegionColor="{StaticResource DBackground50}"
-                                       />
+                                       RegionColor="{StaticResource DBackground50}" />
                 <ColorPaletteResources x:Key="Light" />
             </FluentTheme.Palettes>
         </FluentTheme>

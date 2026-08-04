@@ -63,10 +63,10 @@ public partial class NewAccountViewModel : ViewModelBase
 			Css = CustomCss,
 			Pfp = PfpLink,
 			Banner = BannerLink,
-			Timezone = "nanya", // TODO: Actually implement tz saving
+			Timezone = "nanya" // TODO: Actually implement tz saving
 		};
 
-		SignupCompleteParameters res =await _targets.Auth.Signup(profile);
+		SignupCompleteParameters res = await _targets.Auth.Signup(profile);
 		_state.Local.Profile = profile;
 
 		// Trigger auth

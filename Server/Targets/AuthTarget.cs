@@ -81,7 +81,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 					CreatedAt = DateTime.Now,
 					Settings = "",
 					IsOnline = false,
-					IsBanned = false,
+					IsBanned = false
 				})).Entity)
 			}
 		);
@@ -184,7 +184,7 @@ public class AuthTarget : TargetBase<AuthTarget>
 					Profile = new JProfile
 					{
 						Username = userDbm.Username,
-						Tag = (ushort)userDbm.Tag,
+						Tag = (ushort)userDbm.Tag
 					}
 				}
 			});

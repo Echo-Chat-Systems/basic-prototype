@@ -12,12 +12,10 @@ public static class RouteFinder
 	public static void Discover(IServiceProvider services, RouteRegistry routeRegistry, TargetInstanceRegistry targetRegistry)
 	{
 		if (_cache != null)
-		{
-			foreach (KeyValuePair<(string target, string action), RouteDescriptor > kvp in _cache)
-			{
+			foreach (KeyValuePair<(string target, string action), RouteDescriptor> kvp in _cache)
 				routeRegistry.RegisterRoute(kvp.Value);
-			}
-		};
+
+		;
 
 		// Build new route table
 		List<Type> targets = Assembly.GetEntryAssembly()!
@@ -50,7 +48,7 @@ public static class RouteFinder
 					RouteDescriptorFactory.Create(
 						action.GetCustomAttributes<BasePreProcessorAttribute>(),
 						targetInstance, action, targetInstance.Name, actionName)
-					);
+				);
 			}
 		}
 	}

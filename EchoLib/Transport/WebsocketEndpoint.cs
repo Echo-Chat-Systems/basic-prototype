@@ -109,6 +109,4 @@ public class WebsocketEndpoint(ILogger<WebsocketEndpoint> logger, WebSocket sock
 #endif
 		return t;
 	}
-
-
 }

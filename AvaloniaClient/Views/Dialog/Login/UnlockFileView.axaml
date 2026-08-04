@@ -1,20 +1,19 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Dialog.Login"
-        mc:Ignorable="d"
-        x:Class="AvaloniaClient.Views.Dialog.Login.UnlockFileView"
-        x:DataType="login:UnlockFileViewModel"
-        d:DesignWidth="500" d:DesignHeight="500"
-        >
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:login="clr-namespace:AvaloniaClient.ViewModels.Dialog.Login"
+             mc:Ignorable="d"
+             x:Class="AvaloniaClient.Views.Dialog.Login.UnlockFileView"
+             x:DataType="login:UnlockFileViewModel"
+             d:DesignWidth="500" d:DesignHeight="500">
     <Design.DataContext>
         <login:UnlockFileViewModel />
     </Design.DataContext>
 
     <StackPanel Classes="centered">
         <Label HorizontalAlignment="Center">Unlock Id File</Label>
-        <Line StartPoint="0,0" EndPoint="200,0" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Center"/>
+        <Line StartPoint="0,0" EndPoint="200,0" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Center" />
         <StackPanel Name="NewFileControls" IsVisible="{Binding IsNewFile}" IsEnabled="{Binding IsNewFile}" Spacing="10">
             <Label HorizontalAlignment="Center">Server address:</Label>
             <TextBox Text="{Binding ServerAddress}" />

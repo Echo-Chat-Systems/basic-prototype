@@ -26,7 +26,9 @@ public partial class UnlockFileViewModel : ViewModelBase
 	}
 
 #if DEBUG
-	public UnlockFileViewModel(): this(null!, new AppState()) {}
+	public UnlockFileViewModel() : this(null!, new AppState())
+	{
+	}
 #endif
 
 	public static FileInfo UserFile =>

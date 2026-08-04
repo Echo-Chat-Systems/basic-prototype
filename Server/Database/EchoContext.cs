@@ -14,7 +14,7 @@ using PublicSigningKeyConverter = Server.Database.Converters.PublicSigningKeyCon
 
 namespace Server.Database;
 
-public class EchoContext : Microsoft.EntityFrameworkCore.DbContext
+public class EchoContext : DbContext
 {
 	public DbSet<User> Users { get; set; }
 

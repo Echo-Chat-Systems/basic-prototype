@@ -9,8 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AvaloniaClient.Targets;
 
-public class GuildsTarget
-(
+public class GuildsTarget(
 	ILogger<GuildsTarget> logger,
 	AppState state
 ) : TargetBase<GuildsTarget>(logger)
@@ -34,7 +33,7 @@ public class GuildsTarget
 
 	public async Task<Snowflake> New(string name)
 	{
-		return (await Endpoint.RequestAsync<GuildCreateResponseParams, GuildCreateParams>(Name, new GuildCreateParams()
+		return (await Endpoint.RequestAsync<GuildCreateResponseParams, GuildCreateParams>(Name, new GuildCreateParams
 		{
 			Name = name
 		})).Id;

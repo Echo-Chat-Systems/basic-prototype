@@ -6,6 +6,6 @@ public enum SigninStage
 	Started,
 	Challenged,
 	ChallengeResponded,
-	Completed, 
+	Completed,
 	Failed
 }

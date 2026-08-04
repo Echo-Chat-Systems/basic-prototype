@@ -7,25 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+        <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1"/>
         <PackageReference Include="WebSocketSharper" Version="1.0.42"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Core.Snowflake">
-        <HintPath>..\..\..\.nuget\packages\echolib.core.snowflake\1.2.0\lib\net8.0\Core.Snowflake.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Models\Data\Guild\JRolePermissionSet.cs">
-        <DependentUpon>JRole.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Models\Data\Guild\JRoleCustomisation.cs">
-        <DependentUpon>JRole.cs</DependentUpon>
-      </Compile>
+        <Compile Update="Models\Data\Guild\JRolePermissionSet.cs">
+            <DependentUpon>JRole.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Models\Data\Guild\JRoleCustomisation.cs">
+            <DependentUpon>JRole.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

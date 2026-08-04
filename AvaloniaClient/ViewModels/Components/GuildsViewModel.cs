@@ -42,10 +42,7 @@ public partial class GuildsViewModel : ViewModelBase
 
 	private void CheckRefreshNeeded(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName == nameof(ReloadRequired) && ReloadRequired)
-		{
-			Reload().Forget(_logger);
-		}
+		if (e.PropertyName == nameof(ReloadRequired) && ReloadRequired) Reload().Forget(_logger);
 	}
 
 	[ObservableProperty] public partial ObservableCollection<JGuild> Guilds { get; set; } = [];
@@ -72,7 +69,7 @@ public partial class GuildsViewModel : ViewModelBase
 
 		// Set reload requested
 		ReloadRequired = true;
-		
+
 		// Select the newly created guild
 		await SelectGuild(newId);
 	}
@@ -84,7 +81,7 @@ public partial class GuildsViewModel : ViewModelBase
 
 		Current = new ChatViewModel(
 			await _targets.Guilds.Get(id) ?? throw new NotFoundException()
-			);
+		);
 		GuildSelected = true;
 	}
 }

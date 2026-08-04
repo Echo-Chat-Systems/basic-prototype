@@ -16,6 +16,5 @@ public class ChannelsTarget(ILogger<ChannelsTarget> logger, EchoContext db) : Ta
 	[Authenticated]
 	public async Task HandleCreate(RoutingContext ctx, ChannelCreateParams para)
 	{
-		
 	}
 }

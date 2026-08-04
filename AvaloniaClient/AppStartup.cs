@@ -14,11 +14,8 @@ public class AppStartup(
 			await dialogs.ShowAsync<AuthOverlayViewModel, bool>();
 
 		if (result != true)
-		{
 			// Application startup failed/cancelled.
 			return;
-		}
-
 
 
 		// At this point AppState is FrontendReady.

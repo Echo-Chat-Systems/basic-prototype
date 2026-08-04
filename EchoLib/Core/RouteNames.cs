@@ -6,7 +6,7 @@ public static class RouteNames
 	{
 		public const string ClientHello = "hello";
 		public const string ServerHello = "server-hello";
-		
+
 		public const string Signup = "signup";
 
 		public const string SigninStart = "signin-start";
@@ -28,6 +28,5 @@ public static class RouteNames
 		public const string Create = "create";
 		public const string Delete = "delete";
 		public const string Get = "get";
-		
 	}
 }

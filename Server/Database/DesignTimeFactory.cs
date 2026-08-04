@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 
 namespace Server.Database;
 
-public class DesignTimeFactory : IDesignTimeDbContextFactory<EchoContext> {
-
+public class DesignTimeFactory : IDesignTimeDbContextFactory<EchoContext>
+{
 	public EchoContext CreateDbContext(string[] args)
 	{
 		// Read in config and .env files

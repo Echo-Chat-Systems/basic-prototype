@@ -11,11 +11,9 @@ public partial class DialogService : ObservableObject, IDialogService
 {
 	private readonly IServiceProvider _services;
 
-	[ObservableProperty]
-	public partial object? CurrentDialog { get; private set; }
+	[ObservableProperty] public partial object? CurrentDialog { get; private set; }
 
-	[ObservableProperty]
-	public partial bool IsOpen { get; private set; }
+	[ObservableProperty] public partial bool IsOpen { get; private set; }
 
 	private TaskCompletionSource<object?>? _completion;
 
@@ -30,7 +28,7 @@ public partial class DialogService : ObservableObject, IDialogService
 		if (_completion != null)
 			throw new InvalidOperationException("A dialog is already open.");
 
-		var viewModel = _services.GetRequiredService<TViewModel>();
+		TViewModel viewModel = _services.GetRequiredService<TViewModel>();
 
 		_completion = new TaskCompletionSource<object?>(
 			TaskCreationOptions.RunContinuationsAsynchronously);

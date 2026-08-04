@@ -73,7 +73,7 @@ public class GuildsTarget(
 			(await db.GuildMembers
 				.Where(m => m.UserId == ctx.User!)
 				.ToListAsync()
-				).Where(m => m.GuildId == para.Id).Count() != 1) throw new NotFoundException();
+			).Where(m => m.GuildId == para.Id).Count() != 1) throw new NotFoundException();
 
 		await ctx.ReplyAsync(new GuildGetResponseParams
 		{
@@ -100,10 +100,7 @@ public class GuildsTarget(
 		// Construct each guild
 		List<JGuild> guilds = [];
 
-		foreach (Guild dbm in dbGuilds)
-		{
-			guilds.Add(await BuildGuild(dbm));
-		}
+		foreach (Guild dbm in dbGuilds) guilds.Add(await BuildGuild(dbm));
 
 		await ctx.ReplyAsync(new GuildQueryResponseParams
 		{

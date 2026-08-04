@@ -19,7 +19,7 @@ public class Channel
 	public Snowflake? GuildId { get; init; }
 	public Snowflake? ParentId { get; init; }
 
-	[ForeignKey(nameof(GuildId))] public virtual Guild Guild { get; private init; }  = null!;
+	[ForeignKey(nameof(GuildId))] public virtual Guild Guild { get; private init; } = null!;
 	[ForeignKey(nameof(ParentId))] public virtual Channel Parent { get; private init; } = null!;
 
 	public virtual List<ChannelMember> Members { get; } = [];
@@ -29,6 +29,5 @@ public class ChannelConfiguration : IEntityTypeConfiguration<Channel>
 {
 	public void Configure(EntityTypeBuilder<Channel> builder)
 	{
-
 	}
 }

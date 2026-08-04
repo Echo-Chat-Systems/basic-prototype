@@ -53,7 +53,6 @@ public partial class App : Application
 			mainWindow.Show();
 
 			_ = RunStartupAsync();
-
 		}
 
 		base.OnFrameworkInitializationCompleted();

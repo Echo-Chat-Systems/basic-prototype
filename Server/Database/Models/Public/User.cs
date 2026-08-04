@@ -14,7 +14,7 @@ public class User
 	public required string Username { get; set; }
 	public required short Tag { get; set; }
 	public required JProfile Profile { get; set; }
-	public required string Settings { get; set; }  // Settings is a client-side encrypted blob
+	public required string Settings { get; set; } // Settings is a client-side encrypted blob
 	public DateTime? LastOnline { get; set; }
 	public required bool IsOnline { get; set; }
 	public required bool IsBanned { get; set; }

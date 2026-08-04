@@ -92,8 +92,4 @@ public class AuthTarget(ILogger<AuthTarget> logger, Client.SessionInfo sessionIn
 			throw;
 		}
 	}
-
-
-
-
 }

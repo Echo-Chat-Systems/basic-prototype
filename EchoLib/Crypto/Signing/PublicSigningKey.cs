@@ -23,7 +23,7 @@ public class PublicSigningKey : IEquatable<PublicSigningKey>
 	{
 		return Convert.ToBase64String(Key);
 	}
-	
+
 	public static bool operator ==(PublicSigningKey s1, PublicSigningKey s2)
 	{
 		return s1.Equals(s2);

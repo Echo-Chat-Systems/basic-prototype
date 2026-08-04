@@ -5,9 +5,8 @@
              xmlns:vm="clr-namespace:AvaloniaClient.ViewModels.Components"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaClient.Views.Components.ChannelsView"
-             x:DataType="vm:ChannelsViewModel"
-             >
-    <ScrollViewer >
+             x:DataType="vm:ChannelsViewModel">
+    <ScrollViewer>
         <StackPanel>
             <Button Classes="circle" Command="{Binding NewChannel}">
                 <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch">+</Label>

@@ -21,9 +21,11 @@ public class AuthenticatedAttribute : BasePreProcessorAttribute
 
 		if (client?.Authenticated != true)
 		{
-			_logger.LogInformation("Client {Id} failed auth check on authenticated route {target}:{action}", client?.Id, ctx.OriginalMessage.Target, ctx.OriginalMessage.Data.Action);
+			_logger.LogInformation("Client {Id} failed auth check on authenticated route {target}:{action}", client?.Id, ctx.OriginalMessage.Target,
+				ctx.OriginalMessage.Data.Action);
 			return false;
 		}
+
 		ctx.User = client.Id;
 
 		return true;
