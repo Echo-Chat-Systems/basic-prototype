@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
@@ -21,33 +20,31 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.10" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.10"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EchoLib\EchoLib.csproj" />
+        <ProjectReference Include="..\EchoLib\EchoLib.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\LoginModal\LoginPage.axaml.cs">
-        <DependentUpon>LoginDialog.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\LoginModal\UnlockFilePage.axaml.cs">
-        <DependentUpon>UnlockIdFileWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="AppState.RemoteState.cs">
-        <DependentUpon>AppState.cs</DependentUpon>
-      </Compile>
-      <Compile Update="AppState.LocalState.cs">
-        <DependentUpon>AppState.cs</DependentUpon>
-      </Compile>
-      <Compile Update="AppState.Netstate.cs">
-        <DependentUpon>AppState.cs</DependentUpon>
-      </Compile>
+        <Compile Update="AppState.RemoteState.cs">
+            <DependentUpon>AppState.cs</DependentUpon>
+        </Compile>
+        <Compile Update="AppState.LocalState.cs">
+            <DependentUpon>AppState.cs</DependentUpon>
+        </Compile>
+        <Compile Update="AppState.Netstate.cs">
+            <DependentUpon>AppState.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaXaml Update="Styles\BackgroundTransparencies.axaml">
+            <DependentUpon>Colors.axaml</DependentUpon>
+        </AvaloniaXaml>
     </ItemGroup>
 </Project>

@@ -35,8 +35,7 @@ public class LiveClient : WebSocketBehavior
 
 	protected override void OnMessage(MessageEventArgs e)
 	{
-		// Unpack message event 
-		_logger.LogDebug("Message received, attempting to unpack");
+		// Unpack message event
 		Envelope<JToken>? envelope;
 		try
 		{
@@ -49,13 +48,12 @@ public class LiveClient : WebSocketBehavior
 
 		if (envelope is null) goto Fail;
 
-		_logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
 		// Route message
 		_router.Receive(envelope, Context.WebSocket);
 		return;
 
 		Fail:
-		_logger.LogError("Invalid envelope received!");
+		return;
 	}
 }

@@ -3,14 +3,46 @@
              x:Class="AvaloniaClient.App"
              xmlns:local="using:AvaloniaClient"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="Styles/Colors.axaml" />
+                <ResourceInclude Source="Styles/BackgroundTransparencies.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
     <Application.Styles>
-        <FluentTheme />
+        <!-- Global colouring -->
+
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Dark"
+                                       ErrorText="DarkRed"
+
+                                       BaseLow="{StaticResource DPrimary100}"
+                                       BaseMediumLow="{StaticResource DPrimary300}"
+                                       BaseMedium="{StaticResource DPrimary500}"
+                                       BaseMediumHigh="{StaticResource DPrimary700}"
+                                       BaseHigh="{StaticResource DPrimary800}"
+                                       AltLow="{StaticResource DSecondary100}"
+                                       AltMediumLow="{StaticResource DSecondary300}"
+                                       AltMedium="{StaticResource DSecondary500}"
+                                       AltMediumHigh="{StaticResource DSecondary600}"
+                                       AltHigh="{StaticResource DSecondary700}"
+                                       RegionColor="{StaticResource DBackground50}" />
+                <ColorPaletteResources x:Key="Light" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
+
+
+        <!-- Selective animations and shapes -->
 
         <Style Selector="StackPanel.centered">
             <Setter Property="Spacing" Value="10" />
@@ -22,6 +54,10 @@
             <Style Selector="^ Label, ^ Button, ^ TextBox">
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
             </Style>
+        </Style>
+
+        <Style Selector="Button.circle">
+            <Setter Property="CornerRadius" Value="25" />
         </Style>
     </Application.Styles>
 </Application>

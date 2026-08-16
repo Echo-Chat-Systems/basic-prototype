@@ -1,0 +1,270 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- DBackground50 #0b0e0e -->
+    <Color x:Key="DBackground50T10">#1A0b0e0e</Color>
+    <Color x:Key="DBackground50T20">#330b0e0e</Color>
+    <Color x:Key="DBackground50T30">#4D0b0e0e</Color>
+    <Color x:Key="DBackground50T40">#660b0e0e</Color>
+    <Color x:Key="DBackground50T50">#800b0e0e</Color>
+    <Color x:Key="DBackground50T60">#990b0e0e</Color>
+    <Color x:Key="DBackground50T70">#B30b0e0e</Color>
+    <Color x:Key="DBackground50T80">#CC0b0e0e</Color>
+    <Color x:Key="DBackground50T90">#E60b0e0e</Color>
+    <Color x:Key="DBackground50T100">#FF0b0e0e</Color>
+
+    <!-- DBackground100 #161d1d -->
+    <Color x:Key="DBackground100T10">#1A161d1d</Color>
+    <Color x:Key="DBackground100T20">#33161d1d</Color>
+    <Color x:Key="DBackground100T30">#4D161d1d</Color>
+    <Color x:Key="DBackground100T40">#66161d1d</Color>
+    <Color x:Key="DBackground100T50">#80161d1d</Color>
+    <Color x:Key="DBackground100T60">#99161d1d</Color>
+    <Color x:Key="DBackground100T70">#B3161d1d</Color>
+    <Color x:Key="DBackground100T80">#CC161d1d</Color>
+    <Color x:Key="DBackground100T90">#E6161d1d</Color>
+    <Color x:Key="DBackground100T100">#FF161d1d</Color>
+
+    <!-- DBackground200 #2d3939 -->
+    <Color x:Key="DBackground200T10">#1A2d3939</Color>
+    <Color x:Key="DBackground200T20">#332d3939</Color>
+    <Color x:Key="DBackground200T30">#4D2d3939</Color>
+    <Color x:Key="DBackground200T40">#662d3939</Color>
+    <Color x:Key="DBackground200T50">#802d3939</Color>
+    <Color x:Key="DBackground200T60">#992d3939</Color>
+    <Color x:Key="DBackground200T70">#B32d3939</Color>
+    <Color x:Key="DBackground200T80">#CC2d3939</Color>
+    <Color x:Key="DBackground200T90">#E62d3939</Color>
+    <Color x:Key="DBackground200T100">#FF2d3939</Color>
+
+    <!-- DBackground300 #435656 -->
+    <Color x:Key="DBackground300T10">#1A435656</Color>
+    <Color x:Key="DBackground300T20">#33435656</Color>
+    <Color x:Key="DBackground300T30">#4D435656</Color>
+    <Color x:Key="DBackground300T40">#66435656</Color>
+    <Color x:Key="DBackground300T50">#80435656</Color>
+    <Color x:Key="DBackground300T60">#99435656</Color>
+    <Color x:Key="DBackground300T70">#B3435656</Color>
+    <Color x:Key="DBackground300T80">#CC435656</Color>
+    <Color x:Key="DBackground300T90">#E6435656</Color>
+    <Color x:Key="DBackground300T100">#FF435656</Color>
+
+    <!-- DBackground400 #5a7272 -->
+    <Color x:Key="DBackground400T10">#1A5a7272</Color>
+    <Color x:Key="DBackground400T20">#335a7272</Color>
+    <Color x:Key="DBackground400T30">#4D5a7272</Color>
+    <Color x:Key="DBackground400T40">#665a7272</Color>
+    <Color x:Key="DBackground400T50">#805a7272</Color>
+    <Color x:Key="DBackground400T60">#995a7272</Color>
+    <Color x:Key="DBackground400T70">#B35a7272</Color>
+    <Color x:Key="DBackground400T80">#CC5a7272</Color>
+    <Color x:Key="DBackground400T90">#E65a7272</Color>
+    <Color x:Key="DBackground400T100">#FF5a7272</Color>
+
+    <!-- DBackground500 #708f8f -->
+    <Color x:Key="DBackground500T10">#1A708f8f</Color>
+    <Color x:Key="DBackground500T20">#33708f8f</Color>
+    <Color x:Key="DBackground500T30">#4D708f8f</Color>
+    <Color x:Key="DBackground500T40">#66708f8f</Color>
+    <Color x:Key="DBackground500T50">#80708f8f</Color>
+    <Color x:Key="DBackground500T60">#99708f8f</Color>
+    <Color x:Key="DBackground500T70">#B3708f8f</Color>
+    <Color x:Key="DBackground500T80">#CC708f8f</Color>
+    <Color x:Key="DBackground500T90">#E6708f8f</Color>
+    <Color x:Key="DBackground500T100">#FF708f8f</Color>
+
+    <!-- DBackground600 #8da5a5 -->
+    <Color x:Key="DBackground600T10">#1A8da5a5</Color>
+    <Color x:Key="DBackground600T20">#338da5a5</Color>
+    <Color x:Key="DBackground600T30">#4D8da5a5</Color>
+    <Color x:Key="DBackground600T40">#668da5a5</Color>
+    <Color x:Key="DBackground600T50">#808da5a5</Color>
+    <Color x:Key="DBackground600T60">#998da5a5</Color>
+    <Color x:Key="DBackground600T70">#B38da5a5</Color>
+    <Color x:Key="DBackground600T80">#CC8da5a5</Color>
+    <Color x:Key="DBackground600T90">#E68da5a5</Color>
+    <Color x:Key="DBackground600T100">#FF8da5a5</Color>
+
+    <!-- DBackground700 #a9bcbc -->
+    <Color x:Key="DBackground700T10">#1Aa9bcbc</Color>
+    <Color x:Key="DBackground700T20">#33a9bcbc</Color>
+    <Color x:Key="DBackground700T30">#4Da9bcbc</Color>
+    <Color x:Key="DBackground700T40">#66a9bcbc</Color>
+    <Color x:Key="DBackground700T50">#80a9bcbc</Color>
+    <Color x:Key="DBackground700T60">#99a9bcbc</Color>
+    <Color x:Key="DBackground700T70">#B3a9bcbc</Color>
+    <Color x:Key="DBackground700T80">#CCa9bcbc</Color>
+    <Color x:Key="DBackground700T90">#E6a9bcbc</Color>
+    <Color x:Key="DBackground700T100">#FFa9bcbc</Color>
+
+    <!-- DBackground800 #c6d2d2 -->
+    <Color x:Key="DBackground800T10">#1Ac6d2d2</Color>
+    <Color x:Key="DBackground800T20">#33c6d2d2</Color>
+    <Color x:Key="DBackground800T30">#4Dc6d2d2</Color>
+    <Color x:Key="DBackground800T40">#66c6d2d2</Color>
+    <Color x:Key="DBackground800T50">#80c6d2d2</Color>
+    <Color x:Key="DBackground800T60">#99c6d2d2</Color>
+    <Color x:Key="DBackground800T70">#B3c6d2d2</Color>
+    <Color x:Key="DBackground800T80">#CCc6d2d2</Color>
+    <Color x:Key="DBackground800T90">#E6c6d2d2</Color>
+    <Color x:Key="DBackground800T100">#FFc6d2d2</Color>
+
+    <!-- DBackground900 #e2e9e9 -->
+    <Color x:Key="DBackground900T10">#1Ae2e9e9</Color>
+    <Color x:Key="DBackground900T20">#33e2e9e9</Color>
+    <Color x:Key="DBackground900T30">#4De2e9e9</Color>
+    <Color x:Key="DBackground900T40">#66e2e9e9</Color>
+    <Color x:Key="DBackground900T50">#80e2e9e9</Color>
+    <Color x:Key="DBackground900T60">#99e2e9e9</Color>
+    <Color x:Key="DBackground900T70">#B3e2e9e9</Color>
+    <Color x:Key="DBackground900T80">#CCe2e9e9</Color>
+    <Color x:Key="DBackground900T90">#E6e2e9e9</Color>
+    <Color x:Key="DBackground900T100">#FFe2e9e9</Color>
+
+    <!-- DBackground950 #f1f4f4 -->
+    <Color x:Key="DBackground950T10">#1Af1f4f4</Color>
+    <Color x:Key="DBackground950T20">#33f1f4f4</Color>
+    <Color x:Key="DBackground950T30">#4Df1f4f4</Color>
+    <Color x:Key="DBackground950T40">#66f1f4f4</Color>
+    <Color x:Key="DBackground950T50">#80f1f4f4</Color>
+    <Color x:Key="DBackground950T60">#99f1f4f4</Color>
+    <Color x:Key="DBackground950T70">#B3f1f4f4</Color>
+    <Color x:Key="DBackground950T80">#CCf1f4f4</Color>
+    <Color x:Key="DBackground950T90">#E6f1f4f4</Color>
+    <Color x:Key="DBackground950T100">#FFf1f4f4</Color>
+
+
+    <!-- Light Backgrounds -->
+
+    <!-- LBackground50 #f1f4f4 -->
+    <Color x:Key="LBackground50T10">#1Af1f4f4</Color>
+    <Color x:Key="LBackground50T20">#33f1f4f4</Color>
+    <Color x:Key="LBackground50T30">#4Df1f4f4</Color>
+    <Color x:Key="LBackground50T40">#66f1f4f4</Color>
+    <Color x:Key="LBackground50T50">#80f1f4f4</Color>
+    <Color x:Key="LBackground50T60">#99f1f4f4</Color>
+    <Color x:Key="LBackground50T70">#B3f1f4f4</Color>
+    <Color x:Key="LBackground50T80">#CCf1f4f4</Color>
+    <Color x:Key="LBackground50T90">#E6f1f4f4</Color>
+    <Color x:Key="LBackground50T100">#FFf1f4f4</Color>
+
+    <!-- LBackground100 #e2e9e9 -->
+    <Color x:Key="LBackground100T10">#1Ae2e9e9</Color>
+    <Color x:Key="LBackground100T20">#33e2e9e9</Color>
+    <Color x:Key="LBackground100T30">#4De2e9e9</Color>
+    <Color x:Key="LBackground100T40">#66e2e9e9</Color>
+    <Color x:Key="LBackground100T50">#80e2e9e9</Color>
+    <Color x:Key="LBackground100T60">#99e2e9e9</Color>
+    <Color x:Key="LBackground100T70">#B3e2e9e9</Color>
+    <Color x:Key="LBackground100T80">#CCe2e9e9</Color>
+    <Color x:Key="LBackground100T90">#E6e2e9e9</Color>
+    <Color x:Key="LBackground100T100">#FFe2e9e9</Color>
+
+    <!-- LBackground200 #c6d2d2 -->
+    <Color x:Key="LBackground200T10">#1Ac6d2d2</Color>
+    <Color x:Key="LBackground200T20">#33c6d2d2</Color>
+    <Color x:Key="LBackground200T30">#4Dc6d2d2</Color>
+    <Color x:Key="LBackground200T40">#66c6d2d2</Color>
+    <Color x:Key="LBackground200T50">#80c6d2d2</Color>
+    <Color x:Key="LBackground200T60">#99c6d2d2</Color>
+    <Color x:Key="LBackground200T70">#B3c6d2d2</Color>
+    <Color x:Key="LBackground200T80">#CCc6d2d2</Color>
+    <Color x:Key="LBackground200T90">#E6c6d2d2</Color>
+    <Color x:Key="LBackground200T100">#FFc6d2d2</Color>
+
+    <!-- LBackground300 #a9bcbc -->
+    <Color x:Key="LBackground300T10">#1Aa9bcbc</Color>
+    <Color x:Key="LBackground300T20">#33a9bcbc</Color>
+    <Color x:Key="LBackground300T30">#4Da9bcbc</Color>
+    <Color x:Key="LBackground300T40">#66a9bcbc</Color>
+    <Color x:Key="LBackground300T50">#80a9bcbc</Color>
+    <Color x:Key="LBackground300T60">#99a9bcbc</Color>
+    <Color x:Key="LBackground300T70">#B3a9bcbc</Color>
+    <Color x:Key="LBackground300T80">#CCa9bcbc</Color>
+    <Color x:Key="LBackground300T90">#E6a9bcbc</Color>
+    <Color x:Key="LBackground300T100">#FFa9bcbc</Color>
+
+    <!-- LBackground400 #8da5a5 -->
+    <Color x:Key="LBackground400T10">#1A8da5a5</Color>
+    <Color x:Key="LBackground400T20">#338da5a5</Color>
+    <Color x:Key="LBackground400T30">#4D8da5a5</Color>
+    <Color x:Key="LBackground400T40">#668da5a5</Color>
+    <Color x:Key="LBackground400T50">#808da5a5</Color>
+    <Color x:Key="LBackground400T60">#998da5a5</Color>
+    <Color x:Key="LBackground400T70">#B38da5a5</Color>
+    <Color x:Key="LBackground400T80">#CC8da5a5</Color>
+    <Color x:Key="LBackground400T90">#E68da5a5</Color>
+    <Color x:Key="LBackground400T100">#FF8da5a5</Color>
+
+    <!-- LBackground500 #708f8f -->
+    <Color x:Key="LBackground500T10">#1A708f8f</Color>
+    <Color x:Key="LBackground500T20">#33708f8f</Color>
+    <Color x:Key="LBackground500T30">#4D708f8f</Color>
+    <Color x:Key="LBackground500T40">#66708f8f</Color>
+    <Color x:Key="LBackground500T50">#80708f8f</Color>
+    <Color x:Key="LBackground500T60">#99708f8f</Color>
+    <Color x:Key="LBackground500T70">#B3708f8f</Color>
+    <Color x:Key="LBackground500T80">#CC708f8f</Color>
+    <Color x:Key="LBackground500T90">#E6708f8f</Color>
+    <Color x:Key="LBackground500T100">#FF708f8f</Color>
+
+    <!-- LBackground600 #5a7272 -->
+    <Color x:Key="LBackground600T10">#1A5a7272</Color>
+    <Color x:Key="LBackground600T20">#335a7272</Color>
+    <Color x:Key="LBackground600T30">#4D5a7272</Color>
+    <Color x:Key="LBackground600T40">#665a7272</Color>
+    <Color x:Key="LBackground600T50">#805a7272</Color>
+    <Color x:Key="LBackground600T60">#995a7272</Color>
+    <Color x:Key="LBackground600T70">#B35a7272</Color>
+    <Color x:Key="LBackground600T80">#CC5a7272</Color>
+    <Color x:Key="LBackground600T90">#E65a7272</Color>
+    <Color x:Key="LBackground600T100">#FF5a7272</Color>
+
+    <!-- LBackground700 #435656 -->
+    <Color x:Key="LBackground700T10">#1A435656</Color>
+    <Color x:Key="LBackground700T20">#33435656</Color>
+    <Color x:Key="LBackground700T30">#4D435656</Color>
+    <Color x:Key="LBackground700T40">#66435656</Color>
+    <Color x:Key="LBackground700T50">#80435656</Color>
+    <Color x:Key="LBackground700T60">#99435656</Color>
+    <Color x:Key="LBackground700T70">#B3435656</Color>
+    <Color x:Key="LBackground700T80">#CC435656</Color>
+    <Color x:Key="LBackground700T90">#E6435656</Color>
+    <Color x:Key="LBackground700T100">#FF435656</Color>
+
+    <!-- LBackground800 #2d3939 -->
+    <Color x:Key="LBackground800T10">#1A2d3939</Color>
+    <Color x:Key="LBackground800T20">#332d3939</Color>
+    <Color x:Key="LBackground800T30">#4D2d3939</Color>
+    <Color x:Key="LBackground800T40">#662d3939</Color>
+    <Color x:Key="LBackground800T50">#802d3939</Color>
+    <Color x:Key="LBackground800T60">#992d3939</Color>
+    <Color x:Key="LBackground800T70">#B32d3939</Color>
+    <Color x:Key="LBackground800T80">#CC2d3939</Color>
+    <Color x:Key="LBackground800T90">#E62d3939</Color>
+    <Color x:Key="LBackground800T100">#FF2d3939</Color>
+
+    <!-- LBackground900 #161d1d -->
+    <Color x:Key="LBackground900T10">#1A161d1d</Color>
+    <Color x:Key="LBackground900T20">#33161d1d</Color>
+    <Color x:Key="LBackground900T30">#4D161d1d</Color>
+    <Color x:Key="LBackground900T40">#66161d1d</Color>
+    <Color x:Key="LBackground900T50">#80161d1d</Color>
+    <Color x:Key="LBackground900T60">#99161d1d</Color>
+    <Color x:Key="LBackground900T70">#B3161d1d</Color>
+    <Color x:Key="LBackground900T80">#CC161d1d</Color>
+    <Color x:Key="LBackground900T90">#E6161d1d</Color>
+    <Color x:Key="LBackground900T100">#FF161d1d</Color>
+
+    <!-- LBackground950 #0b0e0e -->
+    <Color x:Key="LBackground950T10">#1A0b0e0e</Color>
+    <Color x:Key="LBackground950T20">#330b0e0e</Color>
+    <Color x:Key="LBackground950T30">#4D0b0e0e</Color>
+    <Color x:Key="LBackground950T40">#660b0e0e</Color>
+    <Color x:Key="LBackground950T50">#800b0e0e</Color>
+    <Color x:Key="LBackground950T60">#990b0e0e</Color>
+    <Color x:Key="LBackground950T70">#B30b0e0e</Color>
+    <Color x:Key="LBackground950T80">#CC0b0e0e</Color>
+    <Color x:Key="LBackground950T90">#E60b0e0e</Color>
+    <Color x:Key="LBackground950T100">#FF0b0e0e</Color>
+</ResourceDictionary>

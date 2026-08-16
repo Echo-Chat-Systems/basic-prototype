@@ -1,1 +1,0 @@
-INSERT INTO public.users VALUES ('432', default, '432', "balls", 23432, "{}", "{}", null, default, default) RETURNING *;

@@ -6,10 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Server.Database;
-using Server.Database.Discovery;
-using Server.Database.ParameterConverters;
-using Server.Database.Repositories;
-using Server.Database.Repositories.Impl;
 using WebSocketSharper.Server;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -34,25 +30,28 @@ public class Server
 		// Use config library to build config class 
 		Config config = ConfigBuilder.Build<Config>(iConfiguration);
 
-		// Build service collection
-		ServiceCollection services = new();
-		services.AddLogging(builder =>
-		{
-			builder.AddConsole();
-			builder.SetMinimumLevel(LogLevel.Debug);
-		});
-		services.AddSingleton(config);
-		services.AddSingleton<ClientManager>();
-		services.AddRouting();
-		services.AddDatabase();
+		// Set db connection string
+		EchoContext.ConnectionString = config.Database.CreateConnectionString("Main");
 
-		Services = services.BuildServiceProvider();
+		// Build service collection
+		Services = new ServiceCollection()
+			.AddLogging(builder =>
+			{
+				builder.AddConsole();
+				builder.SetMinimumLevel(LogLevel.Debug);
+			})
+			.AddSingleton(config)
+			.AddSingleton<ClientManager>()
+			.AddRouting()
+			.AddDbContext<EchoContext>()
+			.BuildServiceProvider();
 
 		// Get a logger for the main server
 		Logger = Services.GetRequiredService<ILogger<Server>>();
+		AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 		// Configure newtonsoft
-		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
+		JsonConvert.DefaultSettings = Json.DefaultSettings;
 	}
 
 

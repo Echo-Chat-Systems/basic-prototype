@@ -25,6 +25,7 @@ public partial class LocalState : ObservableObject
 		StartAuth,
 		Authenticating,
 		CreatingNewAccount,
+		Preloading,
 		FrontendReady,
 		Failed
 	}

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Logging;
 using AvaloniaClient.Targets;
 using CommunityToolkit.Mvvm.ComponentModel;
+using EchoLib.Models.Data.Guild;
 using EchoLib.Models.Params.Auth;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing.Identification;
@@ -27,7 +28,10 @@ public partial class AuthManager : ObservableObject
 
 	[ObservableProperty] public partial ObservableCollection<string> Logs { get; private set; } = [];
 
-	private void Log(string message, params object[] args) => Logs.Add(string.Format(message, args));
+	private void Log(string message, params object[] args)
+	{
+		Logs.Add(string.Format(message, args));
+	}
 
 	#endregion
 
@@ -49,7 +53,7 @@ public partial class AuthManager : ObservableObject
 
 	private void LocalStateChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName != nameof(LocalState.AuthState) ) return;
+		if (e.PropertyName != nameof(LocalState.AuthState)) return;
 
 		switch (_state.Local.AuthState)
 		{
@@ -111,6 +115,11 @@ public partial class AuthManager : ObservableObject
 		}
 
 		_state.Remote.User = complete.User;
+		_state.Local.AuthState = LocalState.AuthStates.Preloading;
 		_logger.LogInformation("Completed auth flow successfully.");
+
+		// Super hacky way of triggering guilds query
+		IEnumerable<JGuild> guilds = await _targets.Guilds.Query();
+		_logger.LogDebug("balls");
 	}
 }

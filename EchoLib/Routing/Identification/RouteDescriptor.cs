@@ -12,27 +12,36 @@ public abstract class RouteDescriptor
 
 	public abstract Type RequestType { get; init; }
 
+	public abstract IEnumerable<BasePreProcessorAttribute> Preprocessors { get; init; }
 
 	public abstract Task Invoke(RoutingContext ctx, JToken json);
 }
 
-public sealed class RouteDescriptor<TRequest>(Func<RoutingContext, TRequest, Task> handler) : RouteDescriptor
+public sealed class RouteDescriptor<TRequest>(Func<RoutingContext, TRequest, Task> handler, IEnumerable<BasePreProcessorAttribute> preprocessors) : RouteDescriptor
 {
 	public override required string Target { get; init; }
 	public override required string Action { get; init; }
-	public override Type RequestType { get; init; } =  typeof(TRequest);
+	public override Type RequestType { get; init; } = typeof(TRequest);
 
-	public override Task Invoke(RoutingContext ctx, JToken json)
+	public override IEnumerable<BasePreProcessorAttribute> Preprocessors { get; init; } = preprocessors;
+
+	public override async Task Invoke(RoutingContext ctx, JToken json)
 	{
+		// Run preprocessors first
+		foreach (BasePreProcessorAttribute task in Preprocessors)
+			if (!await task.Run(ctx))
+				return;
+
 		TRequest request = json.ToObject<TRequest>() ?? throw new InvalidOperationException("Unable to deserialize request");
-		
-		 return handler(ctx, request);
+
+		await handler(ctx, request);
 	}
 }
 
 public static class RouteDescriptorFactory
 {
 	public static RouteDescriptor Create(
+		IEnumerable<BasePreProcessorAttribute> preprocessors,
 		object instance,
 		MethodInfo method,
 		string target,
@@ -56,6 +65,7 @@ public static class RouteDescriptorFactory
 			genericFactory.Invoke(
 				null,
 				[
+					preprocessors,
 					instance,
 					method,
 					target,
@@ -64,6 +74,7 @@ public static class RouteDescriptorFactory
 	}
 
 	private static RouteDescriptor CreateGeneric<TRequest>(
+		IEnumerable<BasePreProcessorAttribute> preprocessors,
 		object instance,
 		MethodInfo method,
 		string target,
@@ -77,7 +88,9 @@ public static class RouteDescriptorFactory
 				method);
 
 		return new RouteDescriptor<TRequest>(
-			handler)
+			handler,
+			preprocessors
+		)
 		{
 			Target = target,
 			Action = action

@@ -10,3 +10,7 @@ public class NotFoundException : ProtocolException
 	public override string Message => "not-found";
 }
 
+public class UnauthorizedException : ProtocolException
+{
+	public override string Message => "unauthorized";
+}

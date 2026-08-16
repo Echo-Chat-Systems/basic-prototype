@@ -21,187 +21,190 @@ namespace Client;
 
 public class Client
 {
-    public static readonly DirectoryInfo EchoDirectory =
-        new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
-    public static WebSocket Socket { get; private set; }
-    public static IServiceProvider Services { get; set; } = null!;
-    public static JKeySet Keys { get; set; } = null!;
-    public static ServerInfoJm ServerInfo { get; set; } = null!;
-    private Router router;
-    private bool _connected = false;
+	public static readonly DirectoryInfo EchoDirectory =
+		new(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.echo/");
 
-    private readonly ILogger<Client> _logger;
-    private readonly Targets _targets;
+	public static WebSocket Socket { get; private set; }
+	public static IServiceProvider Services { get; set; } = null!;
+	public static JKeySet Keys { get; set; } = null!;
+	public static ServerInfoJm ServerInfo { get; set; } = null!;
+	private Router router;
+	private bool _connected = false;
 
-    public Client()
-    {
-        Console.Clear();
-        // Configure logger
+	private readonly ILogger<Client> _logger;
+	private readonly Targets _targets;
 
-        // Build service collection
-        ServiceCollection services = new();
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.SetMinimumLevel(LogLevel.Debug);
-        });
-        services.AddSingleton<SessionInfo>();
-        services.AddSingleton<Targets>();
-        services.AddRouting();
+	public Client()
+	{
+		Console.Clear();
+		// Configure logger
 
-        Services = services.BuildServiceProvider();
+		// Build service collection
+		ServiceCollection services = new();
+		services.AddLogging(builder =>
+		{
+			builder.AddConsole();
+			builder.SetMinimumLevel(LogLevel.Debug);
+		});
+		services.AddSingleton<SessionInfo>();
+		services.AddSingleton<Targets>();
+		services.AddRouting();
 
-        // Get the logger 
-        _logger = Services.GetService<ILogger<Client>>()!;
+		Services = services.BuildServiceProvider();
 
-        // Ensure .echo directory exists 
-        if (!EchoDirectory.Exists)
-        {
-            _logger.LogWarning("Echo Directory {EchoDirectory} did not exist, creating", EchoDirectory);
-            EchoDirectory.Create();
+		// Get the logger 
+		_logger = Services.GetService<ILogger<Client>>()!;
 
-            // Set directory to hidden
-            EchoDirectory.Attributes |= FileAttributes.Hidden;
-        }
+		// Ensure .echo directory exists 
+		if (!EchoDirectory.Exists)
+		{
+			_logger.LogWarning("Echo Directory {EchoDirectory} did not exist, creating", EchoDirectory);
+			EchoDirectory.Create();
 
-        // Ask user for their password
-        string passwd = ConsoleHelper.GetConsoleInput("Please input your encryption password: ");
-        FileInfo userFileHandle = new(EchoDirectory + ".user");
-        JUserFile file;
+			// Set directory to hidden
+			EchoDirectory.Attributes |= FileAttributes.Hidden;
+		}
+
+		// Ask user for their password
+		string passwd = ConsoleHelper.GetConsoleInput("Please input your encryption password: ");
+		FileInfo userFileHandle = new(EchoDirectory + ".user");
+		JUserFile file;
 
 
-        // Check if file exists
-        if (userFileHandle.Exists)
-        {
-            _logger.LogDebug("User file found at {UserFileHandle}", userFileHandle.Name);
-            // Attempt to read the user file
-            if (!UserFileHelper.Decrypt(userFileHandle, passwd, out file) || file == null)
-            {
-                Console.WriteLine("Invalid password, exiting");
-                throw new Exception("Invalid password"); // This is really hacky
-            }
-        }
-        // User does not have an existing saved account, create a new account
-        else
-        {
-            file = new JUserFile
-            {
-                Keys = KdvHelper.Generate(),
-                Server = new ServerInfoJm
-                {
-                    Address = ConsoleHelper.GetConsoleInput("Input server address: "),
-                    Port = int.Parse(ConsoleHelper.GetConsoleInput("Input server port: ")),
-                    Version = ConsoleHelper.GetConsoleInput("Input server version (leave blank for unknown): ")
-                }
-            };
+		// Check if file exists
+		if (userFileHandle.Exists)
+		{
+			_logger.LogDebug("User file found at {UserFileHandle}", userFileHandle.Name);
+			// Attempt to read the user file
+			if (!UserFileHelper.Decrypt(userFileHandle, passwd, out file) || file == null)
+			{
+				Console.WriteLine("Invalid password, exiting");
+				throw new Exception("Invalid password"); // This is really hacky
+			}
+		}
+		// User does not have an existing saved account, create a new account
+		else
+		{
+			file = new JUserFile
+			{
+				Keys = KdvHelper.Generate(),
+				Server = new ServerInfoJm
+				{
+					Address = ConsoleHelper.GetConsoleInput("Input server address: "),
+					Port = int.Parse(ConsoleHelper.GetConsoleInput("Input server port: ")),
+					Version = ConsoleHelper.GetConsoleInput("Input server version (leave blank for unknown): ")
+				}
+			};
 
-            // Save file
-            UserFileHelper.Encrypt(file, userFileHandle, passwd);
+			// Save file
+			UserFileHelper.Encrypt(file, userFileHandle, passwd);
 
-            _logger.LogInformation("User file saved to {UserFileLocation}", userFileHandle.FullName);
-        }
+			_logger.LogInformation("User file saved to {UserFileLocation}", userFileHandle.FullName);
+		}
 
-        // We no longer need the password as plaintext in memory, overwrite
-        // ReSharper disable once RedundantAssignment
-        passwd = "";
+		// We no longer need the password as plaintext in memory, overwrite
+		// ReSharper disable once RedundantAssignment
+		passwd = "";
 
-        Keys = file.Keys;
-        ServerInfo = file.Server;
-        
-        router = Services.GetRequiredService<Router>();
-        _targets = Services.GetRequiredService<Targets>();
+		Keys = file.Keys;
+		ServerInfo = file.Server;
 
-        Socket = new WebSocket(Services.GetRequiredService<ILogger<WebSocket>>(),
-            $"ws://{ServerInfo.Address}:{ServerInfo.Port}",
-            false
-        );
+		router = Services.GetRequiredService<Router>();
+		_targets = Services.GetRequiredService<Targets>();
 
-        Socket.OnMessage += OnMessage;
-        Socket.OnOpen += OnOpen;
-    }
+		Socket = new WebSocket(Services.GetRequiredService<ILogger<WebSocket>>(),
+			$"ws://{ServerInfo.Address}:{ServerInfo.Port}",
+			false
+		);
 
-    public async Task Run()
-    {
-        // Connect
-        Socket.ConnectAsync();
+		Socket.OnMessage += OnMessage;
+		Socket.OnOpen += OnOpen;
+	}
 
-        // Wait until the server is connected
-        while (!_connected) { }
+	public async Task Run()
+	{
+		// Connect
+		Socket.ConnectAsync();
 
-        // Connect to server
-        await _targets.Auth.SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
-        {
-	        KeyPair = new JPublicKeyPair
-	        {
-		        SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
-	        }
-        });
+		// Wait until the server is connected
+		while (!_connected)
+		{
+		}
 
-        try
-        {
-	        await _targets.Auth.SendSigninStart(new WebsocketEndpoint(Socket, Services), new SigninStartParameters
-	        {
-		        Sk = Keys.PubSk,
-		        Ek = Keys.PubEk
-	        });
-        }
-        catch (NotFoundException)
-        {
-	        // Try and create an account on the server
+		// Connect to server
+		await _targets.Auth.SendHello(new WebsocketEndpoint(Socket, Services), new ClientHelloParameters
+		{
+			KeyPair = new JPublicKeyPair
+			{
+				SigningKey = Keys.PubSk, EncryptionKey = Keys.PubEk
+			}
+		});
+
+		try
+		{
+			await _targets.Auth.SendSigninStart(new WebsocketEndpoint(Socket, Services), new SigninStartParameters
+			{
+				Sk = Keys.PubSk,
+				Ek = Keys.PubEk
+			});
+		}
+		catch (NotFoundException)
+		{
+			// Try and create an account on the server
 			_logger.LogError("No account of Id {Id} reported by server", Keys.PubSk);
 			//TODO: Put signup call here
-        }
+		}
 
 
-        string? input;
-        while (true)
-        {
-            Console.Write("Send message: ");
-            input = Console.ReadLine();
+		string? input;
+		while (true)
+		{
+			Console.Write("Send message: ");
+			input = Console.ReadLine();
 
-            if (input is null) continue;
+			if (input is null) continue;
 
-            Socket.Send(input);
-        }
-    }
+			Socket.Send(input);
+		}
+	}
 
 
-    private void OnOpen(object? sender, EventArgs e)
-    {
-        // Send hello message
-        _logger.LogDebug("Socket connected.");
+	private void OnOpen(object? sender, EventArgs e)
+	{
+		// Send hello message
+		_logger.LogDebug("Socket connected.");
 
-        _connected = true;
-    }
+		_connected = true;
+	}
 
-    private void OnMessage(object? sender, MessageEventArgs e)
-    {
-        // Unpack message event 
-        _logger.LogDebug("Message received, attempting to unpack");
-        Envelope<JToken>? envelope;
-        try
-        {
-            envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
-        }
-        catch (JsonReaderException)
-        {
-            goto Fail;
-        }
+	private void OnMessage(object? sender, MessageEventArgs e)
+	{
+		// Unpack message event 
+		_logger.LogDebug("Message received, attempting to unpack");
+		Envelope<JToken>? envelope;
+		try
+		{
+			envelope = JsonConvert.DeserializeObject<Envelope<JToken>>(e.Data);
+		}
+		catch (JsonReaderException)
+		{
+			goto Fail;
+		}
 
-        if (envelope is null) goto Fail;
+		if (envelope is null) goto Fail;
 
-        _logger.LogDebug("Unpacked message {Target}", envelope.Target);
+		_logger.LogDebug("Unpacked message {Target}", envelope.Target);
 
-        // Route message
-        Services.GetRequiredService<Router>().Receive(envelope, Socket);
-        return;
+		// Route message
+		Services.GetRequiredService<Router>().Receive(envelope, Socket);
+		return;
 
-        Fail:
-        _logger.LogError("Invalid envelope received!");
-    }
+		Fail:
+		_logger.LogError("Invalid envelope received!");
+	}
 
-    public class SessionInfo
-    {
-        public string ServerName { get; set; } = null!;
-    }
+	public class SessionInfo
+	{
+		public string ServerName { get; set; } = null!;
+	}
 }

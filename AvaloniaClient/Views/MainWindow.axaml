@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AvaloniaClient.ViewModels"
-        xmlns:loginviews="clr-namespace:AvaloniaClient.Views.Login"
+        xmlns:comp="clr-namespace:AvaloniaClient.Views.Components"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaClient.Views.MainWindow"
         Title="Echo-Chat Pre-Alpha"
@@ -16,26 +16,20 @@
     <!-- Root -->
     <Panel>
         <DockPanel>
-            <StackPanel DockPanel.Dock="Top">
-                <TextBlock HorizontalAlignment="Left">Echo Chat - Alpha</TextBlock>
-                <Border MinWidth="50" MinHeight="50" CornerRadius="50" BorderThickness="4" BorderBrush="Aqua" HorizontalAlignment="Right"><TextBlock> test </TextBlock></Border>
-            </StackPanel>
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                <TextBlock Text="{Binding ConnectedTo}" Margin="0 0 150 0" />
-                <TextBlock TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding Username}" />
-            </StackPanel>
+            <StackPanel DockPanel.Dock="Top" />
+            <Grid DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>* *</Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding ConnectedTo}" Margin="0 0 150 0" />
+                <TextBlock Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding Username}" />
+            </Grid>
             <DockPanel>
-                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Stretch" Orientation="Vertical">
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                    <TextBlock>Test</TextBlock>
-                </StackPanel>
+                <comp:GuildsView DataContext="{Binding GuildsVm}" DockPanel.Dock="Left" VerticalAlignment="Stretch" />
             </DockPanel>
         </DockPanel>
-        <loginviews:AuthOverlayView DataContext="{Binding AuthOverlay}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding Visible}" />
+        <Border Background="{StaticResource DBackground50T80}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding Dialogs.IsOpen} ">
+            <ContentControl Background="{StaticResource DBackground100}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Content="{Binding Dialogs.CurrentDialog}" IsEnabled="{Binding Dialogs.IsOpen}" />
+        </Border>
     </Panel>
 
 

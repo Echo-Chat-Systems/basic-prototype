@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using EchoLib.Crypto.Signing;
 using EchoLib.Models.Params;
 using EchoLib.Protocol;
 using EchoLib.Transport;
@@ -13,6 +14,12 @@ public class RoutingContext
 	public required Envelope<JToken> OriginalMessage { get; init; }
 	public required WebSocket Socket { get; init; }
 	public required IMessageEndpoint Endpoint { get; init; }
+	public required IServiceProvider Services { get; init; }
+
+	/// <summary>
+	/// Allows preprocessor to pass user to method.
+	/// </summary>
+	public PublicSigningKey? User { get; set; }
 
 	public async Task ReplyAsync<T>(T parameters) where T : IParam
 	{

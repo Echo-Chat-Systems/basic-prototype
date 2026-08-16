@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using EchoLib.Core;
+using EchoLib.Extensions;
 using EchoLib.Protocol;
 using EchoLib.Protocol.Exceptions;
 using EchoLib.Routing.Discovery;
@@ -40,7 +41,7 @@ public sealed class Router
 		serviceProvider.GetService<ITargetHub>()?
 			.Populate(_targets);
 	}
-	
+
 	public async void Receive(Envelope<JToken> message, WebSocket socket)
 	{
 		// Check if the envelope has an MID
@@ -50,31 +51,39 @@ public sealed class Router
 			else request!.Complete(message);
 			return;
 		}
-		
+
+		WebsocketEndpoint endpoint = new(socket, _serviceProvider);
+		RoutingContext ctx = new()
+		{
+			OriginalMessage = message,
+			MessageId = message.MessageId,
+			Socket = socket,
+			Endpoint = endpoint,
+			Services = _serviceProvider
+		};
+
 		RouteDescriptor? route = _routes.Get(message.Target, message.Data.Action);
 		if (route == null)
-			throw new InvalidOperationException($"Couldn't find route for {message.Target}:{message.Data.Action}");
+		{
+			_logger.MessageError(ctx, "Route not found!");
+			await endpoint.ErrorAsync(new NotFoundException(), message.MessageId);
+			return;
+		}
 
 		try
 		{
-			await route.Invoke(new RoutingContext
-			{
-				OriginalMessage = message,
-				MessageId = message.MessageId,
-				Socket = socket,
-				Endpoint = new WebsocketEndpoint(socket, _serviceProvider)
-
-			}, message.Data.Parameters);
+			_logger.MessageDebug(ctx, "Message received");
+			await route.Invoke(ctx, message.Data.Parameters);
 		}
 		catch (ProtocolException ex)
 		{
-			await new WebsocketEndpoint(socket, _serviceProvider).ErrorAsync(ex, message.MessageId);
+			await endpoint.ErrorAsync(ex, message.MessageId);
 		}
 		catch (Exception ex)
 		{
 			InternalServerException iex = new();
 			_logger.LogError("[{ErrorId}] [{ErrorName}] : \n{Stacktrace}", iex.Eid, ex.Message, ex.StackTrace);
-			await new WebsocketEndpoint(socket, _serviceProvider).ErrorAsync(iex, message.MessageId);
+			await endpoint.ErrorAsync(iex, message.MessageId);
 		}
 	}
 }
@@ -84,15 +93,15 @@ public static class RoutingServiceCollectionExtensions
 	public static IServiceCollection AddRouting(this IServiceCollection services)
 	{
 		// Configure Json Serializer
-		JsonConvert.DefaultSettings = NewtonsoftJson.DefaultSettings;
+		JsonConvert.DefaultSettings = Json.DefaultSettings;
 
 		// Register exceptions
 		ExceptionsRegistry.Find();
 
 		services.AddSingleton<Router>();
 		services.AddSingleton<PendingResponseRegistry>();
-		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(NewtonsoftJson.DefaultSettings()));
-		
+		services.AddSingleton<JsonSerializer>(_ => JsonSerializer.Create(Json.DefaultSettings()));
+
 		Type? targetHub = ImplementationFinder.Find<ITargetHub>();
 		if (targetHub != null)
 		{

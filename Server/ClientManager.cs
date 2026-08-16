@@ -1,11 +1,10 @@
 ﻿using EchoLib.Crypto.Signing;
 using EchoLib.Models.Crypto;
-using Server.Routing;
+using Server.Targets;
 using WebSocketSharper;
 using WebSocketSharper.Server;
 
 namespace Server;
-
 
 public class ServerClient
 {
@@ -14,12 +13,14 @@ public class ServerClient
 	public JPublicKeyPair? KeyPair;
 
 	public AuthTarget.SigninState SigninState = new();
+
+	public bool Authenticated = false;
 }
 
 public class ClientManager
 {
 	private readonly List<ServerClient> _clients = new();
-	
+
 	public Task Register(LiveClient client)
 	{
 		_clients.Add(new ServerClient
